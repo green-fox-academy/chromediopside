@@ -3,11 +3,11 @@ package com.chromediopside;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@SpringBootApplication
-public class GitinderApplication {
+  @SpringBootApplication
+  public class GitinderApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(GitinderApplication.class, args);
-		System.out.println("Hello World!");
-	}
-}
+    public static void main(String[] args) {
+      SpringApplication.run(com.chromediopside.GitinderApplication.class, args);
+      System.out.println("Hello World!");
+    }
+  }
