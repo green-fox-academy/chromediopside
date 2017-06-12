@@ -14,13 +14,12 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 
+import static org.hamcrest.core.Is.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
-/**
- * Created by peter on 2017.06.08..
- */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = GitinderApplication.class)
 @WebAppConfiguration
@@ -40,4 +39,12 @@ public class HomeControllerTest {
     @Test
     public void controllerContextLoads() throws Exception {
     }
+
+    @Test
+    public void testStatusOk() throws Exception {
+        mockMvc.perform(get("/"))
+                .andExpect(status().isOk());
+    }
+
+
 }
