@@ -27,4 +27,5 @@ dependencies {
 	runtime('org.springframework.boot:spring-boot-devtools')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 	runtime('org.postgresql:postgresql')
+    compile ('org.flywaydb:flyway-core:4.2.0')
 }
