@@ -28,4 +28,5 @@ dependencies {
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 	runtime('org.postgresql:postgresql')
     compile ('org.flywaydb:flyway-core:4.2.0')
+	compile('org.eclipse.mylyn.github:org.eclipse.egit.github.core:2.1.5')
 }
