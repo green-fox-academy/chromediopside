@@ -4,7 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 
 @Entity
-public class MyUser {
+public class GiTinderUser {
 
   @Id
   String username;
