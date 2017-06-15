@@ -17,4 +17,41 @@ public class Language {
 
   @JoinColumn(name = "login")
   private String login;
+
+  public Language(String languageName, String login) {
+    this.languageName = languageName;
+    this.login = login;
+  }
+
+  @Override
+  public String toString() {
+    return languageName;
+  }
+
+  public Language() {
+  }
+
+  public long getId() {
+    return id;
+  }
+
+  public void setId(long id) {
+    this.id = id;
+  }
+
+  public String getLanguageName() {
+    return languageName;
+  }
+
+  public void setLanguageName(String languageName) {
+    this.languageName = languageName;
+  }
+
+  public String getLogin() {
+    return login;
+  }
+
+  public void setLogin(String login) {
+    this.login = login;
+  }
 }
