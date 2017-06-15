@@ -7,7 +7,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 @Entity
@@ -19,11 +18,10 @@ public class GiTinderProfile {
   private String avatarUrl;
   private String repos;
 
-  @Transient
   @ManyToMany
   @JoinTable(
       name="LANGUAGE_TO_USER",
       joinColumns = @JoinColumn(name="PROFILE_ID", referencedColumnName = "login"),
-      inverseJoinColumns = @JoinColumn(name="LANGUAGE_ID", referencedColumnName = "languageName"))
+      inverseJoinColumns = @JoinColumn(name="LANGUAGE_ID", referencedColumnName = "id"))
   private List<Language> languagesList;
 }
