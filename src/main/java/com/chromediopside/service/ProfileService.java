@@ -28,10 +28,13 @@ public class ProfileService {
 
   public List<GiTinderProfile> randomTenProfileByLanguage(String languageName) {
     List<Language> profilesByLanguage = languageRepository.findAllByLanguageName(languageName);
+    List<GiTinderProfile> randomTenProfileByLanguage = new ArrayList<>();
+
+    if (profilesByLanguage.size() > 10) {
     Collections.shuffle(profilesByLanguage);
     profilesByLanguage = profilesByLanguage.subList(0, 10);
+    }
 
-    List<GiTinderProfile> randomTenProfileByLanguage = new ArrayList<>();
     for (Language languageCurrent : profilesByLanguage) {
       randomTenProfileByLanguage.add(profileRepository.findByLogin(languageCurrent.getLogin()));
     }
