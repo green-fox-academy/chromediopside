@@ -1,13 +1,13 @@
 buildscript {
-	ext {
-		springBootVersion = '1.5.3.RELEASE'
-	}
-	repositories {
-		mavenCentral()
-	}
-	dependencies {
-		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-	}
+    ext {
+        springBootVersion = '1.5.3.RELEASE'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
 }
 
 apply plugin: 'java'
@@ -17,17 +17,17 @@ version = '0.0.1-SNAPSHOT'
 sourceCompatibility = 1.8
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 
 dependencies {
-	compile('org.springframework.boot:spring-boot-starter-data-jpa')
-	compile('org.springframework.boot:spring-boot-starter-web')
-	runtime('org.springframework.boot:spring-boot-devtools')
-	testCompile('org.springframework.boot:spring-boot-starter-test')
-	runtime('org.postgresql:postgresql')
-  compile ('org.flywaydb:flyway-core:4.2.0')
-	compile('org.eclipse.mylyn.github:org.eclipse.egit.github.core:2.1.5')
-	compile group: 'org.json', name: 'json', version: '20090211'
+    compile('org.springframework.boot:spring-boot-starter-data-jpa')
+    compile('org.springframework.boot:spring-boot-starter-web')
+    runtime('org.springframework.boot:spring-boot-devtools')
+    testCompile('org.springframework.boot:spring-boot-starter-test')
+    runtime('org.postgresql:postgresql')
+    compile('org.flywaydb:flyway-core:4.2.0')
+    compile('org.eclipse.mylyn.github:org.eclipse.egit.github.core:2.1.5')
+    compile group: 'org.json', name: 'json', version: '20090211'
 }

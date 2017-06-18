@@ -11,25 +11,26 @@ import javax.validation.constraints.NotNull;
 
 @Entity
 public class GiTinderProfile {
+
   @Id
   @NotNull
-  @Column(name="login")
+  @Column(name = "login")
   private String login;
   private String avatarUrl;
   private String repos;
 
   @ManyToMany
   @JoinTable(
-      name="LANGUAGE_TO_USER",
-      joinColumns = @JoinColumn(name="PROFILE_ID", referencedColumnName = "login"),
-      inverseJoinColumns = @JoinColumn(name="LANGUAGE_ID", referencedColumnName = "id"))
+      name = "LANGUAGE_TO_USER",
+      joinColumns = @JoinColumn(name = "PROFILE_ID", referencedColumnName = "login"),
+      inverseJoinColumns = @JoinColumn(name = "LANGUAGE_ID", referencedColumnName = "id"))
   private List<Language> languagesList;
 
   public GiTinderProfile() {
   }
 
   public GiTinderProfile(String login, String avatarUrl, String repos,
-          List<Language> languagesList) {
+      List<Language> languagesList) {
     this.login = login;
     this.avatarUrl = avatarUrl;
     this.repos = repos;
