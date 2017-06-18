@@ -26,8 +26,6 @@ test:
 
 database:
   override:
-    - createuser -s -d chromediopside
-    - createdb chromediopside
     - npm run migrate:latest
 
 deployment:
