@@ -1,0 +1,37 @@
+machine:
+  services:
+    - postgresql
+  java:
+    version: openjdk8
+  # Configure test database for Spring Boot and Flyway
+  environment:
+    CIRCLE_ENV: test
+    SPRING_DATASOURCE_URL: jdbc:postgresql://127.0.0.1/circle_test
+    SPRING_DATASOURCE_USERNAME: ubuntu
+    SPRING_DATASOURCE_PASSWORD:
+
+#Run PostgreSQL version 9.6 on CircleCI
+dependencies:
+  pre:
+    - sudo service postgresql stop
+    - sudo mv /usr/lib/postgresql-9.6/9.6 /usr/lib/postgresql/9.6
+    - sudo mv /etc/postgresql-9.6/9.6 /etc/postgresql/9.6
+    - sudo service postgresql start 9.6
+
+#Collect test metadata
+test:
+  post:
+    - mkdir -p $CIRCLE_TEST_REPORTS/junit/
+    - find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} $CIRCLE_TEST_REPORTS/junit/ \;
+
+database:
+  override:
+    - createuser -s -d chromediopside
+    - createdb chromediopside
+    - npm run migrate:latest
+
+deployment:
+  staging:
+    branch: master
+    heroku:
+      appname: gitinder
