@@ -1,6 +1,5 @@
 package com.chromediopside.service;
 
-
 import com.chromediopside.model.GiTinderProfile;
 import com.chromediopside.model.Language;
 import com.chromediopside.repository.LanguageRepository;
@@ -31,8 +30,8 @@ public class ProfileService {
     List<GiTinderProfile> randomTenProfileByLanguage = new ArrayList<>();
 
     if (profilesByLanguage.size() > 10) {
-    Collections.shuffle(profilesByLanguage);
-    profilesByLanguage = profilesByLanguage.subList(0, 10);
+      Collections.shuffle(profilesByLanguage);
+      profilesByLanguage = profilesByLanguage.subList(0, 10);
     }
 
     for (Language languageCurrent : profilesByLanguage) {
@@ -48,27 +47,20 @@ public class ProfileService {
     JSONArray jsonArray = readJsonFromUrl(githubDataApi);
     GiTinderProfile giTinderProfile = new GiTinderProfile();
     List<Language> languageList = new ArrayList<>();
-    String repo = "";
+    List<String> repos = new ArrayList<>();
 
     giTinderProfile.setLogin(username);
     System.out.println(giTinderProfile.getLogin());
     giTinderProfile.setAvatarUrl(
-            jsonArray.getJSONObject(0).getJSONObject("owner").getString("avatar_url"));
+        jsonArray.getJSONObject(0).getJSONObject("owner").getString("avatar_url"));
     System.out.println(giTinderProfile.getAvatarUrl());
 
     for (int i = 0; i < jsonArray.length(); i++) {
-      repo = jsonArray.getJSONObject(i).getString("name");
-      if (giTinderProfile.getRepos() == null) {
-        giTinderProfile.setRepos(repo);
-      } else {
-        giTinderProfile.setRepos(giTinderProfile.getRepos() + repo);
-      }
-      if (i + 1 < jsonArray.length()) {
-        giTinderProfile.setRepos(giTinderProfile.getRepos() + "; ");
-      }
+      repos.add(jsonArray.getJSONObject(i).getString("name"));
       String language = jsonArray.getJSONObject(i).getString("language");
-        languageList.add(new Language(language, username));
+      languageList.add(new Language(language, username));
     }
+    giTinderProfile.setRepos(String.join("; ", repos));
     System.out.println(giTinderProfile.getRepos());
 
     giTinderProfile.setLanguagesList(languageList);
@@ -92,7 +84,7 @@ public class ProfileService {
     InputStream inputStream = new URL(url).openStream();
     try {
       BufferedReader bufferedReader = new BufferedReader(
-              new InputStreamReader(inputStream, Charset.forName("UTF-8")));
+          new InputStreamReader(inputStream, Charset.forName("UTF-8")));
       String jsonText = readAll(bufferedReader);
       JSONArray json = new JSONArray(jsonText);
       return json;
