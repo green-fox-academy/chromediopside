@@ -13,9 +13,15 @@ CREATE TABLE GiTinder_profile (
 );
 
 CREATE TABLE Language (
-  id BIGINT,
-  login VARCHAR(40),
-  languageName VARCHAR(40),
-  PRIMARY KEY (id),
-  FOREIGN KEY (login) REFERENCES gitinder_profile (login)
+  languagename VARCHAR(40),
+  PRIMARY KEY (languagename)
 );
+
+CREATE TABLE LANGUAGE_TO_USER (
+  PROFILE_ID VARCHAR(40) NOT NULL,
+  LANGUAGE_ID VARCHAR(255) NOT NULL,
+  FOREIGN KEY (PROFILE_ID) REFERENCES gitinder_profile (login),
+  FOREIGN KEY (LANGUAGE_ID) REFERENCES Language (languagename)
+);
+
+CREATE SEQUENCE hibernate_sequence START WITH 1 INCREMENT BY 1 NO CYCLE;
