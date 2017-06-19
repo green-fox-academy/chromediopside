@@ -13,7 +13,9 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,10 @@ public class ProfileService {
   ProfileRepository profileRepository;
   @Autowired
   LanguageRepository languageRepository;
+
+  public GiTinderProfile fetchProfileByLogin(String login) {
+    return profileRepository.findByLogin(login);
+  }
 
   public List<GiTinderProfile> randomTenProfileByLanguage(String languageName) {
     List<Language> profilesByLanguage = languageRepository.findAllByLanguageName(languageName);
@@ -46,24 +52,37 @@ public class ProfileService {
 
     JSONArray jsonArray = readJsonFromUrl(githubDataApi);
     GiTinderProfile giTinderProfile = new GiTinderProfile();
-    List<Language> languageList = new ArrayList<>();
     List<String> repos = new ArrayList<>();
+    List<Language> languageList = new ArrayList<>();
+    Set<String> stringSet = new HashSet<>();
+    Set<Language> languageSet = new HashSet<Language>(languageList);
 
     giTinderProfile.setLogin(username);
     System.out.println(giTinderProfile.getLogin());
     giTinderProfile.setAvatarUrl(
-        jsonArray.getJSONObject(0).getJSONObject("owner").getString("avatar_url"));
+            jsonArray.getJSONObject(0).getJSONObject("owner").getString("avatar_url"));
     System.out.println(giTinderProfile.getAvatarUrl());
 
     for (int i = 0; i < jsonArray.length(); i++) {
       repos.add(jsonArray.getJSONObject(i).getString("name"));
       String language = jsonArray.getJSONObject(i).getString("language");
       languageList.add(new Language(language, username));
+
+      for (Language languageElement : languageList) {
+        stringSet.add(languageElement.getLanguageName());
+      }
+
+      for (String string : stringSet) {
+        languageList.clear();
+        languageList.add(new Language(string, username));
+        languageSet.addAll(languageList);
+      }
     }
+
     giTinderProfile.setRepos(String.join("; ", repos));
     System.out.println(giTinderProfile.getRepos());
 
-    giTinderProfile.setLanguagesList(languageList);
+    giTinderProfile.setLanguagesList(languageSet);
     System.out.println(giTinderProfile.getLanguagesList());
 
     return giTinderProfile;
@@ -84,7 +103,7 @@ public class ProfileService {
     InputStream inputStream = new URL(url).openStream();
     try {
       BufferedReader bufferedReader = new BufferedReader(
-          new InputStreamReader(inputStream, Charset.forName("UTF-8")));
+              new InputStreamReader(inputStream, Charset.forName("UTF-8")));
       String jsonText = readAll(bufferedReader);
       JSONArray json = new JSONArray(jsonText);
       return json;

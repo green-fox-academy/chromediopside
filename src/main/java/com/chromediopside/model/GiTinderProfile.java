@@ -1,6 +1,7 @@
 package com.chromediopside.model;
 
 import java.util.List;
+import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -24,13 +25,13 @@ public class GiTinderProfile {
       name = "LANGUAGE_TO_USER",
       joinColumns = @JoinColumn(name = "PROFILE_ID", referencedColumnName = "login"),
       inverseJoinColumns = @JoinColumn(name = "LANGUAGE_ID", referencedColumnName = "id"))
-  private List<Language> languagesList;
+  private Set<Language> languagesList;
 
   public GiTinderProfile() {
   }
 
   public GiTinderProfile(String login, String avatarUrl, String repos,
-      List<Language> languagesList) {
+      Set<Language> languagesList) {
     this.login = login;
     this.avatarUrl = avatarUrl;
     this.repos = repos;
@@ -61,11 +62,11 @@ public class GiTinderProfile {
     this.repos = repos;
   }
 
-  public List<Language> getLanguagesList() {
+  public Set<Language> getLanguagesList() {
     return languagesList;
   }
 
-  public void setLanguagesList(List<Language> languagesList) {
+  public void setLanguagesList(Set<Language> languagesList) {
     this.languagesList = languagesList;
   }
 }
