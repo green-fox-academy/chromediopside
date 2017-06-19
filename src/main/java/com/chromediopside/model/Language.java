@@ -1,11 +1,12 @@
 package com.chromediopside.model;
 
+import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 
 @Entity
 public class Language {
@@ -15,9 +16,10 @@ public class Language {
   private long id;
   @Column(name = "languageName")
   private String languageName;
-
-  @JoinColumn(name = "login")
   private String login;
+
+  @ManyToMany(mappedBy = "languagesList")
+  private Set<GiTinderProfile> profileSet;
 
   public Language(String languageName, String login) {
     this.languageName = languageName;
