@@ -32,18 +32,17 @@ public class ProfileService {
   }
 
   public List<GiTinderProfile> randomTenProfileByLanguage(String languageName) {
-    List<Language> profilesByLanguage = languageRepository.findAllByLanguageName(languageName);
-    List<GiTinderProfile> randomTenProfileByLanguage = new ArrayList<>();
+    Language selectingLanguage = languageRepository.findOne(languageName);
+    Set<GiTinderProfile> profilesSet = selectingLanguage.getProfileSet();
+    List<GiTinderProfile> profileList = new ArrayList<>();
+    profileList.addAll(profilesSet);
 
-    if (profilesByLanguage.size() > 10) {
-      Collections.shuffle(profilesByLanguage);
-      profilesByLanguage = profilesByLanguage.subList(0, 10);
+    if (profileList.size() > 10) {
+    Collections.shuffle(profileList);
+    profileList.subList(0, 10);
     }
 
-    for (Language languageCurrent : profilesByLanguage) {
-      randomTenProfileByLanguage.add(profileRepository.findByLogin(languageCurrent.getLogin()));
-    }
-    return randomTenProfileByLanguage;
+    return profileList;
   }
 
 
@@ -58,15 +57,14 @@ public class ProfileService {
     Set<Language> languageSet = new HashSet<Language>(languageList);
 
     giTinderProfile.setLogin(username);
-    System.out.println(giTinderProfile.getLogin());
     giTinderProfile.setAvatarUrl(
             jsonArray.getJSONObject(0).getJSONObject("owner").getString("avatar_url"));
-    System.out.println(giTinderProfile.getAvatarUrl());
 
     for (int i = 0; i < jsonArray.length(); i++) {
       repos.add(jsonArray.getJSONObject(i).getString("name"));
+
       String language = jsonArray.getJSONObject(i).getString("language");
-      languageList.add(new Language(language, username));
+      languageList.add(new Language(language));
 
       for (Language languageElement : languageList) {
         stringSet.add(languageElement.getLanguageName());
@@ -74,16 +72,12 @@ public class ProfileService {
 
       for (String string : stringSet) {
         languageList.clear();
-        languageList.add(new Language(string, username));
+        languageList.add(new Language(string));
         languageSet.addAll(languageList);
       }
     }
-
     giTinderProfile.setRepos(String.join("; ", repos));
-    System.out.println(giTinderProfile.getRepos());
-
     giTinderProfile.setLanguagesList(languageSet);
-    System.out.println(giTinderProfile.getLanguagesList());
 
     return giTinderProfile;
   }

@@ -1,10 +1,9 @@
 package com.chromediopside.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 
@@ -12,18 +11,14 @@ import javax.persistence.ManyToMany;
 public class Language {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  private long id;
-  @Column(name = "languageName")
+  @Column(name = "languagename")
   private String languageName;
-  private String login;
 
   @ManyToMany(mappedBy = "languagesList")
   private Set<GiTinderProfile> profileSet;
 
-  public Language(String languageName, String login) {
+  public Language(String languageName) {
     this.languageName = languageName;
-    this.login = login;
   }
 
   @Override
@@ -45,14 +40,6 @@ public class Language {
   public Language() {
   }
 
-  public long getId() {
-    return id;
-  }
-
-  public void setId(long id) {
-    this.id = id;
-  }
-
   public String getLanguageName() {
     return languageName;
   }
@@ -61,11 +48,11 @@ public class Language {
     this.languageName = languageName;
   }
 
-  public String getLogin() {
-    return login;
+  public Set<GiTinderProfile> getProfileSet() {
+    return profileSet;
   }
 
-  public void setLogin(String login) {
-    this.login = login;
+  public void setProfileSet(Set<GiTinderProfile> profileSet) {
+    this.profileSet = profileSet;
   }
 }
