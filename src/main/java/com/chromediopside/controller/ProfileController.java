@@ -1,7 +1,5 @@
 package com.chromediopside.controller;
 
-import static com.sun.xml.internal.ws.api.model.wsdl.WSDLBoundOperation.ANONYMOUS.required;
-
 import com.chromediopside.model.GiTinderProfile;
 import com.chromediopside.model.ResponseMessage;
 import com.chromediopside.service.ProfileService;
