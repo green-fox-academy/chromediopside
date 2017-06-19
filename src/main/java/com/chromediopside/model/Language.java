@@ -29,6 +29,17 @@ public class Language {
     return languageName;
   }
 
+  @Override
+  public boolean equals(Object obj) {
+    Language other = (Language) obj;
+    return this.languageName == other.languageName;
+  }
+
+  @Override
+  public int hashCode() {
+    return this.languageName.hashCode();
+  }
+
   public Language() {
   }
 
