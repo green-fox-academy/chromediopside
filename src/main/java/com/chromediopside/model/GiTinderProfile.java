@@ -1,11 +1,8 @@
 package com.chromediopside.model;
 
-import java.util.List;
 import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -74,4 +71,20 @@ public class GiTinderProfile {
   public void setLanguagesList(Set<Language> languagesList) {
     this.languagesList = languagesList;
   }
+
+  @Override
+  public boolean equals(Object o) {
+
+    if (!(o instanceof GiTinderProfile)) {
+      return false;
+    }
+
+    GiTinderProfile profile = (GiTinderProfile) o;
+
+    return profile.login.equals(login) &&
+        profile.avatarUrl.equals(avatarUrl) &&
+        profile.repos.equals(repos) &&
+        profile.languagesList.equals(languagesList);
+  }
+
 }

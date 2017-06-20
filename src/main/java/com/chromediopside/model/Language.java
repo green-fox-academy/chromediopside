@@ -28,8 +28,11 @@ public class Language {
 
   @Override
   public boolean equals(Object obj) {
+    if (!(obj instanceof Language)) {
+      return false;
+    }
     Language other = (Language) obj;
-    return this.languageName == other.languageName;
+    return this.languageName.equals(other.languageName);
   }
 
   @Override
