@@ -1,9 +1,7 @@
 package com.chromediopside.controller;
 
+import com.chromediopside.datatransfer.ErrorResponse;
 import com.chromediopside.model.GiTinderProfile;
-import com.chromediopside.model.ResponseMessage;
-import com.chromediopside.service.ProfileService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -24,12 +22,12 @@ public class ProfileController {
         mockProfile.setRepos("repo1;repo2;repo3");
         return new ResponseEntity<Object>(mockProfile, HttpStatus.MULTI_STATUS.OK);
       } else {
-        ResponseMessage message = new ResponseMessage("error", "Unauthorized request!");
+        ErrorResponse message = new ErrorResponse("Unauthorized request!");
         return new ResponseEntity<Object>(message, HttpStatus.UNAUTHORIZED);
       }
     } catch (Exception ex){
-      ResponseMessage responseMessage = new ResponseMessage("error", "Unauthorized request!");
-      return new ResponseEntity<Object>(responseMessage, HttpStatus.UNAUTHORIZED);
+      ErrorResponse message = new ErrorResponse("Unauthorized request!");
+      return new ResponseEntity<Object>(message, HttpStatus.UNAUTHORIZED);
     }
   }
 }
