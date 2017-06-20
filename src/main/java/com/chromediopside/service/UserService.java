@@ -19,7 +19,7 @@ public class UserService {
 
   public Object getUserObjectByAppToken(String appToken) {
 
-    if (userRepo.findByAppTokenExists(appToken)) {
+    if (userRepo.findByAppToken(appToken) != null) {
       GiTinderUser giTinderUser = userRepo.findByAppToken(appToken);
       return giTinderUser;
     }
