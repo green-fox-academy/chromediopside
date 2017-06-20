@@ -2,7 +2,8 @@ package com.chromediopside.datatransfer;
 
 public class ErrorResponse {
 
-  private String status, message;
+  private String status;
+  private String message;
 
   public ErrorResponse() {
   }
