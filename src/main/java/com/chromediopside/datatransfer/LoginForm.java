@@ -2,7 +2,8 @@ package com.chromediopside.datatransfer;
 
 public class LoginForm {
 
-  private String username, accessToken;
+  private String username;
+  private String accessToken;
 
   public LoginForm() {
   }

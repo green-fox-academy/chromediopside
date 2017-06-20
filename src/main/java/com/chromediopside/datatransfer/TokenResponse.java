@@ -2,7 +2,8 @@ package com.chromediopside.datatransfer;
 
 public class TokenResponse {
 
-  private String status, token;
+  private String status;
+  private String token;
 
   public TokenResponse() {
   }
