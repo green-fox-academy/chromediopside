@@ -5,24 +5,18 @@ import static org.junit.Assert.assertNull;
 
 import com.chromediopside.model.GiTinderProfile;
 import com.chromediopside.model.Language;
-import com.chromediopside.repository.LanguageRepository;
 import java.util.HashSet;
 import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 public class ProfileServiceTest {
-
-  @Autowired
-  LanguageRepository languageRepository;
 
   private static final String validAccessToken = System.getenv("TEST_ACCESS_TOKEN");
   private static final String invalidAccessToken = "1nval1dt0k3n";
   private static final String testLogin = System.getenv("TEST_LOGIN");
   private static final String testAvatarUrl = System.getenv("TEST_AVATAR_URL");
   private static final String testRepos = System.getenv("TEST_REPOS");
-
   private Set<Language> testLanguagesList = new HashSet<>();
 
   @Before
