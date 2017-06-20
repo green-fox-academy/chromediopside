@@ -2,6 +2,7 @@ package com.chromediopside.controller;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
 import com.chromediopside.GitinderApplication;
@@ -49,4 +50,15 @@ public class ProfileControllerTest {
             .andExpect(jsonPath("$").value(Matchers.hasKey("repos")));
   }
 
+  @Test
+  public void getProfileWithoutToken() throws Exception {
+
+    mockMvc.perform(get("/profile"))
+            .andExpect(status().isUnauthorized())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+            .andExpect(content().json("{"
+                + "\"status\" : \"error\","
+                + "\"message\" : \"Unauthorized request!\""
+                + "}"));
+  }
 }
