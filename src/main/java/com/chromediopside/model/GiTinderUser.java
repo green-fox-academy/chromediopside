@@ -1,16 +1,21 @@
 package com.chromediopside.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import org.springframework.stereotype.Component;
 
 @Entity
 @Table(name = "gitinder_user")
 public class GiTinderUser {
 
   @Id
+  @Column(name = "username")
   private String username;
+  @Column (name = "accesstoken")
   private String accessToken;
+  @Column (name = "apptoken")
   private String appToken;
 
   public GiTinderUser() {
