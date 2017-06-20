@@ -34,7 +34,6 @@ public class ProfileServiceTest {
     expectedProfile.setRepos(testRepos);
     expectedProfile.setLanguagesList(testLanguagesList);
     GiTinderProfile actualProfile = profileService.getProfileFromGitHub(validAccessToken);
-    System.out.println(actualProfile.getRepos());
     assertEquals(expectedProfile, actualProfile);
   }
 
