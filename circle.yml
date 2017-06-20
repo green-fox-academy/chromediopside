@@ -1,0 +1,23 @@
+machine:
+  services:
+    - postgresql
+  java:
+    version: openjdk8
+  # Configure test database for Spring Boot and Flyway
+  environment:
+    CIRCLE_ENV: test
+    SPRING_DATASOURCE_URL: jdbc:postgresql://127.0.0.1/circle_test
+    SPRING_DATASOURCE_USERNAME: ubuntu
+    SPRING_DATASOURCE_PASSWORD:
+
+#Collect test metadata
+test:
+  post:
+    - mkdir -p $CIRCLE_TEST_REPORTS/junit/
+    - find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} $CIRCLE_TEST_REPORTS/junit/ \;
+
+deployment:
+  staging:
+    branch: master
+    heroku:
+      appname: gitinder

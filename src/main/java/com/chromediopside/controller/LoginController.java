@@ -2,24 +2,26 @@ package com.chromediopside.controller;
 
 import com.chromediopside.datatransfer.LoginForm;
 import com.chromediopside.service.LoginService;
+import com.chromediopside.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- * Created by peter on 2017.06.12..
- */
 @RestController
 public class LoginController {
-    
-    @Autowired
-    private LoginService loginService;
 
-    @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public ResponseEntity<?> login(@RequestBody LoginForm loginForm) {
-      return loginService.login(loginForm);
-    }
+  @Autowired
+  private LoginService loginService;
+
+  @Autowired
+  UserService userService;
+
+  @PostMapping(value = "/login")
+  public ResponseEntity<?> login(@RequestBody LoginForm loginForm) {
+    String appToken = userService.generateAppToken();
+    userService.createAndSaveUser(loginForm, appToken);
+    return loginService.loginResponse(loginForm, appToken);
+  }
 }
