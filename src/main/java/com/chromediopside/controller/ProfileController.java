@@ -20,7 +20,7 @@ public class ProfileController {
         mockProfile.setLogin("kondfox");
         mockProfile.setAvatarUrl("https://avatars1.githubusercontent.com/u/26329189?v=3");
         mockProfile.setRepos("repo1;repo2;repo3");
-        return new ResponseEntity<Object>(mockProfile, HttpStatus.MULTI_STATUS.OK);
+        return new ResponseEntity<Object>(mockProfile, HttpStatus.OK);
       } else {
         ErrorResponse message = new ErrorResponse("Unauthorized request!");
         return new ResponseEntity<Object>(message, HttpStatus.UNAUTHORIZED);
