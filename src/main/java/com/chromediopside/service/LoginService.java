@@ -12,9 +12,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class LoginService {
 
-  public ResponseEntity<?> login(LoginForm loginForm) {
+  public ResponseEntity<?> loginResponse(LoginForm loginForm, String appToken) {
     if (missingValues(loginForm).equals("")) {
-      return new ResponseEntity<>(new TokenResponse("abc123"), HttpStatus.OK);
+      return new ResponseEntity<>(new TokenResponse(appToken), HttpStatus.OK);
     }
     return new ResponseEntity<>(new ErrorResponse("Missing parameter(s): "
         + missingValues(loginForm) + "!"), HttpStatus.BAD_REQUEST);
