@@ -20,8 +20,6 @@ public class LoginController {
 
   @PostMapping(value = "/login")
   public ResponseEntity<?> login(@RequestBody LoginForm loginForm) {
-    String appToken = userService.generateAppToken();
-    userService.createAndSaveUser(loginForm, appToken);
-    return loginService.loginResponse(loginForm, appToken);
+    return loginService.login(loginForm);
   }
 }

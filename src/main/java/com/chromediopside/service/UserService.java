@@ -32,9 +32,11 @@ public class UserService {
     return new ErrorResponse(errorMessage);
   }
 
-  public void createAndSaveUser(LoginForm loginForm, String appToken) {
+  public String createAndSaveUser(LoginForm loginForm) {
+    String appToken = generateAppToken();
     String username = loginForm.getUsername();
     String accessToken = loginForm.getAccessToken();
     userRepo.save(new GiTinderUser(username, accessToken, appToken));
+    return appToken;
   }
 }

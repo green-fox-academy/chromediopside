@@ -5,6 +5,7 @@ import com.chromediopside.datatransfer.LoginForm;
 import com.chromediopside.datatransfer.TokenResponse;
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -12,8 +13,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class LoginService {
 
-  public ResponseEntity<?> loginResponse(LoginForm loginForm, String appToken) {
+  @Autowired
+  UserService userService;
+
+  public ResponseEntity<?> login(LoginForm loginForm) {
     if (missingValues(loginForm).equals("")) {
+      String appToken = userService.createAndSaveUser(loginForm);
       return new ResponseEntity<>(new TokenResponse(appToken), HttpStatus.OK);
     }
     return new ResponseEntity<>(new ErrorResponse("Missing parameter(s): "
