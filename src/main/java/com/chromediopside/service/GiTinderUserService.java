@@ -6,9 +6,9 @@ import com.chromediopside.model.GiTinderUser;
 import com.chromediopside.repository.UserRepository;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
 public class GiTinderUserService {
 
   private final String errorMessage = "No Such AppToken in the Database";
@@ -20,6 +20,10 @@ public class GiTinderUserService {
   }
 
   public GiTinderUserService() {
+  }
+
+  public void setUserRepo(UserRepository userRepo) {
+    this.userRepo = userRepo;
   }
 
   public String generateAppToken() {

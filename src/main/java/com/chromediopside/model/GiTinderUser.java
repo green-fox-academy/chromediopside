@@ -26,6 +26,11 @@ public class GiTinderUser {
     this.appToken = appToken;
   }
 
+  @Override
+  public String toString() {
+    return userName + ", " + accessToken + ", " + appToken;
+  }
+
   public String getUserName() {
     return userName;
   }
