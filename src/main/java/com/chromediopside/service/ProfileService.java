@@ -3,6 +3,7 @@ package com.chromediopside.service;
 import com.chromediopside.model.GiTinderProfile;
 import com.chromediopside.model.Language;
 import com.chromediopside.repository.LanguageRepository;
+import com.chromediopside.repository.ProfileRepository;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -15,13 +16,21 @@ import org.eclipse.egit.github.core.client.GitHubClient;
 import org.eclipse.egit.github.core.service.RepositoryService;
 import org.eclipse.egit.github.core.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class ProfileService {
 
-  @Autowired
+  private static final String GET_REQUEST_IOERROR = "Some GitHub data not available for this accessToken!";
   private LanguageRepository languageRepository;
 
-  private static final String GET_REQUEST_IOERROR = "Some GitHub data not available for this accessToken!";
+  @Autowired
+  public ProfileService(LanguageRepository languageRepository) {
+    this.languageRepository = languageRepository;
+  }
+
+  public ProfileService() {
+  }
 
   public List<GiTinderProfile> randomTenProfileByLanguage(String languageName) {
     Language selectingLanguage = languageRepository.findOne(languageName);
@@ -52,8 +61,7 @@ public class ProfileService {
       List<Repository> repositoryList = repositoryService.getRepositories();
       List<String> repos = new ArrayList<>();
       List<String> languages = new ArrayList<>();
-      for (Repository currentRepo :
-          repositoryList) {
+      for (Repository currentRepo : repositoryList) {
         repos.add(currentRepo.getName());
         String repoLanguage = currentRepo.getLanguage();
         if (!languages.contains(repoLanguage)) {
@@ -62,8 +70,7 @@ public class ProfileService {
       }
       giTinderProfile.setRepos(String.join(";", repos));
       Set<Language> languageObjects = new HashSet<>();
-      for (String currentLanguage :
-          languages) {
+      for (String currentLanguage : languages) {
         languageObjects.add(new Language(currentLanguage));
       }
       giTinderProfile.setLanguagesList(languageObjects);
@@ -73,5 +80,4 @@ public class ProfileService {
       return null;
     }
   }
-
 }
