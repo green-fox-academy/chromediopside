@@ -14,11 +14,11 @@ import org.springframework.validation.BindingResult;
 @Service
 public class LoginService {
 
-  private UserService userService;
+  private GiTinderUserService userService;
   private ErrorService errorService;
 
   @Autowired
-  public LoginService(UserService userService, ErrorService errorService) {
+  public LoginService(GiTinderUserService userService, ErrorService errorService) {
     this.userService = userService;
     this.errorService = errorService;
   }

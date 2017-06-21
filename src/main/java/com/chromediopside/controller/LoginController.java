@@ -1,6 +1,7 @@
 package com.chromediopside.controller;
 
 import com.chromediopside.datatransfer.LoginForm;
+import com.chromediopside.service.GiTinderUserService;
 import com.chromediopside.service.LoginService;
 import com.chromediopside.service.ErrorService;
 import javax.validation.Valid;
@@ -15,14 +16,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class LoginController {
 
   private LoginService loginService;
-  private UserService userService;
+  private GiTinderUserService userService;
   private ErrorService errorService;
 
   @Autowired
   public LoginController(
-      LoginService loginService,
-      UserService userService,
-      ErrorService errorService) {
+          LoginService loginService, GiTinderUserService userService,
+          ErrorService errorService) {
     this.loginService = loginService;
     this.userService = userService;
     this.errorService = errorService;

@@ -20,7 +20,7 @@ public class UserServiceTest {
     UserRepository mockUserRepo = Mockito.mock(UserRepository.class);
     Mockito.when(mockUserRepo.findByAppToken("aa345678910111aa")).thenReturn(expectedGiTinderUser);
 
-    UserService userService = new UserService(mockUserRepo);
+    GiTinderUserService userService = new GiTinderUserService(mockUserRepo);
     Object actualGiTinderUser = userService.getUserObjectByAppToken("aa345678910111aa");
 
     assertEquals(expectedGiTinderUser.toString(), actualGiTinderUser.toString());
