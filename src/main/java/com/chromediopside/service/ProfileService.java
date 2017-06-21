@@ -1,11 +1,10 @@
 package com.chromediopside.service;
 
+import com.chromediopside.mockbuilder.MockProfileBuilder;
 import com.chromediopside.model.GiTinderProfile;
 import com.chromediopside.model.Language;
-import com.chromediopside.repository.LanguageRepository;
 import com.chromediopside.repository.ProfileRepository;
 import java.io.IOException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -16,17 +15,22 @@ import org.eclipse.egit.github.core.client.GitHubClient;
 import org.eclipse.egit.github.core.service.RepositoryService;
 import org.eclipse.egit.github.core.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ProfileService {
 
-  private static final String GET_REQUEST_IOERROR = "Some GitHub data not available for this accessToken!";
+  private static final String GET_REQUEST_IOERROR
+          = "Some GitHub data is not available for this accessToken!";
   private ProfileRepository profileRepository;
+  private ErrorService errorService;
 
   @Autowired
-  public ProfileService(ProfileRepository profileRepository) {
+  public ProfileService(ProfileRepository profileRepository, ErrorService errorService) {
     this.profileRepository = profileRepository;
+    this.errorService = errorService;
   }
 
   public ProfileService() {
@@ -69,5 +73,12 @@ public class ProfileService {
       System.out.println(GET_REQUEST_IOERROR);
       return null;
     }
+  }
+
+  public ResponseEntity<?> getProfile(String accsessToken, MockProfileBuilder mockProfile) {
+    if (!accsessToken.equals("")) {
+      return new ResponseEntity<Object>(mockProfile, HttpStatus.OK);
+    }
+    return errorService.getUnauthorizedResponseEntity();
   }
 }
