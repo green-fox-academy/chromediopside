@@ -13,4 +13,6 @@ public interface UserRepository extends CrudRepository<GiTinderUser, String> {
 
   GiTinderUser findByAppToken(String appToken);
 
+  GiTinderUser findByUserNameAndAppToken(String userName, String appToken);
+
 }
