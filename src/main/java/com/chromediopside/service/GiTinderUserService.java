@@ -22,10 +22,6 @@ public class GiTinderUserService {
   public GiTinderUserService() {
   }
 
-  public void setUserRepo(UserRepository userRepo) {
-    this.userRepo = userRepo;
-  }
-
   public String generateAppToken() {
     String appToken;
     do {
