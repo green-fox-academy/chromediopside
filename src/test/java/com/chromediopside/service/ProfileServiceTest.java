@@ -9,8 +9,10 @@ import java.util.HashSet;
 import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class ProfileServiceTest {
+
 
   private static final String validAccessToken = System.getenv("TEST_ACCESS_TOKEN");
   private static final String invalidAccessToken = "1nval1dt0k3n";
@@ -28,11 +30,7 @@ public class ProfileServiceTest {
   @Test
   public void validAccessToken() throws Exception {
     ProfileService profileService = new ProfileService();
-    GiTinderProfile expectedProfile = new GiTinderProfile();
-    expectedProfile.setLogin(testLogin);
-    expectedProfile.setAvatarUrl(testAvatarUrl);
-    expectedProfile.setRepos(testRepos);
-    expectedProfile.setLanguagesList(testLanguagesList);
+    GiTinderProfile expectedProfile = new GiTinderProfile(testLogin,testAvatarUrl, testRepos, testLanguagesList);
     GiTinderProfile actualProfile = profileService.getProfileFromGitHub(validAccessToken);
     assertEquals(expectedProfile, actualProfile);
   }
