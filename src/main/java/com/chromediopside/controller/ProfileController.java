@@ -12,20 +12,16 @@ import org.springframework.web.bind.annotation.RestController;
 public class ProfileController {
 
   @RequestMapping("/profile")
-  public ResponseEntity<?> getProfile(@RequestHeader(name = "X-GiTinder-token", required=false) String token) {
+  public ResponseEntity<?> getProfile(
+          @RequestHeader(name = "X-GiTinder-token", defaultValue = "Szervusz Kond! It is required now") String token) {
 
-    try {
-      if (!token.equals(null)) {
-        GiTinderProfile mockProfile = new GiTinderProfile();
-        mockProfile.setLogin("kondfox");
-        mockProfile.setAvatarUrl("https://avatars1.githubusercontent.com/u/26329189?v=3");
-        mockProfile.setRepos("repo1;repo2;repo3");
-        return new ResponseEntity<Object>(mockProfile, HttpStatus.OK);
-      } else {
-        ErrorResponse message = new ErrorResponse("Unauthorized request!");
-        return new ResponseEntity<Object>(message, HttpStatus.UNAUTHORIZED);
-      }
-    } catch (Exception ex){
+    if (!token.equals("Szervusz Kond! It is required now")) {
+      GiTinderProfile mockProfile = new GiTinderProfile();
+      mockProfile.setLogin("kondfox");
+      mockProfile.setAvatarUrl("https://avatars1.githubusercontent.com/u/26329189?v=3");
+      mockProfile.setRepos("repo1;repo2;repo3");
+      return new ResponseEntity<Object>(mockProfile, HttpStatus.OK);
+    } else {
       ErrorResponse message = new ErrorResponse("Unauthorized request!");
       return new ResponseEntity<Object>(message, HttpStatus.UNAUTHORIZED);
     }
