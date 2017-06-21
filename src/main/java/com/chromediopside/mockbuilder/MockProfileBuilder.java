@@ -2,6 +2,7 @@ package com.chromediopside.mockbuilder;
 
 import com.chromediopside.model.GiTinderProfile;
 import com.chromediopside.model.Language;
+import java.sql.Timestamp;
 import java.util.Set;
 import org.springframework.stereotype.Component;
 
@@ -33,6 +34,11 @@ public class MockProfileBuilder {
 
   public MockProfileBuilder setLanguagesList(Set<Language> languagesList) {
     profile.setLanguagesList(languagesList);
+    return this;
+  }
+
+  public MockProfileBuilder setRefreshDate(Timestamp refreshDate) {
+    profile.setRefreshDate(refreshDate);
     return this;
   }
 
