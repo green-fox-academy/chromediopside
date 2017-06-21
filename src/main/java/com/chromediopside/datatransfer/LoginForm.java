@@ -1,8 +1,12 @@
 package com.chromediopside.datatransfer;
 
+import javax.validation.constraints.NotNull;
+
 public class LoginForm {
 
+  @NotNull
   private String username;
+  @NotNull
   private String accessToken;
 
   public LoginForm() {
