@@ -2,7 +2,6 @@ package com.chromediopside.controller;
 
 import com.chromediopside.datatransfer.LoginForm;
 import com.chromediopside.service.LoginService;
-import com.chromediopside.service.UserService;
 import com.chromediopside.service.ErrorService;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
