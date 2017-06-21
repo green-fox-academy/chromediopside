@@ -3,6 +3,7 @@ package com.chromediopside.service;
 import com.chromediopside.model.GiTinderProfile;
 import com.chromediopside.model.Language;
 import com.chromediopside.repository.LanguageRepository;
+import com.chromediopside.repository.ProfileRepository;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -21,12 +22,10 @@ import org.springframework.stereotype.Service;
 public class ProfileService {
 
   private static final String GET_REQUEST_IOERROR = "Some GitHub data not available for this accessToken!";
-  private LanguageRepository languageRepository;
   private ProfileRepository profileRepository;
 
   @Autowired
-  public ProfileService(LanguageRepository languageRepository, ProfileRepository profileRepository) {
-    this.languageRepository = languageRepository;
+  public ProfileService(ProfileRepository profileRepository) {
     this.profileRepository = profileRepository;
   }
 
