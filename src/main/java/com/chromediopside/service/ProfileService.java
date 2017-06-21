@@ -3,10 +3,9 @@ package com.chromediopside.service;
 import com.chromediopside.model.GiTinderProfile;
 import com.chromediopside.model.Language;
 import com.chromediopside.repository.LanguageRepository;
-import com.chromediopside.repository.ProfileRepository;
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -30,20 +29,6 @@ public class ProfileService {
   }
 
   public ProfileService() {
-  }
-
-  public List<GiTinderProfile> randomTenProfileByLanguage(String languageName) {
-    Language selectingLanguage = languageRepository.findOne(languageName);
-    Set<GiTinderProfile> profilesSet = selectingLanguage.getProfileSet();
-    List<GiTinderProfile> profileList = new ArrayList<>();
-    profileList.addAll(profilesSet);
-
-    if (profileList.size() > 10) {
-      Collections.shuffle(profileList);
-      profileList.subList(0, 10);
-    }
-
-    return profileList;
   }
 
   public GiTinderProfile getProfileFromGitHub(String accessToken) {

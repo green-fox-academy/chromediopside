@@ -4,39 +4,34 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import org.springframework.stereotype.Component;
 
 @Entity
 @Table(name = "gitinder_user")
 public class GiTinderUser {
 
   @Id
-  @Column(name = "username")
-  private String username;
-  @Column (name = "accesstoken")
+  @Column(name = "user_name")
+  private String userName;
+  @Column (name = "access_token")
   private String accessToken;
-  @Column (name = "apptoken")
+  @Column (name = "app_token")
   private String appToken;
 
   public GiTinderUser() {
   }
 
-  public GiTinderUser(String username) {
-    this.username = username;
-  }
-
-  public GiTinderUser(String username, String accessToken, String appToken) {
-    this.username = username;
+  public GiTinderUser(String userName, String accessToken, String appToken) {
+    this.userName = userName;
     this.accessToken = accessToken;
     this.appToken = appToken;
   }
 
-  public String getUsername() {
-    return username;
+  public String getUserName() {
+    return userName;
   }
 
-  public void setUsername(String username) {
-    this.username = username;
+  public void setUserName(String userName) {
+    this.userName = userName;
   }
 
   public String getAccessToken() {

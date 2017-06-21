@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserRepository extends CrudRepository<GiTinderUser, String> {
 
-  GiTinderUser findByUsername(String username);
+  GiTinderUser findByUserName(String userName);
 
   GiTinderUser findByAccessToken(String accessToken);
 
