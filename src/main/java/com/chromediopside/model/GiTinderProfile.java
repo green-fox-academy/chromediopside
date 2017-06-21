@@ -28,7 +28,7 @@ public class GiTinderProfile {
 
   @ManyToMany
   @JoinTable(
-      name = "language_to_user",
+      name = "language_to_profile",
       joinColumns = @JoinColumn(name = "profile_id", referencedColumnName = "login"),
       inverseJoinColumns = @JoinColumn(name = "language_id", referencedColumnName = "language_name"))
   private Set<Language> languagesList;
