@@ -1,28 +1,28 @@
 CREATE TABLE gitinder_user (
-  username VARCHAR(40) NOT NULL,
-  accessToken VARCHAR(100) NOT NULL,
-  appToken VARCHAR(16) NOT NULL,
-  PRIMARY KEY (username)
+  user_name VARCHAR(40) NOT NULL,
+  access_token VARCHAR(100) NOT NULL,
+  app_token VARCHAR(16) NOT NULL,
+  PRIMARY KEY (user_name)
 );
 
 CREATE TABLE gitinder_profile (
   login VARCHAR(40) NOT NULL,
-  avatarUrl VARCHAR(255),
+  avatar_url VARCHAR(255),
   repos VARCHAR(255),
-  refreshDate TIMESTAMP,
+  refresh_date TIMESTAMP,
   PRIMARY KEY (login)
 );
 
 CREATE TABLE language (
-  languagename VARCHAR(40),
-  PRIMARY KEY (languagename)
+  language_name VARCHAR(40),
+  PRIMARY KEY (language_name)
 );
 
 CREATE TABLE language_to_profile (
   profile_id VARCHAR(40) NOT NULL,
   language_id VARCHAR(255) NOT NULL,
   FOREIGN KEY (profile_id) REFERENCES gitinder_profile (login),
-  FOREIGN KEY (language_id) REFERENCES language (languagename),
+  FOREIGN KEY (language_id) REFERENCES language (language_name),
   PRIMARY KEY (profile_id, language_id)
 );
 
