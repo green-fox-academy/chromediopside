@@ -20,9 +20,13 @@ public class LoginController {
   private ErrorService errorService;
 
   @Autowired
-  public LoginController(LoginService loginService, UserService userService) {
+  public LoginController(
+      LoginService loginService,
+      UserService userService,
+      ErrorService errorService) {
     this.loginService = loginService;
     this.userService = userService;
+    this.errorService = errorService;
   }
 
   @PostMapping(value = "/login")
