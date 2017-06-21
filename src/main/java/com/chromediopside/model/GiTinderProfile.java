@@ -40,6 +40,12 @@ public class GiTinderProfile {
     this.languagesList = languagesList;
   }
 
+  public GiTinderProfile(String login, String avatarUrl, String repos) {
+    this.login = login;
+    this.avatarUrl = avatarUrl;
+    this.repos = repos;
+  }
+
   public String getLogin() {
     return login;
   }

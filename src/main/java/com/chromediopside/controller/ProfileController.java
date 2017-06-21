@@ -1,9 +1,10 @@
 package com.chromediopside.controller;
 
 import com.chromediopside.datatransfer.ErrorResponse;
-import com.chromediopside.model.GiTinderProfile;
+import com.chromediopside.mockbuilder.MockProfileBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -11,19 +12,17 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class ProfileController {
 
-  @RequestMapping("/profile")
-  public ResponseEntity<?> getProfile(
-          @RequestHeader(name = "X-GiTinder-token", defaultValue = "Szervusz Kond! It is required now") String token) {
-
-    if (!token.equals("Szervusz Kond! It is required now")) {
-      GiTinderProfile mockProfile = new GiTinderProfile();
-      mockProfile.setLogin("kondfox");
-      mockProfile.setAvatarUrl("https://avatars1.githubusercontent.com/u/26329189?v=3");
-      mockProfile.setRepos("repo1;repo2;repo3");
-      return new ResponseEntity<Object>(mockProfile, HttpStatus.OK);
-    } else {
-      ErrorResponse message = new ErrorResponse("Unauthorized request!");
-      return new ResponseEntity<Object>(message, HttpStatus.UNAUTHORIZED);
-    }
+  @ExceptionHandler(Exception.class)
+  public ResponseEntity<?> exception(Exception ex){
+    ErrorResponse message = new ErrorResponse("Unauthorized request!");
+    return new ResponseEntity<>(message, HttpStatus.UNAUTHORIZED);
   }
+
+  @RequestMapping("/profile")
+  public ResponseEntity<?> getProfile(@RequestHeader(name = "X-GiTinder-token") String token,
+          MockProfileBuilder mockProfile) throws Exception {
+      return new ResponseEntity<Object>(mockProfile, HttpStatus.OK);
+  }
+
+
 }
