@@ -3,7 +3,7 @@ package com.chromediopside.controller;
 import com.chromediopside.datatransfer.LoginForm;
 import com.chromediopside.service.LoginService;
 import com.chromediopside.service.UserService;
-import com.chromediopside.service.ValidatorService;
+import com.chromediopside.service.ErrorService;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +17,7 @@ public class LoginController {
 
   private LoginService loginService;
   private UserService userService;
-  private ValidatorService validatorService;
+  private ErrorService errorService;
 
   @Autowired
   public LoginController(LoginService loginService, UserService userService) {
@@ -29,7 +29,7 @@ public class LoginController {
   public ResponseEntity<?> login(@Valid @RequestBody LoginForm loginForm,
       BindingResult bindingResult) {
     if (bindingResult.hasErrors()) {
-      return validatorService.fieldErrors(bindingResult);
+      return errorService.fieldErrors(bindingResult);
     }
     String appToken = userService.generateAppToken();
     userService.createAndSaveUser(loginForm, appToken);
