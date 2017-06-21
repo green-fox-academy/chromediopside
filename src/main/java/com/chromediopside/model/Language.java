@@ -1,21 +1,17 @@
 package com.chromediopside.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
+import javax.persistence.Table;
 
 @Entity
+@Table(name = "language")
 public class Language {
 
   @Id
-  @Column(name = "languagename")
+  @Column(name = "language_name")
   private String languageName;
-
-  @ManyToMany(mappedBy = "languagesList")
-  private Set<GiTinderProfile> profileSet;
 
   public Language(String languageName) {
     this.languageName = languageName;
@@ -49,13 +45,5 @@ public class Language {
 
   public void setLanguageName(String languageName) {
     this.languageName = languageName;
-  }
-
-  public Set<GiTinderProfile> getProfileSet() {
-    return profileSet;
-  }
-
-  public void setProfileSet(Set<GiTinderProfile> profileSet) {
-    this.profileSet = profileSet;
   }
 }

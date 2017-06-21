@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNull;
 
 import com.chromediopside.model.GiTinderProfile;
 import com.chromediopside.model.Language;
+import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
 import org.junit.Before;
@@ -19,6 +20,7 @@ public class ProfileServiceTest {
   private static final String testLogin = System.getenv("TEST_LOGIN");
   private static final String testAvatarUrl = System.getenv("TEST_AVATAR_URL");
   private static final String testRepos = System.getenv("TEST_REPOS");
+  private static final Timestamp testTimeStamp = new Timestamp(System.currentTimeMillis());
   private Set<Language> testLanguagesList = new HashSet<>();
 
   @Before
@@ -30,11 +32,10 @@ public class ProfileServiceTest {
   @Test
   public void validAccessToken() throws Exception {
     ProfileService profileService = new ProfileService();
-    GiTinderProfile expectedProfile = new GiTinderProfile(testLogin,testAvatarUrl, testRepos, testLanguagesList);
+    GiTinderProfile expectedProfile = new GiTinderProfile(testLogin,testAvatarUrl, testRepos, testTimeStamp, testLanguagesList);
     GiTinderProfile actualProfile = profileService.getProfileFromGitHub(validAccessToken);
     assertEquals(expectedProfile, actualProfile);
   }
-
 
   @Test
   public void invalidAccessToken() {

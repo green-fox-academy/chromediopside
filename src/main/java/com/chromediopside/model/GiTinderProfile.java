@@ -1,5 +1,6 @@
 package com.chromediopside.model;
 
+import java.sql.Timestamp;
 import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -18,25 +19,29 @@ public class GiTinderProfile {
   @NotNull
   @Column(name = "login")
   private String login;
-  @Column(name = "avatarurl")
+  @Column(name = "avatar_url")
   private String avatarUrl;
+  @Column(name = "repos")
   private String repos;
+  @Column(name = "refresh_date")
+  private Timestamp refreshDate;
 
   @ManyToMany
   @JoinTable(
-      name = "LANGUAGE_TO_USER",
-      joinColumns = @JoinColumn(name = "PROFILE_ID", referencedColumnName = "login"),
-      inverseJoinColumns = @JoinColumn(name = "LANGUAGE_ID", referencedColumnName = "languagename"))
+      name = "language_to_profile",
+      joinColumns = @JoinColumn(name = "profile_id", referencedColumnName = "login"),
+      inverseJoinColumns = @JoinColumn(name = "language_id", referencedColumnName = "language_name"))
   private Set<Language> languagesList;
 
   public GiTinderProfile() {
   }
 
   public GiTinderProfile(String login, String avatarUrl, String repos,
-      Set<Language> languagesList) {
+      Timestamp refreshDate, Set<Language> languagesList) {
     this.login = login;
     this.avatarUrl = avatarUrl;
     this.repos = repos;
+    this.refreshDate = refreshDate;
     this.languagesList = languagesList;
   }
 
@@ -72,6 +77,29 @@ public class GiTinderProfile {
     this.languagesList = languagesList;
   }
 
+  public Timestamp getRefreshDate() {
+    return refreshDate;
+  }
+
+  public void setRefreshDate(Timestamp refreshDate) {
+    this.refreshDate = refreshDate;
+  }
+
+  public int daysPassedSinceLastRefresh() {
+    Timestamp currentDate = new Timestamp(System.currentTimeMillis());
+    Timestamp lastRefresh = this.getRefreshDate();
+    long differenceAsLong = currentDate.getTime() - lastRefresh.getTime();
+    int differenceAsDays = (int)(differenceAsLong / (1000 * 60 * 60 * 24));
+    return differenceAsDays;
+  }
+
+  public boolean refreshRequired() {
+    if (this.daysPassedSinceLastRefresh() >= 1) {
+      return true;
+    }
+    return false;
+  }
+
   @Override
   public boolean equals(Object o) {
 
@@ -86,5 +114,4 @@ public class GiTinderProfile {
         profile.repos.equals(repos) &&
         profile.languagesList.equals(languagesList);
   }
-
 }
