@@ -2,6 +2,7 @@ package com.chromediopside.service;
 
 import com.chromediopside.datatransfer.ErrorResponse;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -32,6 +33,7 @@ public class ErrorService {
     for (FieldError currentFieldError : bindingResult.getFieldErrors()) {
       missingFields.add(currentFieldError.getField());
     }
+    Collections.sort(missingFields);
     return String.join(", ", missingFields) + "!";
   }
 

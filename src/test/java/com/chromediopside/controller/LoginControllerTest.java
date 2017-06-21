@@ -90,6 +90,7 @@ public class LoginControllerTest {
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
         .andExpect(content().json("{"
             + "\"status\": \"error\","
-            + "\"message\" : \"Missing parameter(s): username, accessToken!\""
+            + "\"message\" : \"Missing parameter(s): accessToken, username!\""
             + "}"));
-  }}
+  }
+}
