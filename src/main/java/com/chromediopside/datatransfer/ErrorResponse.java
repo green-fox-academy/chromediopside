@@ -1,8 +1,11 @@
 package com.chromediopside.datatransfer;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class ErrorResponse {
 
-  private String status;
+  private String status = "error";
   private String message;
 
   public ErrorResponse() {
@@ -10,7 +13,6 @@ public class ErrorResponse {
 
   public ErrorResponse(String message) {
     this.message = message;
-    status = "error";
   }
 
   public String getStatus() {

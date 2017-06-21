@@ -5,8 +5,8 @@ import com.chromediopside.model.Language;
 import com.chromediopside.repository.LanguageRepository;
 import com.chromediopside.repository.ProfileRepository;
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -23,27 +23,19 @@ public class ProfileService {
 
   private static final String GET_REQUEST_IOERROR = "Some GitHub data not available for this accessToken!";
   private LanguageRepository languageRepository;
+  private ProfileRepository profileRepository;
 
   @Autowired
-  public ProfileService(LanguageRepository languageRepository) {
+  public ProfileService(LanguageRepository languageRepository, ProfileRepository profileRepository) {
     this.languageRepository = languageRepository;
+    this.profileRepository = profileRepository;
   }
 
   public ProfileService() {
   }
 
   public List<GiTinderProfile> randomTenProfileByLanguage(String languageName) {
-    Language selectingLanguage = languageRepository.findOne(languageName);
-    Set<GiTinderProfile> profilesSet = selectingLanguage.getProfileSet();
-    List<GiTinderProfile> profileList = new ArrayList<>();
-    profileList.addAll(profilesSet);
-
-    if (profileList.size() > 10) {
-      Collections.shuffle(profileList);
-      profileList.subList(0, 10);
-    }
-
-    return profileList;
+    return profileRepository.selectTenRandomLanguageName(languageName);
   }
 
   public GiTinderProfile getProfileFromGitHub(String accessToken) {

@@ -1,5 +1,8 @@
 package com.chromediopside.datatransfer;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class TokenResponse {
 
   private String status;
