@@ -42,5 +42,4 @@ public class ProfileServiceTest {
     GiTinderProfile actualProfile = profileService.getProfileFromGitHub(invalidAccessToken);
     assertNull(actualProfile);
   }
-
 }
