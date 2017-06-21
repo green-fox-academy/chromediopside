@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.BindingResult;
 
 @Service
 public class ProfileService {
@@ -75,8 +76,10 @@ public class ProfileService {
     }
   }
 
-  public ResponseEntity<?> getProfile(String accsessToken, MockProfileBuilder mockProfile) {
-    if (!accsessToken.equals("")) {
+  public ResponseEntity<?> getProfile(String accessToken) {
+    if (!accessToken.equals("")) {
+      MockProfileBuilder mockProfileBuilder = new MockProfileBuilder();
+      GiTinderProfile mockProfile = mockProfileBuilder.build();
       return new ResponseEntity<Object>(mockProfile, HttpStatus.OK);
     }
     return errorService.getUnauthorizedResponseEntity();
