@@ -22,13 +22,19 @@ public class ProfileService {
 
   private static final String GET_REQUEST_IOERROR = "Some GitHub data not available for this accessToken!";
   private LanguageRepository languageRepository;
+  private ProfileRepository profileRepository;
 
   @Autowired
-  public ProfileService(LanguageRepository languageRepository) {
+  public ProfileService(LanguageRepository languageRepository, ProfileRepository profileRepository) {
     this.languageRepository = languageRepository;
+    this.profileRepository = profileRepository;
   }
 
   public ProfileService() {
+  }
+
+  public List<GiTinderProfile> randomTenProfileByLanguage(String languageName) {
+    return profileRepository.selectTenRandomLanguageName(languageName);
   }
 
   public GiTinderProfile getProfileFromGitHub(String accessToken) {
