@@ -34,4 +34,14 @@ public class ErrorService {
     }
     return String.join(", ", missingFields) + "!";
   }
+
+  public ResponseEntity<?> getResponseEntity(String message, HttpStatus httpStatus) {
+    errorResponse.setMessage(message);
+    return new ResponseEntity<>(errorResponse, httpStatus);
+  }
+
+  public ResponseEntity<?> getUnauthorizedResponseEntity() {
+    return getResponseEntity("Unauthorized request!", HttpStatus.UNAUTHORIZED);
+  }
+
 }
