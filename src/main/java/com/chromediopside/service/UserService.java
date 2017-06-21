@@ -12,9 +12,15 @@ import org.springframework.stereotype.Component;
 public class UserService {
 
   private final String errorMessage = "No Such AppToken in the Database";
+  UserRepository userRepo;
 
   @Autowired
-  UserRepository userRepo;
+  public UserService(UserRepository userRepo) {
+    this.userRepo = userRepo;
+  }
+
+  public UserService() {
+  }
 
   public String generateAppToken() {
     String appToken;

@@ -22,12 +22,10 @@ import org.springframework.stereotype.Service;
 public class ProfileService {
 
   private static final String GET_REQUEST_IOERROR = "Some GitHub data not available for this accessToken!";
-  private LanguageRepository languageRepository;
   private ProfileRepository profileRepository;
 
   @Autowired
-  public ProfileService(LanguageRepository languageRepository, ProfileRepository profileRepository) {
-    this.languageRepository = languageRepository;
+  public ProfileService(ProfileRepository profileRepository) {
     this.profileRepository = profileRepository;
   }
 
