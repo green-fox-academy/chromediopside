@@ -24,14 +24,17 @@ import org.springframework.stereotype.Service;
 public class ProfileService {
 
   private static final String GET_REQUEST_IOERROR
-          = "Some GitHub data is not available for this accessToken!";
+      = "Some GitHub data is not available for this accessToken!";
   private ProfileRepository profileRepository;
   private ErrorService errorService;
+  private MockProfileBuilder mockProfileBuilder;
 
   @Autowired
-  public ProfileService(ProfileRepository profileRepository, ErrorService errorService) {
+  public ProfileService(ProfileRepository profileRepository, ErrorService errorService,
+      MockProfileBuilder mockProfileBuilder) {
     this.profileRepository = profileRepository;
     this.errorService = errorService;
+    this.mockProfileBuilder = mockProfileBuilder;
   }
 
   public ProfileService() {
@@ -78,7 +81,6 @@ public class ProfileService {
 
   public ResponseEntity<?> getProfile(String appToken) {
     if (!appToken.equals("")) {
-      MockProfileBuilder mockProfileBuilder = new MockProfileBuilder();
       GiTinderProfile mockProfile = mockProfileBuilder.build();
       return new ResponseEntity<Object>(mockProfile, HttpStatus.OK);
     }
@@ -89,7 +91,7 @@ public class ProfileService {
     Timestamp currentDate = new Timestamp(System.currentTimeMillis());
     Timestamp lastRefresh = profileToCheck.getRefreshDate();
     long differenceAsLong = currentDate.getTime() - lastRefresh.getTime();
-    int differenceAsDays = (int)(differenceAsLong / (1000 * 60 * 60 * 24));
+    int differenceAsDays = (int) (differenceAsLong / (1000 * 60 * 60 * 24));
     return differenceAsDays;
   }
 
