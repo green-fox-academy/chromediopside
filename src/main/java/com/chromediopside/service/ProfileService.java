@@ -81,22 +81,31 @@ public class ProfileService {
       List<String> languages = new ArrayList<>();
       for (Repository currentRepo : repositoryList) {
         repos.add(currentRepo.getName());
-        String repoLanguage = currentRepo.getLanguage();
-        if (!languages.contains(repoLanguage)) {
-          languages.add(repoLanguage);
-        }
+        addRepoLanguage(currentRepo, languages);
       }
       giTinderProfile.setRepos(String.join(";", repos));
-      Set<Language> languageObjects = new HashSet<>();
-      for (String currentLanguage : languages) {
-        languageObjects.add(new Language(currentLanguage));
-      }
+      Set<Language> languageObjects = languagesSetFromStringList(languages);
       giTinderProfile.setLanguagesList(languageObjects);
       return true;
     } catch (IOException e) {
       System.out.println(GET_REQUEST_IOERROR);
       return false;
     }
+  }
+
+  private void addRepoLanguage(Repository currentRepo, List<String> languages) {
+    String repoLanguage = currentRepo.getLanguage();
+    if (!languages.contains(repoLanguage)) {
+      languages.add(repoLanguage);
+    }
+  }
+
+  private Set<Language> languagesSetFromStringList(List<String> languages) {
+    Set<Language> languageObjects = new HashSet<>();
+    for (String currentLanguage : languages) {
+      languageObjects.add(new Language(currentLanguage));
+    }
+    return languageObjects;
   }
 
   public GiTinderProfile fetchProfileFromGitHub(String accessToken, String username) {
