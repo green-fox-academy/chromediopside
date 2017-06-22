@@ -45,4 +45,9 @@ public class ErrorService {
   public ResponseEntity<?> getUnauthorizedResponseEntity() {
     return getResponseEntity("Unauthorized request!", HttpStatus.UNAUTHORIZED);
   }
+
+  public ResponseEntity<?> getNoMoreAvailableProfiles() {
+    errorResponse.setStatus("ok");
+    return getResponseEntity("No more available profiles for you!", HttpStatus.NO_CONTENT);
+  }
 }
