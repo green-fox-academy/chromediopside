@@ -28,7 +28,8 @@ public class ProfileController {
   }
 
   @RequestMapping("/profile")
-  public ResponseEntity<?> getProfile(@RequestHeader(name = "X-GiTinder-token") String accessToken) throws Exception {
-    return profileService.getProfile(accessToken);
+  public ResponseEntity<?> getProfile(@RequestHeader(name = "X-GiTinder-token") String appToken)
+          throws Exception {
+    return profileService.getProfile(appToken);
   }
 }
