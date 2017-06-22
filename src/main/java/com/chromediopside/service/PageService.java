@@ -1,0 +1,57 @@
+package com.chromediopside.service;
+
+import com.chromediopside.model.GiTinderProfile;
+import com.chromediopside.model.Page;
+import com.chromediopside.repository.LanguageRepository;
+import com.chromediopside.repository.ProfileRepository;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+public class PageService {
+
+  private final int PROFILES_PER_PAGE = 10;
+  private Page page;
+  private ProfileRepository profileRepository;
+
+  @Autowired
+  public PageService(ProfileRepository profileRepository, Page page) {
+    this.profileRepository = profileRepository;
+    this.page = page;
+  }
+
+  public Page setPage(String languageName, String sortingParam, int givenPageNumber) {
+    page.setProfiles(listProfilesPerPage(languageName, sortingParam, givenPageNumber));
+    page.setCount(page.getProfiles().size());
+    page.setAll((int) profileRepository.count());
+    return page;
+  }
+
+  private List<GiTinderProfile> listProfilesPerPage(String languageName, String sortingParam,
+          int givenPageNumber) {
+    int offset = (givenPageNumber - 1) * PROFILES_PER_PAGE;
+
+    if (sortingParam.isEmpty()) {
+      sortingParam = randomSortingParam();
+    }
+
+    if (languageName.isEmpty()) {
+      return profileRepository.selectBlocksOfTensOrderByGivenParam(sortingParam, givenPageNumber);
+    }
+    return profileRepository
+            .selectBlocksOfTensByLanguageNameOrderByGivenParam(languageName, sortingParam,
+                    offset);
+  }
+
+  private String randomSortingParam() {
+    List<String> listOfSortingValues = Arrays
+            .asList("login", "avatar_url", "repos", "refresh_date");
+    Collections.shuffle(listOfSortingValues);
+    return listOfSortingValues.subList(0, 1).toString();
+  }
+
+}
