@@ -10,7 +10,9 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import org.springframework.stereotype.Component;
 
+@Component
 @Entity
 @Table(name = "gitinder_profile")
 public class GiTinderProfile {
