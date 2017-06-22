@@ -32,17 +32,23 @@ public class ProfileService {
   private ProfileRepository profileRepository;
   private ErrorService errorService;
   private MockProfileBuilder mockProfileBuilder;
+  private GiTinderProfile giTinderProfile;
+  private Language language;
 
   @Autowired
   public ProfileService(
       UserRepository userRepository,
       ProfileRepository profileRepository,
       ErrorService errorService,
-      MockProfileBuilder mockProfileBuilder) {
+      MockProfileBuilder mockProfileBuilder,
+      GiTinderProfile giTinderProfile,
+      Language language) {
     this.userRepository = userRepository;
     this.profileRepository = profileRepository;
     this.errorService = errorService;
     this.mockProfileBuilder = mockProfileBuilder;
+    this.giTinderProfile = giTinderProfile;
+    this.language = language;
   }
 
   public ProfileService() {
