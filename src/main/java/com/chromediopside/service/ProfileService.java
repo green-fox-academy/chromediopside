@@ -6,6 +6,7 @@ import com.chromediopside.model.Language;
 import com.chromediopside.repository.ProfileRepository;
 import com.chromediopside.repository.UserRepository;
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -90,12 +91,27 @@ public class ProfileService {
       return errorService.unauthorizedRequestError();
     }
     GiTinderUser authenticatedUser = userRepository.findByUserNameAndAppToken(username, appToken);
-    if (profileRepository.findByLogin(authenticatedUser.getUserName()) == null || profileRepository
-        .findByLogin(authenticatedUser.getUserName()).refreshRequired()) {
+    if (profileRepository.findByLogin(authenticatedUser.getUserName()) == null || refreshRequired(profileRepository
+        .findByLogin(authenticatedUser.getUserName()))) {
       profileRepository.save(getProfileFromGitHub(authenticatedUser.getAccessToken()));
     }
     GiTinderProfile upToDateProfile = profileRepository
         .findByLogin(authenticatedUser.getUserName());
     return new ResponseEntity<Object>(upToDateProfile, HttpStatus.OK);
+  }
+
+  public int daysPassedSinceLastRefresh(GiTinderProfile profileToCheck) {
+    Timestamp currentDate = new Timestamp(System.currentTimeMillis());
+    Timestamp lastRefresh = profileToCheck.getRefreshDate();
+    long differenceAsLong = currentDate.getTime() - lastRefresh.getTime();
+    int differenceAsDays = (int)(differenceAsLong / (1000 * 60 * 60 * 24));
+    return differenceAsDays;
+  }
+
+  public boolean refreshRequired(GiTinderProfile profileToCheck) {
+    if (daysPassedSinceLastRefresh(profileToCheck) >= 1) {
+      return true;
+    }
+    return false;
   }
 }

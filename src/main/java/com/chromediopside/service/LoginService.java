@@ -2,9 +2,6 @@ package com.chromediopside.service;
 
 import com.chromediopside.datatransfer.LoginForm;
 import com.chromediopside.datatransfer.TokenResponse;
-import java.util.ArrayList;
-import java.util.List;
-import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -52,7 +52,6 @@ public class ProfileControllerTest {
                     anyOf(any(Set.class), nullValue(Set.class))));
   }
 
-
   @Test
   public void getProfileWithoutToken() throws Exception {
 

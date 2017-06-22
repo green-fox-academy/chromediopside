@@ -91,21 +91,6 @@ public class GiTinderProfile {
     this.refreshDate = refreshDate;
   }
 
-  public int daysPassedSinceLastRefresh() {
-    Timestamp currentDate = new Timestamp(System.currentTimeMillis());
-    Timestamp lastRefresh = this.getRefreshDate();
-    long differenceAsLong = currentDate.getTime() - lastRefresh.getTime();
-    int differenceAsDays = (int)(differenceAsLong / (1000 * 60 * 60 * 24));
-    return differenceAsDays;
-  }
-
-  public boolean refreshRequired() {
-    if (this.daysPassedSinceLastRefresh() >= 1) {
-      return true;
-    }
-    return false;
-  }
-
   @Override
   public boolean equals(Object o) {
 

@@ -51,5 +51,4 @@ public class ErrorService {
   public ResponseEntity<?> noSuchUserError() {
     return getResponseEntity(NO_SUCH_USER_MESSAGE, HttpStatus.NOT_FOUND);
   }
-
 }
