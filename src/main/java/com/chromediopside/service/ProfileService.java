@@ -52,7 +52,7 @@ public class ProfileService {
     return profileRepository.selectTenRandomLanguageName(languageName);
   }
 
-  private GiTinderProfile getProfileFromGitHub(String accessToken) {
+  public GiTinderProfile getProfileFromGitHub(String accessToken) {
     GiTinderProfile giTinderProfile = new GiTinderProfile();
 
     GitHubClient gitHubClient = new GitHubClient();
