@@ -1,5 +1,6 @@
 package com.chromediopside.service;
 
+import com.chromediopside.mockbuilder.MockProfileBuilder;
 import com.chromediopside.model.GiTinderProfile;
 import com.chromediopside.model.GiTinderUser;
 import com.chromediopside.model.Language;
@@ -91,8 +92,9 @@ public class ProfileService {
       return errorService.unauthorizedRequestError();
     }
     GiTinderUser authenticatedUser = userRepository.findByUserNameAndAppToken(username, appToken);
-    if (profileRepository.findByLogin(authenticatedUser.getUserName()) == null || refreshRequired(profileRepository
-        .findByLogin(authenticatedUser.getUserName()))) {
+    if (profileRepository.findByLogin(authenticatedUser.getUserName()) == null || refreshRequired(
+        profileRepository
+            .findByLogin(authenticatedUser.getUserName()))) {
       profileRepository.save(getProfileFromGitHub(authenticatedUser.getAccessToken()));
     }
     GiTinderProfile upToDateProfile = profileRepository
@@ -100,11 +102,20 @@ public class ProfileService {
     return new ResponseEntity<Object>(upToDateProfile, HttpStatus.OK);
   }
 
+  public ResponseEntity<?> getProfile(String appToken) {
+    if (!appToken.equals("")) {
+      MockProfileBuilder mockProfileBuilder = new MockProfileBuilder();
+      GiTinderProfile mockProfile = mockProfileBuilder.build();
+      return new ResponseEntity<Object>(mockProfile, HttpStatus.OK);
+    }
+    return errorService.unauthorizedRequestError();
+  }
+
   public int daysPassedSinceLastRefresh(GiTinderProfile profileToCheck) {
     Timestamp currentDate = new Timestamp(System.currentTimeMillis());
     Timestamp lastRefresh = profileToCheck.getRefreshDate();
     long differenceAsLong = currentDate.getTime() - lastRefresh.getTime();
-    int differenceAsDays = (int)(differenceAsLong / (1000 * 60 * 60 * 24));
+    int differenceAsDays = (int) (differenceAsLong / (1000 * 60 * 60 * 24));
     return differenceAsDays;
   }
 

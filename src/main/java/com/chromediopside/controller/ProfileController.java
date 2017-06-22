@@ -28,8 +28,15 @@ public class ProfileController {
     return errorService.unauthorizedRequestError();
   }
 
+  @RequestMapping("/profile")
+  public ResponseEntity<?> getProfile(@RequestHeader(name = "X-GiTinder-token") String appToken)
+      throws Exception {
+    return profileService.getProfile(appToken);
+  }
+
   @RequestMapping("/profiles/{username}")
-  public ResponseEntity<?> getProfile(@PathVariable String username, @RequestHeader(name = "X-GiTinder-token") String accessToken)
+  public ResponseEntity<?> getProfile(@PathVariable String username,
+      @RequestHeader(name = "X-GiTinder-token") String accessToken)
       throws Exception {
     return profileService.profile(username, accessToken);
   }
