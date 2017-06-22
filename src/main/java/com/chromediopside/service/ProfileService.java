@@ -26,7 +26,7 @@ import org.springframework.stereotype.Service;
 public class ProfileService {
 
   private static final String GET_REQUEST_IOERROR
-      = "Some GitHub data is not available for this accessToken!";
+      = "Some GitHub data of this user is not available for this token!";
 
   private UserRepository userRepository;
   private ProfileRepository profileRepository;
@@ -58,60 +58,92 @@ public class ProfileService {
     return profileRepository.selectTenRandomLanguageName(languageName);
   }
 
-  public GiTinderProfile getProfileFromGitHub(String accessToken) {
-    GiTinderProfile giTinderProfile = new GiTinderProfile();
-
+  private GitHubClient setUpGitHubClient(String accessToken) {
     GitHubClient gitHubClient = new GitHubClient();
     gitHubClient.setOAuth2Token(accessToken);
+    return gitHubClient;
+  }
 
+  private boolean setLoginAndAvatar(GitHubClient gitHubClient, String username,
+      GiTinderProfile giTinderProfile) {
     UserService userService = new UserService(gitHubClient);
-    RepositoryService repositoryService = new RepositoryService(gitHubClient);
     try {
-      User user = userService.getUser();
+      User user = userService.getUser(username);
       giTinderProfile.setLogin(user.getLogin());
       giTinderProfile.setAvatarUrl(user.getAvatarUrl());
-      List<Repository> repositoryList = repositoryService.getRepositories();
+      return true;
+    } catch (IOException e) {
+      System.out.println(GET_REQUEST_IOERROR);
+      return false;
+    }
+  }
+
+  private boolean setReposAndLanguages(GitHubClient gitHubClient, String username,
+      GiTinderProfile giTinderProfile) {
+    RepositoryService repositoryService = new RepositoryService(gitHubClient);
+    try {
+      List<Repository> repositoryList = repositoryService.getRepositories(username);
       List<String> repos = new ArrayList<>();
       List<String> languages = new ArrayList<>();
       for (Repository currentRepo : repositoryList) {
         repos.add(currentRepo.getName());
-        String repoLanguage = currentRepo.getLanguage();
-        if (!languages.contains(repoLanguage)) {
-          languages.add(repoLanguage);
-        }
+        addRepoLanguage(currentRepo, languages);
       }
       giTinderProfile.setRepos(String.join(";", repos));
-      Set<Language> languageObjects = new HashSet<>();
-      for (String currentLanguage : languages) {
-        languageObjects.add(new Language(currentLanguage));
-      }
+      Set<Language> languageObjects = languagesSetFromStringList(languages);
       giTinderProfile.setLanguagesList(languageObjects);
-      return giTinderProfile;
+      return true;
     } catch (IOException e) {
       System.out.println(GET_REQUEST_IOERROR);
-      return null;
+      return false;
     }
   }
 
-  public ResponseEntity<?> profile(String username, String appToken) {
+  private void addRepoLanguage(Repository currentRepo, List<String> languages) {
+    String repoLanguage = currentRepo.getLanguage();
+    if (!languages.contains(repoLanguage)) {
+      languages.add(repoLanguage);
+    }
+  }
+
+  private Set<Language> languagesSetFromStringList(List<String> languages) {
+    Set<Language> languageObjects = new HashSet<>();
+    for (String currentLanguage : languages) {
+      languageObjects.add(new Language(currentLanguage));
+    }
+    return languageObjects;
+  }
+
+  public GiTinderProfile fetchProfileFromGitHub(String accessToken, String username) {
+    GitHubClient gitHubClient = setUpGitHubClient(accessToken);
+    GiTinderProfile giTinderProfile = new GiTinderProfile();
+    giTinderProfile.setRefreshDate(new Timestamp(System.currentTimeMillis()));
+    if (!(setLoginAndAvatar(gitHubClient, username, giTinderProfile) &&
+        setReposAndLanguages(gitHubClient, username, giTinderProfile))) {
+      giTinderProfile = null;
+    }
+    return giTinderProfile;
+  }
+
+  public ResponseEntity<?> getOtherProfile(String appToken, String username) {
+    if (appToken == null || userRepository.findByAppToken(appToken) == null) {
+      return errorService.unauthorizedRequestError();
+    }
     if (userRepository.findByUserName(username) == null) {
       return errorService.noSuchUserError();
-    }
-    if (appToken == null || userRepository.findByUserNameAndAppToken(username, appToken) == null) {
-      return errorService.unauthorizedRequestError();
     }
     GiTinderUser authenticatedUser = userRepository.findByUserNameAndAppToken(username, appToken);
     if (profileRepository.findByLogin(authenticatedUser.getUserName()) == null || refreshRequired(
         profileRepository
             .findByLogin(authenticatedUser.getUserName()))) {
-      profileRepository.save(getProfileFromGitHub(authenticatedUser.getAccessToken()));
+      profileRepository.save(fetchProfileFromGitHub(authenticatedUser.getAccessToken(), username));
     }
     GiTinderProfile upToDateProfile = profileRepository
         .findByLogin(authenticatedUser.getUserName());
     return new ResponseEntity<Object>(upToDateProfile, HttpStatus.OK);
   }
 
-  public ResponseEntity<?> getProfile(String appToken) {
+  public ResponseEntity<?> getOwnProfile(String appToken) {
     if (!appToken.equals("")) {
       GiTinderProfile mockProfile = mockProfileBuilder.build();
       return new ResponseEntity<Object>(mockProfile, HttpStatus.OK);

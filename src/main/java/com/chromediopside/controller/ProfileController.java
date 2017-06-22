@@ -29,14 +29,14 @@ public class ProfileController {
   }
 
   @RequestMapping("/profile")
-  public ResponseEntity<?> getProfile(@RequestHeader(name = "X-GiTinder-token") String appToken)
+  public ResponseEntity<?> getOwnProfile(@RequestHeader(name = "X-GiTinder-token") String appToken)
       throws Exception {
-    return profileService.getProfile(appToken);
+    return profileService.getOwnProfile(appToken);
   }
 
   @RequestMapping("/profiles/{username}")
-  public ResponseEntity<?> getProfile(@PathVariable String username,
+  public ResponseEntity<?> getOtherProfile(@PathVariable String username,
       @RequestHeader(name = "X-GiTinder-token") String accessToken) throws Exception {
-    return profileService.profile(username, accessToken);
+    return profileService.getOtherProfile(username, accessToken);
   }
 }
