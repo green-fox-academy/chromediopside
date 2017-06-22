@@ -4,7 +4,6 @@ import com.chromediopside.service.ErrorService;
 import com.chromediopside.service.ProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,6 +31,4 @@ public class ProfileController {
   public ResponseEntity<?> getProfile(@RequestHeader(name = "X-GiTinder-token") String accessToken) throws Exception {
     return profileService.getProfile(accessToken);
   }
-
-
 }

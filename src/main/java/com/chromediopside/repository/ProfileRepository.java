@@ -2,8 +2,6 @@ package com.chromediopside.repository;
 
 import com.chromediopside.model.GiTinderProfile;
 import java.util.List;
-import javax.persistence.NamedNativeQuery;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;

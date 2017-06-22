@@ -5,7 +5,6 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
 
 import com.chromediopside.GitinderApplication;
 import java.util.Set;
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -52,7 +51,6 @@ public class ProfileControllerTest {
             .andExpect(jsonPath("$.languagesList").value(
                     anyOf(any(Set.class), nullValue(Set.class))));
   }
-
 
   @Test
   public void getProfileWithoutToken() throws Exception {

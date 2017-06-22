@@ -5,6 +5,7 @@ import com.chromediopside.model.GiTinderProfile;
 import com.chromediopside.model.Language;
 import com.chromediopside.repository.ProfileRepository;
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -18,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.BindingResult;
 
 @Service
 public class ProfileService {
@@ -83,5 +83,20 @@ public class ProfileService {
       return new ResponseEntity<Object>(mockProfile, HttpStatus.OK);
     }
     return errorService.getUnauthorizedResponseEntity();
+  }
+
+  public int daysPassedSinceLastRefresh(GiTinderProfile profileToCheck) {
+    Timestamp currentDate = new Timestamp(System.currentTimeMillis());
+    Timestamp lastRefresh = profileToCheck.getRefreshDate();
+    long differenceAsLong = currentDate.getTime() - lastRefresh.getTime();
+    int differenceAsDays = (int)(differenceAsLong / (1000 * 60 * 60 * 24));
+    return differenceAsDays;
+  }
+
+  public boolean refreshRequired(GiTinderProfile profileToCheck) {
+    if (daysPassedSinceLastRefresh(profileToCheck) >= 1) {
+      return true;
+    }
+    return false;
   }
 }
