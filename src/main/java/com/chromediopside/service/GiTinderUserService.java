@@ -42,7 +42,8 @@ public class GiTinderUserService {
     String appToken = generateAppToken();
     String username = loginForm.getUsername();
     String accessToken = loginForm.getAccessToken();
-    userRepo.save(new GiTinderUser(username, accessToken, appToken));
+    GiTinderUser user = new GiTinderUser(username, accessToken, appToken);
+    userRepo.save(user);
     return appToken;
   }
 }

@@ -36,8 +36,7 @@ public class ProfileController {
 
   @RequestMapping("/profiles/{username}")
   public ResponseEntity<?> getProfile(@PathVariable String username,
-      @RequestHeader(name = "X-GiTinder-token") String accessToken)
-      throws Exception {
+      @RequestHeader(name = "X-GiTinder-token") String accessToken) throws Exception {
     return profileService.profile(username, accessToken);
   }
 }

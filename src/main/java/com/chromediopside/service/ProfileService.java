@@ -31,15 +31,18 @@ public class ProfileService {
   private UserRepository userRepository;
   private ProfileRepository profileRepository;
   private ErrorService errorService;
+  private MockProfileBuilder mockProfileBuilder;
 
   @Autowired
   public ProfileService(
       UserRepository userRepository,
       ProfileRepository profileRepository,
-      ErrorService errorService) {
+      ErrorService errorService,
+      MockProfileBuilder mockProfileBuilder) {
     this.userRepository = userRepository;
     this.profileRepository = profileRepository;
     this.errorService = errorService;
+    this.mockProfileBuilder = mockProfileBuilder;
   }
 
   public ProfileService() {
@@ -104,7 +107,6 @@ public class ProfileService {
 
   public ResponseEntity<?> getProfile(String appToken) {
     if (!appToken.equals("")) {
-      MockProfileBuilder mockProfileBuilder = new MockProfileBuilder();
       GiTinderProfile mockProfile = mockProfileBuilder.build();
       return new ResponseEntity<Object>(mockProfile, HttpStatus.OK);
     }
