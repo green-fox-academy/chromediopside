@@ -79,8 +79,8 @@ public class ProfileService {
     }
   }
 
-  public ResponseEntity<?> getProfile(String accessToken) {
-    if (!accessToken.equals("")) {
+  public ResponseEntity<?> getProfile(String appToken) {
+    if (!appToken.equals("")) {
       GiTinderProfile mockProfile = mockProfileBuilder.build();
       return new ResponseEntity<Object>(mockProfile, HttpStatus.OK);
     }
