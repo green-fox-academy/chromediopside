@@ -72,7 +72,7 @@ public class ProfileService {
     }
   }
 
-  private void setEverythingElse(GitHubClient gitHubClient, String username) {
+  private void setReposAndLanguages(GitHubClient gitHubClient, String username) {
     RepositoryService repositoryService = new RepositoryService(gitHubClient);
     try {
       List<Repository> repositoryList = repositoryService.getRepositories(username);
@@ -99,7 +99,7 @@ public class ProfileService {
   public GiTinderProfile fetchProfileFromGitHub(String accessToken, String username) {
     GitHubClient gitHubClient = setUpGitHubClient(accessToken);
     setLoginAndAvatar(gitHubClient, username);
-    setEverythingElse(gitHubClient, username);
+    setReposAndLanguages(gitHubClient, username);
     return giTinderProfile;
   }
 
