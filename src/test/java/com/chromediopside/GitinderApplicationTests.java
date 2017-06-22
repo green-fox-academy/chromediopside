@@ -12,5 +12,4 @@ public class GitinderApplicationTests {
 	@Test
 	public void contextLoads() {
 	}
-
 }

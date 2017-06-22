@@ -1,30 +1,34 @@
 package com.chromediopside.datatransfer;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class TokenResponse {
 
-    private String status, token;
+  private String status;
+  private String token;
 
-    public TokenResponse() {
-    }
-    
-    public TokenResponse(String token) {
-      this.token = token;
-      status = "ok";
-    }
+  public TokenResponse() {
+  }
 
-    public String getStatus() {
-      return status;
-    }
+  public TokenResponse(String token) {
+    this.token = token;
+    status = "ok";
+  }
 
-    public void setStatus(String status) {
-      this.status = status;
-    }
+  public String getStatus() {
+    return status;
+  }
 
-    public String getToken() {
-      return token;
-    }
+  public void setStatus(String status) {
+    this.status = status;
+  }
 
-    public void setToken(String token) {
-      this.token = token;
-    }
+  public String getToken() {
+    return token;
+  }
+
+  public void setToken(String token) {
+    this.token = token;
+  }
 }
