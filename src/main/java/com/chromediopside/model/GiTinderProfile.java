@@ -1,6 +1,7 @@
 package com.chromediopside.model;
 
 import java.sql.Timestamp;
+import java.util.Objects;
 import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -100,9 +101,22 @@ public class GiTinderProfile {
 
     GiTinderProfile profile = (GiTinderProfile) o;
 
-    return profile.login.equals(login) &&
-        profile.avatarUrl.equals(avatarUrl) &&
-        profile.repos.equals(repos) &&
-        profile.languagesList.equals(languagesList);
+    return Objects.equals(login, profile.login) &&
+        Objects.equals(avatarUrl, profile.avatarUrl) &&
+        Objects.equals(repos, profile.repos) &&
+        Objects.equals(languagesList, profile.languagesList);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(login, avatarUrl, repos, refreshDate, languagesList);
+  }
+
+  @Override
+  public String toString() {
+    return login + "\n" +
+        avatarUrl + "\n" +
+        repos + "\n" +
+        languagesList.toString();
   }
 }
