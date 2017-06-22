@@ -3,6 +3,7 @@ package com.chromediopside.service;
 import com.chromediopside.mockbuilder.MockProfileBuilder;
 import com.chromediopside.model.GiTinderProfile;
 import com.chromediopside.model.Language;
+import com.chromediopside.model.Page;
 import com.chromediopside.repository.ProfileRepository;
 import java.io.IOException;
 import java.sql.Timestamp;
@@ -29,7 +30,7 @@ public class ProfileService {
   private ErrorService errorService;
 
   @Autowired
-  public ProfileService(ProfileRepository profileRepository, ErrorService errorService) {
+  public ProfileService(ProfileRepository profileRepository, ErrorService errorService, Page page) {
     this.profileRepository = profileRepository;
     this.errorService = errorService;
   }
@@ -38,7 +39,7 @@ public class ProfileService {
   }
 
   public List<GiTinderProfile> randomTenProfileByLanguage(String languageName) {
-    return profileRepository.selectTenRandomLanguageName(languageName);
+    return profileRepository.selectTenRandomByLanguageName(languageName);
   }
 
   public GiTinderProfile getProfileFromGitHub(String accessToken) {
@@ -98,5 +99,12 @@ public class ProfileService {
       return true;
     }
     return false;
+  }
+
+  public ResponseEntity<?> tenProfileByPage(Page page) {
+    if (page.equals(null)) {
+    return errorService.getNoMoreAvailableProfiles();
+    }
+    return new ResponseEntity<Object>(page, HttpStatus.OK);
   }
 }
