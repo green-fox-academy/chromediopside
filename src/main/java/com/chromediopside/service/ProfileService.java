@@ -2,8 +2,10 @@ package com.chromediopside.service;
 
 import com.chromediopside.mockbuilder.MockProfileBuilder;
 import com.chromediopside.model.GiTinderProfile;
+import com.chromediopside.model.GiTinderUser;
 import com.chromediopside.model.Language;
 import com.chromediopside.repository.ProfileRepository;
+import com.chromediopside.repository.UserRepository;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -25,13 +27,19 @@ public class ProfileService {
 
   private static final String GET_REQUEST_IOERROR
       = "Some GitHub data is not available for this accessToken!";
+
+  private UserRepository userRepository;
   private ProfileRepository profileRepository;
   private ErrorService errorService;
   private MockProfileBuilder mockProfileBuilder;
 
   @Autowired
-  public ProfileService(ProfileRepository profileRepository, ErrorService errorService,
+  public ProfileService(
+      UserRepository userRepository,
+      ProfileRepository profileRepository,
+      ErrorService errorService,
       MockProfileBuilder mockProfileBuilder) {
+    this.userRepository = userRepository;
     this.profileRepository = profileRepository;
     this.errorService = errorService;
     this.mockProfileBuilder = mockProfileBuilder;
@@ -44,7 +52,7 @@ public class ProfileService {
     return profileRepository.selectTenRandomLanguageName(languageName);
   }
 
-  public GiTinderProfile getProfileFromGitHub(String accessToken) {
+  private GiTinderProfile getProfileFromGitHub(String accessToken) {
     GiTinderProfile giTinderProfile = new GiTinderProfile();
 
     GitHubClient gitHubClient = new GitHubClient();
@@ -79,12 +87,30 @@ public class ProfileService {
     }
   }
 
+  public ResponseEntity<?> profile(String username, String appToken) {
+    if (userRepository.findByUserName(username) == null) {
+      return errorService.noSuchUserError();
+    }
+    if (appToken == null || userRepository.findByUserNameAndAppToken(username, appToken) == null) {
+      return errorService.unauthorizedRequestError();
+    }
+    GiTinderUser authenticatedUser = userRepository.findByUserNameAndAppToken(username, appToken);
+    if (profileRepository.findByLogin(authenticatedUser.getUserName()) == null || refreshRequired(
+        profileRepository
+            .findByLogin(authenticatedUser.getUserName()))) {
+      profileRepository.save(getProfileFromGitHub(authenticatedUser.getAccessToken()));
+    }
+    GiTinderProfile upToDateProfile = profileRepository
+        .findByLogin(authenticatedUser.getUserName());
+    return new ResponseEntity<Object>(upToDateProfile, HttpStatus.OK);
+  }
+
   public ResponseEntity<?> getProfile(String appToken) {
     if (!appToken.equals("")) {
       GiTinderProfile mockProfile = mockProfileBuilder.build();
       return new ResponseEntity<Object>(mockProfile, HttpStatus.OK);
     }
-    return errorService.getUnauthorizedResponseEntity();
+    return errorService.unauthorizedRequestError();
   }
 
   public int daysPassedSinceLastRefresh(GiTinderProfile profileToCheck) {
