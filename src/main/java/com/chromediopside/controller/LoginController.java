@@ -1,25 +1,36 @@
 package com.chromediopside.controller;
 
 import com.chromediopside.datatransfer.LoginForm;
+import com.chromediopside.service.GiTinderUserService;
 import com.chromediopside.service.LoginService;
+import com.chromediopside.service.ErrorService;
+import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- * Created by peter on 2017.06.12..
- */
 @RestController
 public class LoginController {
-    
-    @Autowired
-    private LoginService loginService;
 
-    @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public ResponseEntity<?> login(@RequestBody LoginForm loginForm) {
-      return loginService.login(loginForm);
-    }
+  private LoginService loginService;
+  private GiTinderUserService userService;
+  private ErrorService errorService;
+
+  @Autowired
+  public LoginController(
+          LoginService loginService, GiTinderUserService userService,
+          ErrorService errorService) {
+    this.loginService = loginService;
+    this.userService = userService;
+    this.errorService = errorService;
+  }
+
+  @PostMapping(value = "/login")
+  public ResponseEntity<?> login(@Valid @RequestBody LoginForm loginForm,
+          BindingResult bindingResult) {
+    return loginService.login(loginForm, bindingResult);
+  }
 }

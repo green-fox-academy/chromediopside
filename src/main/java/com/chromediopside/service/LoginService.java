@@ -1,33 +1,31 @@
 package com.chromediopside.service;
 
-import com.chromediopside.datatransfer.ErrorResponse;
 import com.chromediopside.datatransfer.LoginForm;
 import com.chromediopside.datatransfer.TokenResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.validation.BindingResult;
 
-@Component
+@Service
 public class LoginService {
-  
-  public ResponseEntity<?> login(LoginForm loginForm) {
-    String missingValues = "";
-    boolean complete = true;
-    if (loginForm.getUsername() == null) {
-      missingValues += "username";
-      complete = false;
+
+  private GiTinderUserService userService;
+  private ErrorService errorService;
+
+  @Autowired
+  public LoginService(GiTinderUserService userService, ErrorService errorService) {
+    this.userService = userService;
+    this.errorService = errorService;
+  }
+
+  public ResponseEntity<?> login(LoginForm loginForm,
+          BindingResult bindingResult) {
+    if (bindingResult.hasErrors()) {
+      return errorService.fieldErrors(bindingResult);
     }
-    if (loginForm.getAccessToken() == null) {
-      if (!complete) {
-        missingValues += ", ";
-      }
-      missingValues += "accessToken";
-      complete = false;
-    }
-    if (complete) {
-      return new ResponseEntity<>(new TokenResponse("abc123"), HttpStatus.OK);
-    }
-    return new ResponseEntity<>(new ErrorResponse("Missing parameter(s): " + missingValues + "!"),
-          HttpStatus.BAD_REQUEST);
+    String appToken = userService.createAndSaveUser(loginForm);
+    return new ResponseEntity<>(new TokenResponse(appToken), HttpStatus.OK);
   }
 }
