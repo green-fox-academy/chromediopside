@@ -1,6 +1,7 @@
 package com.chromediopside.controller;
 
 import com.chromediopside.model.GiTinderUser;
+import com.chromediopside.model.SwipeDirection;
 import com.chromediopside.model.Swiping;
 import com.chromediopside.repository.SwipeRepository;
 import com.chromediopside.service.ErrorService;
@@ -66,7 +67,8 @@ public class ProfileController {
   public ResponseEntity<?> swipe(@RequestHeader (name = "X-GiTinder-token") String appToken,
           @PathVariable String username,
           @PathVariable String direction,
-          HorizontalDirection horizontalDirection) {
-    return profileService.handleSwiping(appToken, username, direction, horizontalDirection);
+          SwipeDirection swipeDirection) {
+
+    return profileService.handleSwiping(appToken, username, direction, swipeDirection);
   }
 }

@@ -15,13 +15,13 @@ public class Swiping {
   @Id
   private String swipedUsersName;
   @Column (name = "horizontal_direction")
-  private HorizontalDirection swipeDirection;
+  private SwipeDirection swipeDirection;
 
   public Swiping() {
   }
 
   public Swiping(String swipingUsersName, String swipedUsersName,
-          HorizontalDirection swipeDirection) {
+          SwipeDirection swipeDirection) {
     this.swipingUsersName = swipingUsersName;
     this.swipedUsersName = swipedUsersName;
     this.swipeDirection = swipeDirection;
