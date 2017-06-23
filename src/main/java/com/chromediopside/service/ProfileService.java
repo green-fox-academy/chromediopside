@@ -1,10 +1,13 @@
 package com.chromediopside.service;
 
+import com.chromediopside.datatransfer.SwipeResponse;
 import com.chromediopside.mockbuilder.MockProfileBuilder;
 import com.chromediopside.model.GiTinderProfile;
 import com.chromediopside.model.GiTinderUser;
 import com.chromediopside.model.Language;
+import com.chromediopside.model.Swiping;
 import com.chromediopside.repository.ProfileRepository;
+import com.chromediopside.repository.SwipeRepository;
 import com.chromediopside.repository.UserRepository;
 import java.io.IOException;
 import java.sql.Timestamp;
@@ -12,6 +15,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import javafx.geometry.HorizontalDirection;
 import org.eclipse.egit.github.core.Repository;
 import org.eclipse.egit.github.core.User;
 import org.eclipse.egit.github.core.client.GitHubClient;
@@ -34,6 +38,8 @@ public class ProfileService {
   private MockProfileBuilder mockProfileBuilder;
   private GiTinderProfile giTinderProfile;
   private Language language;
+  private GiTinderUserService userService;
+  private SwipeRepository swipeRepository;
 
   @Autowired
   public ProfileService(
@@ -42,13 +48,17 @@ public class ProfileService {
       ErrorService errorService,
       MockProfileBuilder mockProfileBuilder,
       GiTinderProfile giTinderProfile,
-      Language language) {
+      Language language,
+      GiTinderUserService userService,
+          SwipeRepository swipeRepository) {
     this.userRepository = userRepository;
     this.profileRepository = profileRepository;
     this.errorService = errorService;
     this.mockProfileBuilder = mockProfileBuilder;
     this.giTinderProfile = giTinderProfile;
     this.language = language;
+    this.userService = userService;
+    this.swipeRepository = swipeRepository;
   }
 
   public ProfileService() {
@@ -132,5 +142,28 @@ public class ProfileService {
       return true;
     }
     return false;
+  }
+
+  public ResponseEntity<?> handleSwiping(String appToken, String username, String direction,
+          HorizontalDirection horizontalDirection) {
+
+    GiTinderUser swipingUser = userService.getUserByAppToken(appToken);
+    String swipingUsersName = swipingUser.getUserName();
+    String upperCaseDirection = direction.toUpperCase();
+    Swiping swiping = new Swiping
+            (swipingUsersName, username, horizontalDirection.valueOf(upperCaseDirection));
+    swipeRepository.save(swiping);
+
+    boolean match_status = false;
+    if (direction.equals("right")
+            && !swipeRepository.findBySwipingUsersNameAndSwipedUsersNameAndSwipeDirection
+            (username, swipingUsersName, horizontalDirection.valueOf("RIGHT"))
+            .equals(null)) {
+      match_status = true;
+    }
+
+    SwipeResponse swipeResponse = new SwipeResponse(match_status);
+    ResponseEntity<?> responseEntity = new ResponseEntity<Object>(swipeResponse, HttpStatus.OK);
+    return responseEntity;
   }
 }
