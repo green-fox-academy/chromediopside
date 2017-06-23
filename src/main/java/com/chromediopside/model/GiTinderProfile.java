@@ -1,6 +1,9 @@
 package com.chromediopside.model;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import javax.persistence.Column;
@@ -11,7 +14,9 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import org.springframework.stereotype.Component;
 
+@Component
 @Entity
 @Table(name = "gitinder_profile")
 public class GiTinderProfile {
@@ -94,13 +99,10 @@ public class GiTinderProfile {
 
   @Override
   public boolean equals(Object o) {
-
     if (!(o instanceof GiTinderProfile)) {
       return false;
     }
-
     GiTinderProfile profile = (GiTinderProfile) o;
-
     return Objects.equals(login, profile.login) &&
         Objects.equals(avatarUrl, profile.avatarUrl) &&
         Objects.equals(repos, profile.repos) &&
@@ -114,9 +116,15 @@ public class GiTinderProfile {
 
   @Override
   public String toString() {
+    List<String> languages = new ArrayList<>();
+    for (Language current :
+        languagesList) {
+      languages.add(current.getLanguageName());
+    }
+    Collections.sort(languages);
     return login + "\n" +
         avatarUrl + "\n" +
         repos + "\n" +
-        languagesList.toString();
+        languages.toString();
   }
 }

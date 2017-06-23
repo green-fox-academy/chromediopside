@@ -4,7 +4,9 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import org.springframework.stereotype.Component;
 
+@Component
 @Entity
 @Table(name = "language")
 public class Language {
@@ -29,11 +31,6 @@ public class Language {
     }
     Language other = (Language) obj;
     return this.languageName.equals(other.languageName);
-  }
-
-  @Override
-  public int hashCode() {
-    return this.languageName.hashCode();
   }
 
   public Language() {
