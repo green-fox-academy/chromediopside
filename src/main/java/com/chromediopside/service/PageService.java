@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class PageService {
 
-  private final int PROFILES_PER_PAGE = 10;
+  static final int PROFILES_PER_PAGE = 10;
   private Page page;
   private ProfileRepository profileRepository;
 
@@ -22,24 +22,16 @@ public class PageService {
     this.page = page;
   }
 
-  public Page setPage(String languageName, int givenPageNumber) {
-    page.setProfiles(listProfilesPerPage(languageName, givenPageNumber));
+  public Page setPage(int givenPageNumber) {
+    page.setProfiles(listProfilesPerPage(givenPageNumber));
     page.setCount(page.getProfiles().size());
     page.setAll((int) profileRepository.count());
     return page;
   }
 
-  private List<GiTinderProfile> listProfilesPerPage(String languageName,
-          int givenPageNumber) {
+  private List<GiTinderProfile> listProfilesPerPage(int givenPageNumber) {
     int offset = (givenPageNumber - 1) * PROFILES_PER_PAGE;
-    String sortingParam = randomSortingParam();
-
-    if (languageName.equals(null)) {
-      return profileRepository.selectBlocksOfTensOrderByGivenParam(sortingParam, givenPageNumber);
-    }
-    return profileRepository
-            .selectBlocksOfTensByLanguageNameOrderByGivenParam(languageName, sortingParam,
-                    offset);
+    return profileRepository.selectBlocksOfTensOrderByGivenParam(randomSortingParam(), givenPageNumber);
   }
 
   private String randomSortingParam() {
