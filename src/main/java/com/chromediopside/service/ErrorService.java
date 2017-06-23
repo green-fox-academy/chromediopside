@@ -14,6 +14,8 @@ import org.springframework.validation.FieldError;
 @Service
 public class ErrorService {
 
+  private static final String UNAUTHORIZED_REQUEST_MESSAGE = "Unauthorized request!";
+  private static final String NO_SUCH_USER_MESSAGE = "No such user!";
   private static final String MISSING_PARAMS_MESSAGE = "Missing parameter(s): ";
   private ErrorResponse errorResponse;
 
@@ -42,7 +44,11 @@ public class ErrorService {
     return new ResponseEntity<>(errorResponse, httpStatus);
   }
 
-  public ResponseEntity<?> getUnauthorizedResponseEntity() {
-    return getResponseEntity("Unauthorized request!", HttpStatus.UNAUTHORIZED);
+  public ResponseEntity<?> unauthorizedRequestError() {
+    return getResponseEntity(UNAUTHORIZED_REQUEST_MESSAGE, HttpStatus.UNAUTHORIZED);
+  }
+
+  public ResponseEntity<?> noSuchUserError() {
+    return getResponseEntity(NO_SUCH_USER_MESSAGE, HttpStatus.NOT_FOUND);
   }
 }
