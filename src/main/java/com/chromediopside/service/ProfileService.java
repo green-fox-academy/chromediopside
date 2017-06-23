@@ -4,6 +4,7 @@ import com.chromediopside.mockbuilder.MockProfileBuilder;
 import com.chromediopside.model.GiTinderProfile;
 import com.chromediopside.model.GiTinderUser;
 import com.chromediopside.model.Language;
+import com.chromediopside.model.Page;
 import com.chromediopside.repository.ProfileRepository;
 import com.chromediopside.repository.UserRepository;
 import java.io.IOException;
@@ -49,7 +50,7 @@ public class ProfileService {
   }
 
   public List<GiTinderProfile> randomTenProfileByLanguage(String languageName) {
-    return profileRepository.selectTenRandomLanguageName(languageName);
+    return profileRepository.selectTenRandomByLanguageName(languageName);
   }
 
   private GitHubClient setUpGitHubClient(String accessToken) {
@@ -158,5 +159,12 @@ public class ProfileService {
       return true;
     }
     return false;
+  }
+
+  public ResponseEntity<?> tenProfileByPage(Page page) {
+    if (page.equals(null)) {
+    return errorService.getNoMoreAvailableProfiles();
+    }
+    return new ResponseEntity<Object>(page, HttpStatus.OK);
   }
 }

@@ -1,10 +1,13 @@
 package com.chromediopside.controller;
 
 import com.chromediopside.service.ErrorService;
+import com.chromediopside.service.PageService;
 import com.chromediopside.service.ProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,12 +18,14 @@ public class ProfileController {
 
   private ProfileService profileService;
   private ErrorService errorService;
+  private PageService pageService;
 
   @Autowired
   public ProfileController(ProfileService profileService,
-      ErrorService errorService) {
+          ErrorService errorService, PageService pageService) {
     this.profileService = profileService;
     this.errorService = errorService;
+    this.pageService = pageService;
   }
 
   @ExceptionHandler(Exception.class)
@@ -38,5 +43,20 @@ public class ProfileController {
   public ResponseEntity<?> getOtherProfile(@PathVariable String username,
       @RequestHeader(name = "X-GiTinder-token") String accessToken) throws Exception {
     return profileService.getOtherProfile(username, accessToken);
+  }
+
+  @GetMapping("/available")
+  public ResponseEntity<?> listAvailableProfiles(
+          @RequestHeader(name = "X-GiTinder-token") String appToken,
+          @RequestBody (required = false) String languageName) throws Exception {
+    return profileService.tenProfileByPage(pageService.setPage(languageName, 1));
+  }
+
+  @GetMapping("/available/{page}")
+  public ResponseEntity<?> listAvailableProfilesByPage(
+          @RequestHeader(name = "X-GiTinder-token") String appToken,
+          @PathVariable("page") int pageNumber,
+          @RequestBody (required = false) String languageName) throws Exception {
+    return profileService.tenProfileByPage(pageService.setPage(languageName, pageNumber));
   }
 }

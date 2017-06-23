@@ -51,4 +51,9 @@ public class ErrorService {
   public ResponseEntity<?> noSuchUserError() {
     return getResponseEntity(NO_SUCH_USER_MESSAGE, HttpStatus.NOT_FOUND);
   }
+
+  public ResponseEntity<?> getNoMoreAvailableProfiles() {
+    errorResponse.setStatus("ok");
+    return getResponseEntity("No more available profiles for you!", HttpStatus.NO_CONTENT);
+  }
 }
