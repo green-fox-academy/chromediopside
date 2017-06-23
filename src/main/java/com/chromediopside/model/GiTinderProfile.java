@@ -99,13 +99,10 @@ public class GiTinderProfile {
 
   @Override
   public boolean equals(Object o) {
-
     if (!(o instanceof GiTinderProfile)) {
       return false;
     }
-
     GiTinderProfile profile = (GiTinderProfile) o;
-
     return Objects.equals(login, profile.login) &&
         Objects.equals(avatarUrl, profile.avatarUrl) &&
         Objects.equals(repos, profile.repos) &&
@@ -128,6 +125,6 @@ public class GiTinderProfile {
     return login + "\n" +
         avatarUrl + "\n" +
         repos + "\n" +
-        languagesList.toString();
+        languages.toString();
   }
 }
