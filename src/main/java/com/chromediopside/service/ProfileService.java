@@ -5,6 +5,7 @@ import com.chromediopside.mockbuilder.MockProfileBuilder;
 import com.chromediopside.model.GiTinderProfile;
 import com.chromediopside.model.GiTinderUser;
 import com.chromediopside.model.Language;
+import com.chromediopside.model.SwipeDirection;
 import com.chromediopside.model.Swiping;
 import com.chromediopside.repository.ProfileRepository;
 import com.chromediopside.repository.SwipeRepository;
@@ -15,7 +16,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import javafx.geometry.HorizontalDirection;
 import org.eclipse.egit.github.core.Repository;
 import org.eclipse.egit.github.core.User;
 import org.eclipse.egit.github.core.client.GitHubClient;
@@ -145,19 +145,19 @@ public class ProfileService {
   }
 
   public ResponseEntity<?> handleSwiping(String appToken, String username, String direction,
-          HorizontalDirection horizontalDirection) {
+          SwipeDirection swipeDirection) {
 
     GiTinderUser swipingUser = userService.getUserByAppToken(appToken);
     String swipingUsersName = swipingUser.getUserName();
     String upperCaseDirection = direction.toUpperCase();
     Swiping swiping = new Swiping
-            (swipingUsersName, username, horizontalDirection.valueOf(upperCaseDirection));
+            (swipingUsersName, username, swipeDirection.valueOf(upperCaseDirection));
     swipeRepository.save(swiping);
 
     boolean match_status = false;
     if (direction.equals("right")
             && !swipeRepository.findBySwipingUsersNameAndSwipedUsersNameAndSwipeDirection
-            (username, swipingUsersName, horizontalDirection.valueOf("RIGHT"))
+            (username, swipingUsersName, swipeDirection.valueOf("RIGHT"))
             .equals(null)) {
       match_status = true;
     }
