@@ -9,6 +9,6 @@ public class Migrations {
     flyway.setDataSource(System.getenv("SPRING_DATASOURCE_URL"),
         System.getenv("SPRING_DATASOURCE_USERNAME"),
         System.getenv("SPRING_DATASOURCE_PASSWORD"));
-    flyway.migrate();
+    flyway.repair();
   }
 }
