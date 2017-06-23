@@ -1,6 +1,9 @@
 package com.chromediopside.model;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import javax.persistence.Column;
@@ -116,6 +119,12 @@ public class GiTinderProfile {
 
   @Override
   public String toString() {
+    List<String> languages = new ArrayList<>();
+    for (Language current :
+        languagesList) {
+      languages.add(current.getLanguageName());
+    }
+    Collections.sort(languages);
     return login + "\n" +
         avatarUrl + "\n" +
         repos + "\n" +
