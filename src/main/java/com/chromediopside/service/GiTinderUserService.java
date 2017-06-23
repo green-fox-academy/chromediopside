@@ -38,6 +38,11 @@ public class GiTinderUserService {
     return new ErrorResponse(errorMessage);
   }
 
+  public GiTinderUser getUserByAppToken(String appToken) {
+    GiTinderUser giTinderUser = userRepo.findByAppToken(appToken);
+    return giTinderUser;
+  }
+
   public String createAndSaveUser(LoginForm loginForm) {
     String appToken = generateAppToken();
     String username = loginForm.getUsername();
