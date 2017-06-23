@@ -2,9 +2,7 @@ package com.chromediopside.service;
 
 import com.chromediopside.model.GiTinderProfile;
 import com.chromediopside.model.Page;
-import com.chromediopside.repository.LanguageRepository;
 import com.chromediopside.repository.ProfileRepository;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -24,20 +22,17 @@ public class PageService {
     this.page = page;
   }
 
-  public Page setPage(String languageName, String sortingParam, int givenPageNumber) {
-    page.setProfiles(listProfilesPerPage(languageName, sortingParam, givenPageNumber));
+  public Page setPage(String languageName, int givenPageNumber) {
+    page.setProfiles(listProfilesPerPage(languageName, givenPageNumber));
     page.setCount(page.getProfiles().size());
     page.setAll((int) profileRepository.count());
     return page;
   }
 
-  private List<GiTinderProfile> listProfilesPerPage(String languageName, String sortingParam,
+  private List<GiTinderProfile> listProfilesPerPage(String languageName,
           int givenPageNumber) {
     int offset = (givenPageNumber - 1) * PROFILES_PER_PAGE;
-
-    if (sortingParam.isEmpty()) {
-      sortingParam = randomSortingParam();
-    }
+    String sortingParam = randomSortingParam();
 
     if (languageName.isEmpty()) {
       return profileRepository.selectBlocksOfTensOrderByGivenParam(sortingParam, givenPageNumber);
@@ -51,7 +46,6 @@ public class PageService {
     List<String> listOfSortingValues = Arrays
             .asList("login", "avatar_url", "repos", "refresh_date");
     Collections.shuffle(listOfSortingValues);
-    return listOfSortingValues.subList(0, 1).toString();
+    return listOfSortingValues.get(0);
   }
-
 }

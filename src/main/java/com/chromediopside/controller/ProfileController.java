@@ -43,10 +43,9 @@ public class ProfileController {
   public ResponseEntity<?> listAvailableProfiles(
           @RequestHeader(name = "X-GiTinder-token") String appToken,
           @PathVariable("page") int pageNumber,
-          @RequestBody (required = false) String sortingParam,
           @RequestBody (required = false) String languageName) throws Exception {
     profileService.getProfile(appToken);
-    return profileService.tenProfileByPage(pageService.setPage(languageName, sortingParam, pageNumber));
+    return profileService.tenProfileByPage(pageService.setPage(languageName, pageNumber));
   }
 
 }
