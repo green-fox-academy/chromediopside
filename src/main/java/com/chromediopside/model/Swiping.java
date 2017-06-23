@@ -1,6 +1,5 @@
 package com.chromediopside.model;
 
-import javafx.geometry.HorizontalDirection;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;

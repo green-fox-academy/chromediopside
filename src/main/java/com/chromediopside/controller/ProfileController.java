@@ -1,20 +1,15 @@
 package com.chromediopside.controller;
 
-import com.chromediopside.model.GiTinderUser;
 import com.chromediopside.model.SwipeDirection;
-import com.chromediopside.model.Swiping;
-import com.chromediopside.repository.SwipeRepository;
 import com.chromediopside.service.ErrorService;
 import com.chromediopside.service.PageService;
 import com.chromediopside.service.GiTinderUserService;
 import com.chromediopside.service.ProfileService;
 import java.util.Map;
-import javafx.geometry.HorizontalDirection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
