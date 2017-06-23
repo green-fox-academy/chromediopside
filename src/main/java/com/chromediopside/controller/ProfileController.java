@@ -39,13 +39,18 @@ public class ProfileController {
     return profileService.getProfile(accessToken);
   }
 
-  @GetMapping("/available/{page}")
+  @GetMapping("/available")
   public ResponseEntity<?> listAvailableProfiles(
+          @RequestHeader(name = "X-GiTinder-token") String appToken,
+          @RequestBody (required = false) String languageName) throws Exception {
+    return profileService.tenProfileByPage(pageService.setPage(languageName, 1));
+  }
+
+  @GetMapping("/available/{page}")
+  public ResponseEntity<?> listAvailableProfilesByPage(
           @RequestHeader(name = "X-GiTinder-token") String appToken,
           @PathVariable("page") int pageNumber,
           @RequestBody (required = false) String languageName) throws Exception {
-    profileService.getProfile(appToken);
     return profileService.tenProfileByPage(pageService.setPage(languageName, pageNumber));
   }
-
 }

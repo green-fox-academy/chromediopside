@@ -34,7 +34,7 @@ public class PageService {
     int offset = (givenPageNumber - 1) * PROFILES_PER_PAGE;
     String sortingParam = randomSortingParam();
 
-    if (languageName.isEmpty()) {
+    if (languageName.equals(null)) {
       return profileRepository.selectBlocksOfTensOrderByGivenParam(sortingParam, givenPageNumber);
     }
     return profileRepository
