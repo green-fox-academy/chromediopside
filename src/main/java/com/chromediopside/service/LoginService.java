@@ -26,6 +26,8 @@ public class LoginService {
       return errorService.fieldErrors(bindingResult);
     }
     String appToken = userService.createAndSaveUser(loginForm);
-    return new ResponseEntity<>(new TokenResponse(appToken), HttpStatus.OK);
+    TokenResponse tokenResponse = new TokenResponse(appToken);
+    ResponseEntity responseEntity = new ResponseEntity<>(tokenResponse, HttpStatus.OK);
+    return responseEntity;
   }
 }
