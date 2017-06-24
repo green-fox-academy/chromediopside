@@ -106,25 +106,16 @@ public class GiTinderProfile {
     return Objects.equals(login, profile.login) &&
         Objects.equals(avatarUrl, profile.avatarUrl) &&
         Objects.equals(repos, profile.repos) &&
-        Objects.equals(languagesList, profile.languagesList);
+        Objects.equals(languageStringsListFromSet(languagesList),
+            languageStringsListFromSet(profile.languagesList));
   }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(login, avatarUrl, repos, refreshDate, languagesList);
-  }
-
-  @Override
-  public String toString() {
-    List<String> languages = new ArrayList<>();
-    for (Language current :
-        languagesList) {
-      languages.add(current.getLanguageName());
+  private List<String> languageStringsListFromSet(Set<Language> languageSet) {
+    List<String> languageStrings = new ArrayList<>();
+    for (Language current : languageSet) {
+      languageStrings.add(current.getLanguageName());
     }
-    Collections.sort(languages);
-    return login + "\n" +
-        avatarUrl + "\n" +
-        repos + "\n" +
-        languages.toString();
+    Collections.sort(languageStrings);
+    return languageStrings;
   }
 }
