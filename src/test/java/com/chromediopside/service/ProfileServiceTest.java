@@ -6,7 +6,6 @@ import static org.junit.Assert.assertNull;
 import com.chromediopside.mockbuilder.MockProfileBuilder;
 import com.chromediopside.model.GiTinderProfile;
 import com.chromediopside.model.Language;
-import java.lang.reflect.Field;
 import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
@@ -52,7 +51,7 @@ public class ProfileServiceTest {
         .build();
     GiTinderProfile actualProfile = profileService
         .fetchProfileFromGitHub(validAccessToken, testLogin);
-    assertEquals(expectedProfile.toString(), actualProfile.toString());
+    assertEquals(expectedProfile, actualProfile);
   }
 
   @Test
