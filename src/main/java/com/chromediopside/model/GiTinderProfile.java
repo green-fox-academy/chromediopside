@@ -57,6 +57,14 @@ public class GiTinderProfile {
     this.repos = repos;
   }
 
+  public void updateProfile(String avatarUrl, String repos,
+      Set<Language> languagesList, Timestamp refreshDate) {
+    this.avatarUrl = avatarUrl;
+    this.repos = repos;
+    this.refreshDate = refreshDate;
+    this.languagesList = languagesList;
+  }
+
   public String getLogin() {
     return login;
   }

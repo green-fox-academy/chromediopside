@@ -104,9 +104,4 @@ public class ProfileServiceTest {
     profileToCheck.setRefreshDate(new Timestamp(testTimeStamp.getTime() - oneDayInMillis));
     assertTrue(profileService.refreshRequired(profileToCheck));
   }
-
-  @Test
-  public void fetchAndSaveProfileOnLogin() throws Exception {
-
-  }
 }

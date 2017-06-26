@@ -192,10 +192,10 @@ public class ProfileService {
       if (profileRepository.existsByLogin(loginForm.getUsername()) && currentProfile != null) {
         GiTinderProfile profileToCheck = profileRepository.findByLogin(loginForm.getUsername());
         if (refreshRequired(profileToCheck)) {
-          profileToCheck.setAvatarUrl(currentProfile.getAvatarUrl());
-          profileToCheck.setRepos(currentProfile.getRepos());
-          profileToCheck.setLanguagesList(currentProfile.getLanguagesList());
-          profileToCheck.setRefreshDate(new Timestamp(System.currentTimeMillis()));
+          profileToCheck.updateProfile(currentProfile.getAvatarUrl(),
+              currentProfile.getRepos(),
+              currentProfile.getLanguagesList(),
+              new Timestamp(System.currentTimeMillis()));
         }
       } else {
         if (currentProfile != null) {
