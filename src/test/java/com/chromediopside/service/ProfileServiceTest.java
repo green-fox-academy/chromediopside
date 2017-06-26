@@ -29,6 +29,12 @@ public class ProfileServiceTest {
   private static final Timestamp testTimeStamp = new Timestamp(System.currentTimeMillis());
   private Set<Language> testLanguagesList = new HashSet<>();
 
+  public static final Timestamp lastRefresh = new Timestamp(1497441600000l);   //2017-06-14 14:00:00.0
+  public static final Timestamp eightHoursAfterLastRefresh = new Timestamp(1497470400000l);   //2017-06-14 22:00:00.0
+  public static final Timestamp fourDaysAfterLastRefresh = new Timestamp(1497794400000l);   //2017-06-18 16:00:00.0
+
+
+
   @Autowired
   private ProfileService profileService;
   @Autowired
@@ -59,5 +65,23 @@ public class ProfileServiceTest {
     GiTinderProfile actualProfile = profileService
         .fetchProfileFromGitHub(invalidAccessToken, testLogin);
     assertNull(actualProfile);
+  }
+
+  @Test
+  public void daysPassedWhenEightHoursPassedBetweenDates() throws Exception {
+    assertEquals(0, profileService.daysPassedBetweenDates(lastRefresh, eightHoursAfterLastRefresh));
+  }
+
+  @Test
+  public void daysPassedWhenFourDaysPassedBetweenDates() throws Exception {
+    assertEquals(4, profileService.daysPassedBetweenDates(lastRefresh, fourDaysAfterLastRefresh));
+  }
+
+  @Test
+  public void refreshRequired() throws Exception {
+  }
+
+  @Test
+  public void fetchAndSaveProfileOnLogin() throws Exception {
   }
 }
