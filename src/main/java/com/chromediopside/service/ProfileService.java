@@ -181,17 +181,22 @@ public class ProfileService {
   }
 
   public void fetchAndSaveProfileOnLogin(LoginForm loginForm) {
-    GiTinderProfile currentProfile = fetchProfileFromGitHub(loginForm.getAccessToken(), loginForm.getUsername());
-    if(profileRepository.existsByLogin(loginForm.getUsername())) {
-      GiTinderProfile profileToCheck = profileRepository.findByLogin(loginForm.getUsername());
-      if (refreshRequired(profileToCheck)) {
-        profileToCheck.setAvatarUrl(currentProfile.getAvatarUrl());
-        profileToCheck.setRepos(currentProfile.getRepos());
-        profileToCheck.setLanguagesList(currentProfile.getLanguagesList());
-        profileToCheck.setRefreshDate(new Timestamp(System.currentTimeMillis()));
+    if (loginForm != null && loginForm.getUsername() != null && loginForm.getAccessToken() != null) {
+      GiTinderProfile currentProfile = fetchProfileFromGitHub(loginForm.getAccessToken(),
+          loginForm.getUsername());
+      if (profileRepository.existsByLogin(loginForm.getUsername()) && currentProfile != null) {
+        GiTinderProfile profileToCheck = profileRepository.findByLogin(loginForm.getUsername());
+        if (refreshRequired(profileToCheck)) {
+          profileToCheck.setAvatarUrl(currentProfile.getAvatarUrl());
+          profileToCheck.setRepos(currentProfile.getRepos());
+          profileToCheck.setLanguagesList(currentProfile.getLanguagesList());
+          profileToCheck.setRefreshDate(new Timestamp(System.currentTimeMillis()));
+        }
+      } else {
+        if (currentProfile != null) {
+          profileRepository.save(currentProfile);
+        }
       }
-    } else {
-      profileRepository.save(currentProfile);
     }
   }
 
