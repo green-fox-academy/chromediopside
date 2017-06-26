@@ -31,11 +31,11 @@ public class ProfileServiceTest {
   private static final Timestamp testTimeStamp = new Timestamp(System.currentTimeMillis());
   private Set<Language> testLanguagesList = new HashSet<>();
 
-  public static final Timestamp lastRefresh = new Timestamp(1497441600000l);                  //2017-06-14 14:00:00.0
-  public static final Timestamp eightHoursAfterLastRefresh = new Timestamp(1497470400000l);   //2017-06-14 22:00:00.0
-  public static final Timestamp fourDaysAfterLastRefresh = new Timestamp(1497794400000l);     //2017-06-18 16:00:00.0
+  private static final Timestamp lastRefresh = new Timestamp(1497441600000l);                  //2017-06-14 14:00:00.0
+  private static final Timestamp eightHoursAfterLastRefresh = new Timestamp(1497470400000l);   //2017-06-14 22:00:00.0
+  private static final Timestamp fourDaysAfterLastRefresh = new Timestamp(1497794400000l);     //2017-06-18 16:00:00.0
 
-  public static final long oneDayInMillis = 86400000;
+  private static final long oneDayInMillis = 86400000;
 
   @Autowired
   private ProfileService profileService;
@@ -94,7 +94,7 @@ public class ProfileServiceTest {
   @Test
   public void refreshRequiredSince1970() throws Exception {
     GiTinderProfile profileToCheck = new GiTinderProfile();
-    profileToCheck.setRefreshDate(new Timestamp(00000000));
+    profileToCheck.setRefreshDate(new Timestamp(00000000000l));
     assertTrue(profileService.refreshRequired(profileToCheck));
   }
 
@@ -107,5 +107,6 @@ public class ProfileServiceTest {
 
   @Test
   public void fetchAndSaveProfileOnLogin() throws Exception {
+
   }
 }

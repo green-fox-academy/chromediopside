@@ -30,6 +30,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class ProfileService {
 
+  private static final long oneDayInMillis = 86400000;
   private static final String GET_REQUEST_IOERROR
           = "Some GitHub data of this user is not available for this token!";
 
@@ -172,7 +173,7 @@ public class ProfileService {
     } else {
       differenceAsLong = date2.getTime() - date1.getTime();
     }
-    int differenceAsDays = (int) (differenceAsLong / (1000 * 60 * 60 * 24));
+    int differenceAsDays = (int) (differenceAsLong / oneDayInMillis);
     return differenceAsDays;
   }
 
