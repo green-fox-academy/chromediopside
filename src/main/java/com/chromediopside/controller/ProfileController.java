@@ -1,6 +1,5 @@
 package com.chromediopside.controller;
 
-import com.chromediopside.model.SwipeDirection;
 import com.chromediopside.service.ErrorService;
 import com.chromediopside.service.PageService;
 import com.chromediopside.service.GiTinderUserService;
@@ -26,7 +25,9 @@ public class ProfileController {
 
   @Autowired
   public ProfileController(ProfileService profileService,
-      ErrorService errorService, GiTinderUserService userService, PageService pageService) {
+          ErrorService errorService,
+          GiTinderUserService userService,
+          PageService pageService) {
     this.profileService = profileService;
     this.errorService = errorService;
     this.userService = userService;
@@ -44,7 +45,6 @@ public class ProfileController {
     return profileService.getOwnProfile(appToken);
   }
 
-
   @RequestMapping("/profiles/{username}")
   public ResponseEntity<?> getOtherProfile(@PathVariable String username,
           @RequestHeader(name = "X-GiTinder-token") String accessToken) throws Exception {
@@ -61,9 +61,7 @@ public class ProfileController {
   @PutMapping("/profiles/{username}/{direction}")
   public ResponseEntity<?> swipe(@RequestHeader (name = "X-GiTinder-token") String appToken,
           @PathVariable String username,
-          @PathVariable String direction,
-          SwipeDirection swipeDirection) {
-
-    return profileService.handleSwiping(appToken, username, direction, swipeDirection);
+          @PathVariable String direction) {
+    return profileService.handleSwiping(appToken, username, direction);
   }
 }

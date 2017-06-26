@@ -1,6 +1,5 @@
 package com.chromediopside.model;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
@@ -13,16 +12,12 @@ public class Swiping {
   private String swipingUsersName;
   @Id
   private String swipedUsersName;
-  @Column (name = "horizontal_direction")
-  private SwipeDirection swipeDirection;
 
   public Swiping() {
   }
 
-  public Swiping(String swipingUsersName, String swipedUsersName,
-          SwipeDirection swipeDirection) {
+  public Swiping(String swipingUsersName, String swipedUsersName) {
     this.swipingUsersName = swipingUsersName;
     this.swipedUsersName = swipedUsersName;
-    this.swipeDirection = swipeDirection;
   }
 }

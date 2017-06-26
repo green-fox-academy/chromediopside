@@ -5,7 +5,6 @@ import com.chromediopside.mockbuilder.MockProfileBuilder;
 import com.chromediopside.model.GiTinderProfile;
 import com.chromediopside.model.GiTinderUser;
 import com.chromediopside.model.Language;
-import com.chromediopside.model.SwipeDirection;
 import com.chromediopside.model.Swiping;
 import com.chromediopside.repository.ProfileRepository;
 import com.chromediopside.repository.SwipeRepository;
@@ -199,21 +198,19 @@ public class ProfileService {
     return userRepository.findByAppToken(appToken) == null;
   }
 
-  public ResponseEntity<?> handleSwiping(String appToken, String username, String direction,
-          SwipeDirection swipeDirection) {
-
+  public ResponseEntity<?> handleSwiping(String appToken, String username, String direction) {
     GiTinderUser swipingUser = userService.getUserByAppToken(appToken);
     String swipingUsersName = swipingUser.getUserName();
-    String upperCaseDirection = direction.toUpperCase();
-    Swiping swiping = new Swiping
-            (swipingUsersName, username, swipeDirection.valueOf(upperCaseDirection));
-    swipeRepository.save(swiping);
+
+    if (direction.equals("right")) {
+      Swiping swiping = new Swiping
+              (swipingUsersName, username);
+      swipeRepository.save(swiping);
+    }
 
     boolean match_status = false;
-    if (direction.equals("right")
-            && !swipeRepository.findBySwipingUsersNameAndSwipedUsersNameAndSwipeDirection
-            (username, swipingUsersName, swipeDirection.valueOf("RIGHT"))
-            .equals(null)) {
+    if (swipeRepository.existsBySwipingUsersNameAndSwipedUsersName
+            (username, swipingUsersName)) {
       match_status = true;
     }
 
