@@ -59,8 +59,21 @@ public class ProfileControllerTest {
             .andExpect(status().isUnauthorized())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
             .andExpect(content().json("{"
-                + "\"status\" : \"error\","
-                + "\"message\" : \"Unauthorized request!\""
-                + "}"));
+                    + "\"status\" : \"error\","
+                    + "\"message\" : \"Unauthorized request!\""
+                    + "}"));
   }
+
+  @Test
+  public void listAvaialblePagesWithoutToken() throws Exception {
+
+    mockMvc.perform(get("/available"))
+            .andExpect(status().isUnauthorized())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+            .andExpect(content().json("{"
+                    + "\"status\" : \"error\","
+                    + "\"message\" : \"Unauthorized request!\""
+                    + "}"));
+  }
+
 }
