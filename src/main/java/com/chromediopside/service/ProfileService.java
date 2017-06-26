@@ -181,7 +181,7 @@ public class ProfileService {
   }
 
   public void fetchAndSaveProfileOnLogin(LoginForm loginForm) {
-    if (loginForm != null && loginForm.getUsername() != null && loginForm.getAccessToken() != null) {
+    if (loginForm.getUsername() != null && loginForm.getAccessToken() != null) {
       GiTinderProfile currentProfile = fetchProfileFromGitHub(loginForm.getAccessToken(),
           loginForm.getUsername());
       if (profileRepository.existsByLogin(loginForm.getUsername()) && currentProfile != null) {
