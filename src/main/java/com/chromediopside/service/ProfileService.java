@@ -165,16 +165,20 @@ public class ProfileService {
     return errorService.unauthorizedRequestError();
   }
 
-  public int daysPassedSinceLastRefresh(GiTinderProfile profileToCheck) {
-    Timestamp currentDate = new Timestamp(System.currentTimeMillis());
-    Timestamp lastRefresh = profileToCheck.getRefreshDate();
-    long differenceAsLong = currentDate.getTime() - lastRefresh.getTime();
+  public int daysPassedBetweenDates(Timestamp date1, Timestamp date2) {
+    long differenceAsLong = 0;
+    if (date1.getTime() > date2.getTime()) {
+      differenceAsLong = date1.getTime() - date2.getTime();
+    } else {
+      differenceAsLong = date2.getTime() - date1.getTime();
+    }
     int differenceAsDays = (int) (differenceAsLong / (1000 * 60 * 60 * 24));
     return differenceAsDays;
   }
 
   public boolean refreshRequired(GiTinderProfile profileToCheck) {
-    if (daysPassedSinceLastRefresh(profileToCheck) >= 1) {
+    Timestamp currentDate = new Timestamp(System.currentTimeMillis());
+    if (daysPassedBetweenDates(profileToCheck.getRefreshDate(), currentDate) >= 1) {
       return true;
     }
     return false;
