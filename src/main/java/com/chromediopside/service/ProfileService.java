@@ -1,11 +1,11 @@
 package com.chromediopside.service;
 
+import com.chromediopside.datatransfer.LoginForm;
 import com.chromediopside.datatransfer.SwipeResponse;
 import com.chromediopside.mockbuilder.MockProfileBuilder;
 import com.chromediopside.model.GiTinderProfile;
 import com.chromediopside.model.GiTinderUser;
 import com.chromediopside.model.Language;
-import com.chromediopside.model.SwipeDirection;
 import com.chromediopside.model.Swiping;
 import com.chromediopside.repository.ProfileRepository;
 import com.chromediopside.repository.SwipeRepository;
@@ -29,6 +29,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class ProfileService {
 
+  private static final long oneDayInMillis = 86400000;
   private static final String GET_REQUEST_IOERROR
           = "Some GitHub data of this user is not available for this token!";
 
@@ -146,7 +147,7 @@ public class ProfileService {
       return errorService.noSuchUserError();
     }
     GiTinderUser authenticatedUser = userRepository.findByUserNameAndAppToken(username, appToken);
-    if (profileRepository.findByLogin(authenticatedUser.getUserName()) == null || refreshRequired(
+    if (profileRepository.existsByLogin(authenticatedUser.getUserName()) || refreshRequired(
             profileRepository
                     .findByLogin(authenticatedUser.getUserName()))) {
       profileRepository.save(fetchProfileFromGitHub(authenticatedUser.getAccessToken(), username));
@@ -164,21 +165,44 @@ public class ProfileService {
     return errorService.unauthorizedRequestError();
   }
 
-  public int daysPassedSinceLastRefresh(GiTinderProfile profileToCheck) {
-    Timestamp currentDate = new Timestamp(System.currentTimeMillis());
-    Timestamp lastRefresh = profileToCheck.getRefreshDate();
-    long differenceAsLong = currentDate.getTime() - lastRefresh.getTime();
-    int differenceAsDays = (int) (differenceAsLong / (1000 * 60 * 60 * 24));
+  public int daysPassedBetweenDates(Timestamp date1, Timestamp date2) {
+    long differenceAsLong = 0;
+    if (date1.getTime() > date2.getTime()) {
+      differenceAsLong = date1.getTime() - date2.getTime();
+    } else {
+      differenceAsLong = date2.getTime() - date1.getTime();
+    }
+    int differenceAsDays = (int) (differenceAsLong / oneDayInMillis);
     return differenceAsDays;
   }
 
   public boolean refreshRequired(GiTinderProfile profileToCheck) {
-    if (daysPassedSinceLastRefresh(profileToCheck) >= 1) {
+    Timestamp currentDate = new Timestamp(System.currentTimeMillis());
+    if (daysPassedBetweenDates(profileToCheck.getRefreshDate(), currentDate) >= 1) {
       return true;
     }
     return false;
   }
 
+  public void fetchAndSaveProfileOnLogin(LoginForm loginForm) {
+    if (loginForm.getUsername() != null && loginForm.getAccessToken() != null) {
+      GiTinderProfile currentProfile = fetchProfileFromGitHub(loginForm.getAccessToken(),
+          loginForm.getUsername());
+      if (profileRepository.existsByLogin(loginForm.getUsername()) && currentProfile != null) {
+        GiTinderProfile profileToCheck = profileRepository.findByLogin(loginForm.getUsername());
+        if (refreshRequired(profileToCheck)) {
+          profileToCheck.updateProfile(currentProfile.getAvatarUrl(),
+              currentProfile.getRepos(),
+              currentProfile.getLanguagesList(),
+              new Timestamp(System.currentTimeMillis()));
+        }
+      } else {
+        if (currentProfile != null) {
+          profileRepository.save(currentProfile);
+        }
+      }
+    }
+  }
 
   public ResponseEntity<?> tenProfileByPage(String appToken, int pageNumber) {
     if (validAppToken(appToken)) {
@@ -199,21 +223,19 @@ public class ProfileService {
     return userRepository.findByAppToken(appToken) == null;
   }
 
-  public ResponseEntity<?> handleSwiping(String appToken, String username, String direction,
-          SwipeDirection swipeDirection) {
-
+  public ResponseEntity<?> handleSwiping(String appToken, String username, String direction) {
     GiTinderUser swipingUser = userService.getUserByAppToken(appToken);
     String swipingUsersName = swipingUser.getUserName();
-    String upperCaseDirection = direction.toUpperCase();
-    Swiping swiping = new Swiping
-            (swipingUsersName, username, swipeDirection.valueOf(upperCaseDirection));
-    swipeRepository.save(swiping);
+
+    if (direction.equals("right")) {
+      Swiping swiping = new Swiping
+              (swipingUsersName, username);
+      swipeRepository.save(swiping);
+    }
 
     boolean match_status = false;
-    if (direction.equals("right")
-            && !swipeRepository.findBySwipingUsersNameAndSwipedUsersNameAndSwipeDirection
-            (username, swipingUsersName, swipeDirection.valueOf("RIGHT"))
-            .equals(null)) {
+    if (swipeRepository.existsBySwipingUsersNameAndSwipedUsersName
+            (username, swipingUsersName)) {
       match_status = true;
     }
 

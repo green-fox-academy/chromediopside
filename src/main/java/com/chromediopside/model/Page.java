@@ -19,6 +19,17 @@ public class Page {
   public Page() {
   }
 
+  @Override
+  public String toString() {
+    String profilesToString = "";
+    for (GiTinderProfile profileElement : profiles) {
+      profilesToString =
+              profileElement.getLogin() + ", " + profileElement.getAvatarUrl() + ", " + profileElement.getRepos()
+                      + ", " + profileElement.getLanguagesList() + ", " + profileElement.getRefreshDate();
+    }
+    return profilesToString + ", " + count + ", " + all;
+  }
+
   public List<GiTinderProfile> getProfiles() {
     return profiles;
   }
