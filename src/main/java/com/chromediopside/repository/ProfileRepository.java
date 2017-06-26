@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 public interface ProfileRepository extends CrudRepository<GiTinderProfile, String> {
 
   GiTinderProfile findByLogin(String login);
+  boolean existsByLogin(String login);
 
   @Query(value = "SELECT login, avatar_url, repos, language_id "
           + "FROM gitinder_profile "

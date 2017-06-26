@@ -1,5 +1,6 @@
 package com.chromediopside.service;
 
+import com.chromediopside.datatransfer.LoginForm;
 import com.chromediopside.datatransfer.SwipeResponse;
 import com.chromediopside.mockbuilder.MockProfileBuilder;
 import com.chromediopside.model.GiTinderProfile;
@@ -146,7 +147,7 @@ public class ProfileService {
       return errorService.noSuchUserError();
     }
     GiTinderUser authenticatedUser = userRepository.findByUserNameAndAppToken(username, appToken);
-    if (profileRepository.findByLogin(authenticatedUser.getUserName()) == null || refreshRequired(
+    if (profileRepository.existsByLogin(authenticatedUser.getUserName()) || refreshRequired(
             profileRepository
                     .findByLogin(authenticatedUser.getUserName()))) {
       profileRepository.save(fetchProfileFromGitHub(authenticatedUser.getAccessToken(), username));
@@ -179,6 +180,20 @@ public class ProfileService {
     return false;
   }
 
+  public void fetchAndSaveProfileOnLogin(LoginForm loginForm) {
+    GiTinderProfile currentProfile = fetchProfileFromGitHub(loginForm.getAccessToken(), loginForm.getUsername());
+    if(profileRepository.existsByLogin(loginForm.getUsername())) {
+      GiTinderProfile profileToCheck = profileRepository.findByLogin(loginForm.getUsername());
+      if (refreshRequired(profileToCheck)) {
+        profileToCheck.setAvatarUrl(currentProfile.getAvatarUrl());
+        profileToCheck.setRepos(currentProfile.getRepos());
+        profileToCheck.setLanguagesList(currentProfile.getLanguagesList());
+        profileToCheck.setRefreshDate(new Timestamp(System.currentTimeMillis()));
+      }
+    } else {
+      profileRepository.save(currentProfile);
+    }
+  }
 
   public ResponseEntity<?> tenProfileByPage(String appToken, int pageNumber) {
     if (validAppToken(appToken)) {
