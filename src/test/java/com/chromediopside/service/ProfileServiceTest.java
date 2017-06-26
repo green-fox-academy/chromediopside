@@ -1,7 +1,9 @@
 package com.chromediopside.service;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import com.chromediopside.mockbuilder.MockProfileBuilder;
 import com.chromediopside.model.GiTinderProfile;
@@ -29,11 +31,11 @@ public class ProfileServiceTest {
   private static final Timestamp testTimeStamp = new Timestamp(System.currentTimeMillis());
   private Set<Language> testLanguagesList = new HashSet<>();
 
-  public static final Timestamp lastRefresh = new Timestamp(1497441600000l);   //2017-06-14 14:00:00.0
+  public static final Timestamp lastRefresh = new Timestamp(1497441600000l);                  //2017-06-14 14:00:00.0
   public static final Timestamp eightHoursAfterLastRefresh = new Timestamp(1497470400000l);   //2017-06-14 22:00:00.0
-  public static final Timestamp fourDaysAfterLastRefresh = new Timestamp(1497794400000l);   //2017-06-18 16:00:00.0
+  public static final Timestamp fourDaysAfterLastRefresh = new Timestamp(1497794400000l);     //2017-06-18 16:00:00.0
 
-
+  public static final long oneDayInMillis = 86400000;
 
   @Autowired
   private ProfileService profileService;
@@ -78,7 +80,29 @@ public class ProfileServiceTest {
   }
 
   @Test
-  public void refreshRequired() throws Exception {
+  public void daysPassedAfter24Hours() throws Exception {
+    assertEquals(1, profileService.daysPassedBetweenDates(lastRefresh, new Timestamp(lastRefresh.getTime() - oneDayInMillis)));
+  }
+
+  @Test
+  public void refreshRequiredIfZeroHoursPassed() throws Exception {
+    GiTinderProfile profileToCheck = new GiTinderProfile();
+    profileToCheck.setRefreshDate(new Timestamp(System.currentTimeMillis()));
+    assertFalse(profileService.refreshRequired(profileToCheck));
+  }
+
+  @Test
+  public void refreshRequiredSince1970() throws Exception {
+    GiTinderProfile profileToCheck = new GiTinderProfile();
+    profileToCheck.setRefreshDate(new Timestamp(00000000));
+    assertTrue(profileService.refreshRequired(profileToCheck));
+  }
+
+  @Test
+  public void refreshRequiredSinceNowMinus24Hours() throws Exception {
+    GiTinderProfile profileToCheck = new GiTinderProfile();
+    profileToCheck.setRefreshDate(new Timestamp(testTimeStamp.getTime() - oneDayInMillis));
+    assertTrue(profileService.refreshRequired(profileToCheck));
   }
 
   @Test
