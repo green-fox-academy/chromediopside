@@ -137,19 +137,19 @@ public class ProfileService {
   }
 
   public ResponseEntity<?> getOtherProfile(String appToken, String username) {
-    if (appToken == null || userRepository.findByAppToken(appToken) == null) {
+    if (!validAppToken(appToken)) {
       return errorService.unauthorizedRequestError();
     }
     if (userRepository.findByUserName(username) == null) {
       return errorService.noSuchUserError();
     }
-    GiTinderUser authenticatedUser = userRepository.findByUserNameAndAppToken(username, appToken);
-    if (profileRepository.existsByLogin(authenticatedUser.getUserName())
-        || refreshRequired(profileRepository.findByLogin(authenticatedUser.getUserName()))) {
-      profileRepository.save(fetchProfileFromGitHub(authenticatedUser.getAccessToken(), username));
+    GiTinderUser giTinderUser = userRepository.findByUserNameAndAppToken(username, appToken);
+    if (profileRepository.existsByLogin(giTinderUser.getUserName())
+        || refreshRequired(profileRepository.findByLogin(giTinderUser.getUserName()))) {
+      profileRepository.save(fetchProfileFromGitHub(giTinderUser.getAccessToken(), username));
     }
     GiTinderProfile upToDateProfile = profileRepository
-        .findByLogin(authenticatedUser.getUserName());
+        .findByLogin(giTinderUser.getUserName());
     return new ResponseEntity<Object>(upToDateProfile, HttpStatus.OK);
   }
 

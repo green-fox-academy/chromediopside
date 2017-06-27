@@ -39,9 +39,8 @@ public class ProfileController {
     return errorService.unauthorizedRequestError();
   }
 
-  @RequestMapping("/profile")
-  public ResponseEntity<?> getOwnProfile(@RequestHeader(name = "X-GiTinder-token") String appToken)
-          throws Exception {
+  @GetMapping("/profile")
+  public ResponseEntity<?> getOwnProfile(@RequestHeader(name = "X-GiTinder-token") String appToken) {
     return profileService.getOwnProfile(appToken);
   }
 
