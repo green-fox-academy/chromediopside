@@ -31,7 +31,7 @@ public class ProfileService {
 
   private static final long oneDayInMillis = 86400000;
   private static final String GET_REQUEST_IOERROR
-          = "Some GitHub data of this user is not available for this token!";
+      = "Some GitHub data of this user is not available for this token!";
 
   private UserRepository userRepository;
   private ProfileRepository profileRepository;
@@ -45,15 +45,15 @@ public class ProfileService {
 
   @Autowired
   public ProfileService(
-          UserRepository userRepository,
-          ProfileRepository profileRepository,
-          ErrorService errorService,
-          PageService pageService,
-          MockProfileBuilder mockProfileBuilder,
-          GiTinderProfile giTinderProfile,
-          Language language,
-          GiTinderUserService userService,
-          SwipeRepository swipeRepository) {
+      UserRepository userRepository,
+      ProfileRepository profileRepository,
+      ErrorService errorService,
+      PageService pageService,
+      MockProfileBuilder mockProfileBuilder,
+      GiTinderProfile giTinderProfile,
+      Language language,
+      GiTinderUserService userService,
+      SwipeRepository swipeRepository) {
     this.userRepository = userRepository;
     this.profileRepository = profileRepository;
     this.errorService = errorService;
@@ -75,7 +75,7 @@ public class ProfileService {
   }
 
   private boolean setLoginAndAvatar(GitHubClient gitHubClient, String username,
-          GiTinderProfile giTinderProfile) {
+      GiTinderProfile giTinderProfile) {
     UserService userService = new UserService(gitHubClient);
     try {
       User user = userService.getUser(username);
@@ -89,7 +89,7 @@ public class ProfileService {
   }
 
   private boolean setReposAndLanguages(GitHubClient gitHubClient, String username,
-          GiTinderProfile giTinderProfile) {
+      GiTinderProfile giTinderProfile) {
     RepositoryService repositoryService = new RepositoryService(gitHubClient);
     try {
       List<Repository> repositoryList = repositoryService.getRepositories(username);
@@ -129,7 +129,7 @@ public class ProfileService {
     GiTinderProfile giTinderProfile = new GiTinderProfile();
     giTinderProfile.setRefreshDate(new Timestamp(System.currentTimeMillis()));
     if (!(setLoginAndAvatar(gitHubClient, username, giTinderProfile) &&
-            setReposAndLanguages(gitHubClient, username, giTinderProfile))) {
+        setReposAndLanguages(gitHubClient, username, giTinderProfile))) {
       giTinderProfile = null;
     }
     return giTinderProfile;
@@ -143,22 +143,21 @@ public class ProfileService {
       return errorService.noSuchUserError();
     }
     GiTinderUser authenticatedUser = userRepository.findByUserNameAndAppToken(username, appToken);
-    if (profileRepository.existsByLogin(authenticatedUser.getUserName()) || refreshRequired(
-            profileRepository
-                    .findByLogin(authenticatedUser.getUserName()))) {
+    if (profileRepository.existsByLogin(authenticatedUser.getUserName())
+        || refreshRequired(profileRepository.findByLogin(authenticatedUser.getUserName()))) {
       profileRepository.save(fetchProfileFromGitHub(authenticatedUser.getAccessToken(), username));
     }
     GiTinderProfile upToDateProfile = profileRepository
-            .findByLogin(authenticatedUser.getUserName());
+        .findByLogin(authenticatedUser.getUserName());
     return new ResponseEntity<Object>(upToDateProfile, HttpStatus.OK);
   }
 
   public ResponseEntity<?> getOwnProfile(String appToken) {
-    if (!appToken.equals("")) {
-      GiTinderProfile mockProfile = mockProfileBuilder.build();
-      return new ResponseEntity<Object>(mockProfile, HttpStatus.OK);
-    }
-    return errorService.unauthorizedRequestError();
+    return getOtherProfile(appToken, getUserNameByAppToken(appToken));
+  }
+
+  public String getUserNameByAppToken(String appToken) {
+    return userRepository.findByAppToken(appToken).getUserName();
   }
 
   public int daysPassedBetweenDates(Timestamp date1, Timestamp date2) {
@@ -183,14 +182,14 @@ public class ProfileService {
   public void fetchAndSaveProfileOnLogin(LoginForm loginForm) {
     if (loginForm.getUsername() != null && loginForm.getAccessToken() != null) {
       GiTinderProfile currentProfile = fetchProfileFromGitHub(loginForm.getAccessToken(),
-              loginForm.getUsername());
+          loginForm.getUsername());
       if (profileRepository.existsByLogin(loginForm.getUsername()) && currentProfile != null) {
         GiTinderProfile profileToCheck = profileRepository.findByLogin(loginForm.getUsername());
         if (refreshRequired(profileToCheck)) {
           profileToCheck.updateProfile(currentProfile.getAvatarUrl(),
-                  currentProfile.getRepos(),
-                  currentProfile.getLanguagesList(),
-                  new Timestamp(System.currentTimeMillis()));
+              currentProfile.getRepos(),
+              currentProfile.getLanguagesList(),
+              new Timestamp(System.currentTimeMillis()));
         }
       } else {
         if (currentProfile != null) {
