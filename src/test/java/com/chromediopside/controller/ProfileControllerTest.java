@@ -4,26 +4,34 @@ import static org.hamcrest.Matchers.nullValue;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
 import com.chromediopside.GitinderApplication;
+import com.chromediopside.mockbuilder.MockUserBuilder;
+import com.chromediopside.repository.UserRepository;
+import java.util.List;
 import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.hamcrest.Matchers.*;
 
 
-@RunWith(SpringRunner.class)
+@RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = GitinderApplication.class)
+@AutoConfigureMockMvc
 @WebAppConfiguration
 @EnableWebMvc
 public class ProfileControllerTest {
@@ -32,6 +40,11 @@ public class ProfileControllerTest {
 
   @Autowired
   private WebApplicationContext webApplicationContext;
+  @MockBean
+  private UserRepository userRepository;
+  @Autowired
+  private MockUserBuilder mockUserBuilder;
+
 
   @Before
   public void setup() throws Exception {
@@ -65,7 +78,7 @@ public class ProfileControllerTest {
   }
 
   @Test
-  public void listAvaialblePagesWithoutToken() throws Exception {
+  public void listAvailablePagesWithoutToken() throws Exception {
 
     mockMvc.perform(get("/available"))
             .andExpect(status().isUnauthorized())
@@ -76,4 +89,32 @@ public class ProfileControllerTest {
                     + "}"));
   }
 
+  @Test
+  public void get401WhenTokenNotExists() throws Exception {
+
+    this.mockMvc.perform(get("/available").header("X-GiTinder-token", "notValidToken"))
+            .andExpect(MockMvcResultMatchers.status().isUnauthorized())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+            .andExpect(content().json("{"
+                    + "\"status\" : \"error\","
+                    + "\"message\" : \"Unauthorized request!\""
+                    + "}"));
+  }
+
+  @Test
+  public void getPageWithToken() throws Exception {
+
+    Mockito.when(userRepository.findByAppToken("aa345678910111aa")).thenReturn(mockUserBuilder.build());
+
+    this.mockMvc.perform(get("/available").header("X-GiTinder-token", "aa345678910111aa"))
+            .andExpect(MockMvcResultMatchers.status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+            .andExpect(jsonPath("$").value(hasKey("profiles")))
+            .andExpect(jsonPath("$.profiles").value(
+                    anyOf(any(List.class), nullValue(Set.class))))
+            .andExpect(jsonPath("$").value(hasKey("count")))
+            .andExpect(jsonPath("$").value(hasKey("all")));
+
+  }
 }
+
