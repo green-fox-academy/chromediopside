@@ -31,7 +31,7 @@ public class ProfileService {
 
   private static final long oneDayInMillis = 86400000;
   private static final String GET_REQUEST_IOERROR
-          = "Some GitHub data of this user is not available for this token!";
+      = "Some GitHub data of this user is not available for this token!";
 
   private UserRepository userRepository;
   private ProfileRepository profileRepository;
@@ -68,10 +68,6 @@ public class ProfileService {
   public ProfileService() {
   }
 
-  public List<GiTinderProfile> randomTenProfileByLanguage(String languageName) {
-    return profileRepository.selectTenRandomByLanguageName(languageName);
-  }
-
   private GitHubClient setUpGitHubClient(String accessToken) {
     GitHubClient gitHubClient = new GitHubClient();
     gitHubClient.setOAuth2Token(accessToken);
@@ -79,7 +75,7 @@ public class ProfileService {
   }
 
   private boolean setLoginAndAvatar(GitHubClient gitHubClient, String username,
-          GiTinderProfile giTinderProfile) {
+      GiTinderProfile giTinderProfile) {
     UserService userService = new UserService(gitHubClient);
     try {
       User user = userService.getUser(username);
@@ -93,7 +89,7 @@ public class ProfileService {
   }
 
   private boolean setReposAndLanguages(GitHubClient gitHubClient, String username,
-          GiTinderProfile giTinderProfile) {
+      GiTinderProfile giTinderProfile) {
     RepositoryService repositoryService = new RepositoryService(gitHubClient);
     try {
       List<Repository> repositoryList = repositoryService.getRepositories(username);
@@ -133,7 +129,7 @@ public class ProfileService {
     GiTinderProfile giTinderProfile = new GiTinderProfile();
     giTinderProfile.setRefreshDate(new Timestamp(System.currentTimeMillis()));
     if (!(setLoginAndAvatar(gitHubClient, username, giTinderProfile) &&
-            setReposAndLanguages(gitHubClient, username, giTinderProfile))) {
+        setReposAndLanguages(gitHubClient, username, giTinderProfile))) {
       giTinderProfile = null;
     }
     return giTinderProfile;
@@ -147,22 +143,21 @@ public class ProfileService {
       return errorService.noSuchUserError();
     }
     GiTinderUser authenticatedUser = userRepository.findByUserNameAndAppToken(username, appToken);
-    if (profileRepository.existsByLogin(authenticatedUser.getUserName()) || refreshRequired(
-            profileRepository
-                    .findByLogin(authenticatedUser.getUserName()))) {
+    if (profileRepository.existsByLogin(authenticatedUser.getUserName())
+        || refreshRequired(profileRepository.findByLogin(authenticatedUser.getUserName()))) {
       profileRepository.save(fetchProfileFromGitHub(authenticatedUser.getAccessToken(), username));
     }
     GiTinderProfile upToDateProfile = profileRepository
-            .findByLogin(authenticatedUser.getUserName());
+        .findByLogin(authenticatedUser.getUserName());
     return new ResponseEntity<Object>(upToDateProfile, HttpStatus.OK);
   }
 
   public ResponseEntity<?> getOwnProfile(String appToken) {
-    if (!appToken.equals("")) {
-      GiTinderProfile mockProfile = mockProfileBuilder.build();
-      return new ResponseEntity<Object>(mockProfile, HttpStatus.OK);
-    }
-    return errorService.unauthorizedRequestError();
+    return getOtherProfile(appToken, getUserNameByAppToken(appToken));
+  }
+
+  public String getUserNameByAppToken(String appToken) {
+    return userRepository.findByAppToken(appToken).getUserName();
   }
 
   public int daysPassedBetweenDates(Timestamp date1, Timestamp date2) {
@@ -205,7 +200,7 @@ public class ProfileService {
   public ResponseEntity<?> tenProfileByPage(String appToken, int pageNumber) {
     if (validAppToken(appToken)) {
       if (enoughProfiles(pageNumber)) {
-      return new ResponseEntity<Object>(pageService.setPage(pageNumber), HttpStatus.OK);
+        return new ResponseEntity<Object>(pageService.setPage(pageNumber), HttpStatus.OK);
       }
       return errorService.getNoMoreAvailableProfiles();
     } else {
@@ -226,14 +221,12 @@ public class ProfileService {
     String swipingUsersName = swipingUser.getUserName();
 
     if (direction.equals("right")) {
-      Swiping swiping = new Swiping
-              (swipingUsersName, username);
+      Swiping swiping = new Swiping(swipingUsersName, username);
       swipeRepository.save(swiping);
     }
 
     boolean match_status = false;
-    if (swipeRepository.existsBySwipingUsersNameAndSwipedUsersName
-            (username, swipingUsersName)) {
+    if (swipeRepository.existsBySwipingUsersNameAndSwipedUsersName(username, swipingUsersName)) {
       match_status = true;
     }
 
