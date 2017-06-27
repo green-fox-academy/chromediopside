@@ -31,7 +31,8 @@ public class PageService {
 
   private List<GiTinderProfile> listProfilesPerPage(int givenPageNumber) {
     int offset = (givenPageNumber - 1) * PROFILES_PER_PAGE;
-    return profileRepository.selectBlocksOfTensOrderByGivenParam(randomSortingParam(), givenPageNumber);
+    List<GiTinderProfile> listOfProfilesPerPage = profileRepository.listTensOrderByEntry(randomSortingParam(), givenPageNumber);
+    return listOfProfilesPerPage;
   }
 
   private String randomSortingParam() {

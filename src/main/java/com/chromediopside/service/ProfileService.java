@@ -45,15 +45,15 @@ public class ProfileService {
 
   @Autowired
   public ProfileService(
-      UserRepository userRepository,
-      ProfileRepository profileRepository,
-      ErrorService errorService,
-      PageService pageService,
-      MockProfileBuilder mockProfileBuilder,
-      GiTinderProfile giTinderProfile,
-      Language language,
-      GiTinderUserService userService,
-      SwipeRepository swipeRepository) {
+          UserRepository userRepository,
+          ProfileRepository profileRepository,
+          ErrorService errorService,
+          PageService pageService,
+          MockProfileBuilder mockProfileBuilder,
+          GiTinderProfile giTinderProfile,
+          Language language,
+          GiTinderUserService userService,
+          SwipeRepository swipeRepository) {
     this.userRepository = userRepository;
     this.profileRepository = profileRepository;
     this.errorService = errorService;
@@ -66,10 +66,6 @@ public class ProfileService {
   }
 
   public ProfileService() {
-  }
-
-  public List<GiTinderProfile> randomTenProfileByLanguage(String languageName) {
-    return profileRepository.selectTenRandomByLanguageName(languageName);
   }
 
   private GitHubClient setUpGitHubClient(String accessToken) {
@@ -187,14 +183,14 @@ public class ProfileService {
   public void fetchAndSaveProfileOnLogin(LoginForm loginForm) {
     if (loginForm.getUsername() != null && loginForm.getAccessToken() != null) {
       GiTinderProfile currentProfile = fetchProfileFromGitHub(loginForm.getAccessToken(),
-          loginForm.getUsername());
+              loginForm.getUsername());
       if (profileRepository.existsByLogin(loginForm.getUsername()) && currentProfile != null) {
         GiTinderProfile profileToCheck = profileRepository.findByLogin(loginForm.getUsername());
         if (refreshRequired(profileToCheck)) {
           profileToCheck.updateProfile(currentProfile.getAvatarUrl(),
-              currentProfile.getRepos(),
-              currentProfile.getLanguagesList(),
-              new Timestamp(System.currentTimeMillis()));
+                  currentProfile.getRepos(),
+                  currentProfile.getLanguagesList(),
+                  new Timestamp(System.currentTimeMillis()));
         }
       } else {
         if (currentProfile != null) {
@@ -207,7 +203,7 @@ public class ProfileService {
   public ResponseEntity<?> tenProfileByPage(String appToken, int pageNumber) {
     if (validAppToken(appToken)) {
       if (enoughProfiles(pageNumber)) {
-      return new ResponseEntity<Object>(pageService.setPage(pageNumber), HttpStatus.OK);
+        return new ResponseEntity<Object>(pageService.setPage(pageNumber), HttpStatus.OK);
       }
       return errorService.getNoMoreAvailableProfiles();
     } else {

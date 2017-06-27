@@ -16,20 +16,13 @@ public interface ProfileRepository extends CrudRepository<GiTinderProfile, Strin
           + "FROM gitinder_profile "
           + "JOIN language_to_profile "
           + "ON gitinder_profile.login = language_to_profile.profile_id "
-          + "WHERE language_name LIKE ?1 ORDER BY RANDOM() LIMIT 10", nativeQuery = true)
-  List<GiTinderProfile> selectTenRandomByLanguageName(String languageName);
-
-  @Query(value = "SELECT login, avatar_url, repos, language_id, refresh_date "
-          + "FROM gitinder_profile "
-          + "JOIN language_to_profile "
-          + "ON gitinder_profile.login = language_to_profile.profile_id "
           + "WHERE language_name LIKE ?1 ORDER BY ?2 ASC LIMIT 10 OFFSET ?3", nativeQuery = true)
-  List<GiTinderProfile> selectBlocksOfTensByLanguageNameOrderByGivenParam(
+  List<GiTinderProfile> listTensByLanguageOrderByEntry(
           String languageName, String sortingParam, int offset);
 
   @Query(value = "SELECT login, avatar_url, repos, refresh_date "
           + "FROM gitinder_profile "
           + "ORDER BY ?1 ASC LIMIT 10 OFFSET ?2", nativeQuery = true)
-  List<GiTinderProfile> selectBlocksOfTensOrderByGivenParam(String sortingParam, int offset);
+  List<GiTinderProfile> listTensOrderByEntry(String sortingParam, int offset);
 
 }
