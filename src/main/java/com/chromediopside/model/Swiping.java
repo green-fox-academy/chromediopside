@@ -1,7 +1,6 @@
 package com.chromediopside.model;
 
-import com.chromediopside.model.Swiping.SwipeId;
-import java.io.Serializable;
+import java.sql.Timestamp;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
@@ -15,6 +14,8 @@ public class Swiping {
   @Id
   private String swipedUsersName;
 
+  private Timestamp timestamp;
+
   public Swiping() {
   }
 
@@ -23,11 +24,9 @@ public class Swiping {
     this.swipedUsersName = swipedUsersName;
   }
 
-
-  public class SwipeId implements Serializable {
-
-    private String swipingUsersName;
-    private String swipedUsersName;
-
-  }
+  public Swiping(String swipingUsersName, String swipedUsersName, Timestamp timestamp) {
+      this.swipingUsersName = swipingUsersName;
+      this.swipedUsersName = swipedUsersName;
+      this.timestamp = timestamp;
+    }
 }

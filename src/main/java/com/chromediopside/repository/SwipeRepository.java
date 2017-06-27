@@ -1,7 +1,7 @@
 package com.chromediopside.repository;
 
+import com.chromediopside.model.SwipeId;
 import com.chromediopside.model.Swiping;
-import com.chromediopside.model.Swiping.SwipeId;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 

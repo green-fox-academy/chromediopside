@@ -6,6 +6,7 @@ import com.chromediopside.mockbuilder.MockProfileBuilder;
 import com.chromediopside.model.GiTinderProfile;
 import com.chromediopside.model.GiTinderUser;
 import com.chromediopside.model.Language;
+import com.chromediopside.model.Match;
 import com.chromediopside.model.Swiping;
 import com.chromediopside.repository.ProfileRepository;
 import com.chromediopside.repository.SwipeRepository;
@@ -220,20 +221,22 @@ public class ProfileService {
   }
 
   public ResponseEntity<?> handleSwiping(String appToken, String username, String direction) {
-    GiTinderUser swipingUser = userService.getUserByAppToken(appToken);
-    String swipingUsersName = swipingUser.getUserName();
-
+    SwipeResponse swipeResponse = new SwipeResponse();
     if (direction.equals("right")) {
-      Swiping swiping = new Swiping(swipingUsersName, username);
-      swipeRepository.save(swiping);
-    }
+      GiTinderUser swipingUser = userService.getUserByAppToken(appToken);
+      String swipingUsersName = swipingUser.getUserName();
+      if (!swipeRepository.existsBySwipingUsersNameAndSwipedUsersName(username, swipingUsersName)) {
 
-    boolean match_status = false;
-    if (swipeRepository.existsBySwipingUsersNameAndSwipedUsersName(username, swipingUsersName)) {
-      match_status = true;
+        Swiping swiping = new Swiping(swipingUsersName, username);
+        swipeRepository.save(swiping);
+      } else {
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        Swiping matchingSwipe = new Swiping(username, swipingUsersName, timestamp);
+        swipeRepository.save(matchingSwipe);
+        Match match = new Match(username, timestamp);
+        swipeResponse.setMatch(match);
+      }
     }
-
-    SwipeResponse swipeResponse = new SwipeResponse(match_status);
     ResponseEntity<?> responseEntity = new ResponseEntity<Object>(swipeResponse, HttpStatus.OK);
     return responseEntity;
   }

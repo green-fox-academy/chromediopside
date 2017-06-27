@@ -1,5 +1,6 @@
 package com.chromediopside.datatransfer;
 
+import com.chromediopside.model.Match;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -7,16 +8,17 @@ public class SwipeResponse {
 
   String status;
   String message;
-  boolean match_status;
+  Match match;
 
   public SwipeResponse() {
-
-  }
-
-  public SwipeResponse(boolean match_status) {
     status = "ok";
     message = "success";
-    this.match_status = match_status;
+  }
+
+  public SwipeResponse(Match match) {
+    status = "ok";
+    message = "success";
+    this.match = match;
   }
 
   public String getStatus() {
@@ -27,8 +29,11 @@ public class SwipeResponse {
     return message;
   }
 
-  public boolean isMatch_status() {
-    return match_status;
+  public Match getMatch() {
+    return match;
   }
 
+  public void setMatch(Match match) {
+    this.match = match;
+  }
 }
