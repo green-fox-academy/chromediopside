@@ -15,7 +15,6 @@ import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -45,9 +44,10 @@ public class ProfileControllerTest {
 
   @Autowired
   private WebApplicationContext webApplicationContext;
+
   @MockBean
   private UserRepository userRepository;
-  @Mock
+  @MockBean
   private ProfileRepository profileRepository;
   @Autowired
   private MockUserBuilder mockUserBuilder;
@@ -103,8 +103,9 @@ public class ProfileControllerTest {
   public void getPageWithToken() throws Exception {
     List<GiTinderProfile> testList = new ArrayList<>();
     testList.add(mockProfileBuilder.build());
+    testList.add(mockProfileBuilder.build());
 
-    Mockito.when(userRepository.findByAppToken("aa345678910111aa"))
+    Mockito.when(userRepository.findByAppToken("asd"))
             .thenReturn(mockUserBuilder.build());
 
     Mockito.when(profileRepository.listTensOrderByEntry("login", 0))
@@ -115,8 +116,9 @@ public class ProfileControllerTest {
             .thenReturn(testList);
     Mockito.when(profileRepository.listTensOrderByEntry("refresh_date", 0))
             .thenReturn(testList);
+    Mockito.when(profileRepository.count()).thenReturn((long)testList.size());
 
-    this.mockMvc.perform(get("/available").header("X-GiTinder-token", "aa345678910111aa"))
+    this.mockMvc.perform(get("/available").header("X-GiTinder-token", "asd"))
             .andExpect(MockMvcResultMatchers.status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
             .andExpect(jsonPath("$").value(hasKey("profiles")))
