@@ -9,6 +9,7 @@ import com.chromediopside.mockbuilder.MockUserBuilder;
 import com.chromediopside.model.GiTinderProfile;
 import com.chromediopside.repository.ProfileRepository;
 import com.chromediopside.repository.UserRepository;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -32,7 +33,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.hamcrest.Matchers.*;
 
-
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = GitinderApplication.class)
 @AutoConfigureMockMvc
@@ -54,7 +54,6 @@ public class ProfileControllerTest {
   @Autowired
   private MockProfileBuilder mockProfileBuilder;
 
-
   @Before
   public void setup() throws Exception {
     this.mockMvc = webAppContextSetup(webApplicationContext).build();
@@ -64,7 +63,13 @@ public class ProfileControllerTest {
   @Test
   public void getProfileWithToken() throws Exception {
 
-    this.mockMvc.perform(get("/profile").header("X-GiTinder-token", "123"))
+    Mockito.when(userRepository.findByAppToken("123")).thenReturn(mockUserBuilder.build());
+    Mockito.when(userRepository.findByUserName("kondfox")).thenReturn(mockUserBuilder.build());
+    Mockito.when(userRepository.findByUserNameAndAppToken("kondfox", "123")).thenReturn(mockUserBuilder.build());
+    Mockito.when(profileRepository.existsByLogin("kondfox")).thenReturn(true);
+    Mockito.when(profileRepository.findByLogin("kondfox")).thenReturn(mockProfileBuilder.setRefreshDate(new Timestamp(1498577445819L)).build());
+
+    mockMvc.perform(get("/profile").header("X-GiTinder-token", "123"))
             .andExpect(MockMvcResultMatchers.status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
             .andExpect(jsonPath("$").value(hasKey("login")))
@@ -126,7 +131,5 @@ public class ProfileControllerTest {
                     anyOf(any(List.class), nullValue(Set.class))))
             .andExpect(jsonPath("$").value(hasKey("count")))
             .andExpect(jsonPath("$").value(hasKey("all")));
-
   }
 }
-
