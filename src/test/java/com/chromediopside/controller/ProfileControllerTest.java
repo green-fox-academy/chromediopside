@@ -4,13 +4,18 @@ import static org.hamcrest.Matchers.nullValue;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
 import com.chromediopside.GitinderApplication;
+import com.chromediopside.mockbuilder.MockProfileBuilder;
 import com.chromediopside.mockbuilder.MockUserBuilder;
+import com.chromediopside.model.GiTinderProfile;
+import com.chromediopside.repository.ProfileRepository;
 import com.chromediopside.repository.UserRepository;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -42,14 +47,19 @@ public class ProfileControllerTest {
   private WebApplicationContext webApplicationContext;
   @MockBean
   private UserRepository userRepository;
+  @Mock
+  private ProfileRepository profileRepository;
   @Autowired
   private MockUserBuilder mockUserBuilder;
+  @Autowired
+  private MockProfileBuilder mockProfileBuilder;
 
 
   @Before
   public void setup() throws Exception {
     this.mockMvc = webAppContextSetup(webApplicationContext).build();
   }
+
 
   @Test
   public void getProfileWithToken() throws Exception {
@@ -90,21 +100,21 @@ public class ProfileControllerTest {
   }
 
   @Test
-  public void get401WhenTokenNotExists() throws Exception {
-
-    this.mockMvc.perform(get("/available").header("X-GiTinder-token", "notValidToken"))
-            .andExpect(MockMvcResultMatchers.status().isUnauthorized())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
-            .andExpect(content().json("{"
-                    + "\"status\" : \"error\","
-                    + "\"message\" : \"Unauthorized request!\""
-                    + "}"));
-  }
-
-  @Test
   public void getPageWithToken() throws Exception {
+    List<GiTinderProfile> testList = new ArrayList<>();
+    testList.add(mockProfileBuilder.build());
 
-    Mockito.when(userRepository.findByAppToken("aa345678910111aa")).thenReturn(mockUserBuilder.build());
+    Mockito.when(userRepository.findByAppToken("aa345678910111aa"))
+            .thenReturn(mockUserBuilder.build());
+
+    Mockito.when(profileRepository.listTensOrderByEntry("login", 0))
+            .thenReturn(testList);
+    Mockito.when(profileRepository.listTensOrderByEntry("avatar_url", 0))
+            .thenReturn(testList);
+    Mockito.when(profileRepository.listTensOrderByEntry("repos", 0))
+            .thenReturn(testList);
+    Mockito.when(profileRepository.listTensOrderByEntry("refresh_date", 0))
+            .thenReturn(testList);
 
     this.mockMvc.perform(get("/available").header("X-GiTinder-token", "aa345678910111aa"))
             .andExpect(MockMvcResultMatchers.status().isOk())
