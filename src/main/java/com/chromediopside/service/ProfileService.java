@@ -216,7 +216,7 @@ public class ProfileService {
   }
 
   private boolean validAppToken(String appToken) {
-    return userRepository.findByAppToken(appToken) == null;
+    return userRepository.findByAppToken(appToken) != null;
   }
 
   public ResponseEntity<?> handleSwiping(String appToken, String username, String direction) {
