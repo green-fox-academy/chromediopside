@@ -39,9 +39,8 @@ public class ProfileController {
     return errorService.unauthorizedRequestError();
   }
 
-  @RequestMapping("/profile")
-  public ResponseEntity<?> getOwnProfile(@RequestHeader(name = "X-GiTinder-token") String appToken)
-          throws Exception {
+  @GetMapping("/profile")
+  public ResponseEntity<?> getOwnProfile(@RequestHeader(name = "X-GiTinder-token") String appToken) {
     return profileService.getOwnProfile(appToken);
   }
 
@@ -51,11 +50,15 @@ public class ProfileController {
     return profileService.getOtherProfile(username, appToken);
   }
 
-  @GetMapping(value = {"/available/{page}", "/available"})
+  @GetMapping(value = {"/available", "/available/{page}"})
   public ResponseEntity<?> listAvailableProfilesByPage(
           @RequestHeader(name = "X-GiTinder-token") String appToken,
-          @PathVariable Map<String, Integer> pathVariable) throws Exception {
-    return profileService.tenProfileByPage(appToken, pathVariable.get("page"));
+          @PathVariable Map<String, Integer> pathVariableMap) {
+    if (pathVariableMap.containsKey("page")) {
+    return profileService.tenProfileByPage(appToken, pathVariableMap.get("page"));
+    } else {
+      return profileService.tenProfileByPage(appToken, 1);
+    }
   }
 
   @PutMapping("/profiles/{username}/{direction}")

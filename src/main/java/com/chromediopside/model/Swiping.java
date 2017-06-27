@@ -1,5 +1,6 @@
 package com.chromediopside.model;
 
+import java.sql.Timestamp;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
@@ -13,6 +14,8 @@ public class Swiping {
   @Id
   private String swipedUsersName;
 
+  private Timestamp timestamp;
+
   public Swiping() {
   }
 
@@ -20,4 +23,10 @@ public class Swiping {
     this.swipingUsersName = swipingUsersName;
     this.swipedUsersName = swipedUsersName;
   }
+
+  public Swiping(String swipingUsersName, String swipedUsersName, Timestamp timestamp) {
+      this.swipingUsersName = swipingUsersName;
+      this.swipedUsersName = swipedUsersName;
+      this.timestamp = timestamp;
+    }
 }

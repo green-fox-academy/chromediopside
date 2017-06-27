@@ -28,7 +28,7 @@ public class ProfileServiceTest {
   private static final String testAvatarUrl = System.getenv("TEST_AVATAR_URL");
   private static final String testRepos = "exam-basics;exam-trial-basics;"
       + "git-lesson-repository;lagopus-spring-exam;p-czigany.github.io";
-  private static final Timestamp testTimeStamp = new Timestamp(System.currentTimeMillis());
+  private static final Timestamp currentTime = new Timestamp(System.currentTimeMillis());
   private Set<Language> testLanguagesList = new HashSet<>();
 
   private static final Timestamp lastRefresh = new Timestamp(1497441600000l);                  //2017-06-14 14:00:00.0
@@ -55,7 +55,7 @@ public class ProfileServiceTest {
         .setAvatarUrl(testAvatarUrl)
         .setRepos(testRepos)
         .setLanguagesList(testLanguagesList)
-        .setRefreshDate(testTimeStamp)
+        .setRefreshDate(currentTime)
         .build();
     GiTinderProfile actualProfile = profileService
         .fetchProfileFromGitHub(validAccessToken, testLogin);
@@ -101,7 +101,7 @@ public class ProfileServiceTest {
   @Test
   public void refreshRequiredSinceNowMinus24Hours() throws Exception {
     GiTinderProfile profileToCheck = new GiTinderProfile();
-    profileToCheck.setRefreshDate(new Timestamp(testTimeStamp.getTime() - oneDayInMillis));
+    profileToCheck.setRefreshDate(new Timestamp(currentTime.getTime() - oneDayInMillis));
     assertTrue(profileService.refreshRequired(profileToCheck));
   }
 }
