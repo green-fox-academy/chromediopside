@@ -172,7 +172,7 @@ public class ProfileService {
     } else {
       differenceAsLong = date2.getTime() - date1.getTime();
     }
-    int differenceAsDays = (int) (differenceAsLong / oneDayInMillis);
+    int differenceAsDays = (int)(differenceAsLong / oneDayInMillis);
     return differenceAsDays;
   }
 
@@ -185,22 +185,20 @@ public class ProfileService {
   }
 
   public void fetchAndSaveProfileOnLogin(LoginForm loginForm) {
-    if (loginForm.getUsername() != null && loginForm.getAccessToken() != null) {
-      GiTinderProfile currentProfile = fetchProfileFromGitHub(loginForm.getAccessToken(),
-          loginForm.getUsername());
-      if (profileRepository.existsByLogin(loginForm.getUsername()) && currentProfile != null) {
-        GiTinderProfile profileToCheck = profileRepository.findByLogin(loginForm.getUsername());
-        if (refreshRequired(profileToCheck)) {
-          profileToCheck.updateProfile(currentProfile.getAvatarUrl(),
-              currentProfile.getRepos(),
-              currentProfile.getLanguagesList(),
-              new Timestamp(System.currentTimeMillis()));
-        }
-      } else {
-        if (currentProfile != null) {
-          profileRepository.save(currentProfile);
-        }
-      }
+    if (loginForm.getUsername() == null || loginForm.getAccessToken() == null) {
+      return;
+    }
+    GiTinderProfile currentProfile = fetchProfileFromGitHub(loginForm.getAccessToken(), loginForm.getUsername());
+    if (profileRepository.existsByLogin(loginForm.getUsername()) && refreshRequired(profileRepository.findByLogin(loginForm.getUsername()))) {
+      GiTinderProfile profileToUpdate = profileRepository.findByLogin(loginForm.getUsername());
+      profileToUpdate.updateProfile(
+          currentProfile.getAvatarUrl(),
+          currentProfile.getRepos(),
+          currentProfile.getLanguagesList());
+      profileRepository.save(profileToUpdate);
+    }
+    if (!profileRepository.existsByLogin(loginForm.getUsername())) {
+      profileRepository.save(currentProfile);
     }
   }
 
