@@ -184,7 +184,7 @@ public class ProfileService {
       return;
     }
     GiTinderProfile currentProfile = fetchProfileFromGitHub(loginForm.getAccessToken(), loginForm.getUsername());
-    if (profileRepository.existsByLogin(loginForm.getUsername()) && refreshRequired(profileRepository.findByLogin(loginForm.getUsername()))) {
+    if (profileRepository.existsByLogin(loginForm.getUsername()) && refreshRequired(profileRepository.findByLogin(loginForm.getUsername())) && currentProfile != null) {
       GiTinderProfile profileToUpdate = profileRepository.findByLogin(loginForm.getUsername());
       profileToUpdate.updateProfile(
           currentProfile.getAvatarUrl(),
@@ -192,7 +192,7 @@ public class ProfileService {
           currentProfile.getLanguagesList());
       profileRepository.save(profileToUpdate);
     }
-    if (!profileRepository.existsByLogin(loginForm.getUsername())) {
+    if (!profileRepository.existsByLogin(loginForm.getUsername()) && currentProfile != null) {
       profileRepository.save(currentProfile);
     }
   }
