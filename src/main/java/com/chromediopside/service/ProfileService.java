@@ -224,14 +224,12 @@ public class ProfileService {
     String swipingUsersName = swipingUser.getUserName();
 
     if (direction.equals("right")) {
-      Swiping swiping = new Swiping
-              (swipingUsersName, username);
+      Swiping swiping = new Swiping(swipingUsersName, username);
       swipeRepository.save(swiping);
     }
 
     boolean match_status = false;
-    if (swipeRepository.existsBySwipingUsersNameAndSwipedUsersName
-            (username, swipingUsersName)) {
+    if (swipeRepository.existsBySwipingUsersNameAndSwipedUsersName(username, swipingUsersName)) {
       match_status = true;
     }
 
