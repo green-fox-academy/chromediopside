@@ -47,8 +47,8 @@ public class ProfileController {
 
   @RequestMapping("/profiles/{username}")
   public ResponseEntity<?> getOtherProfile(@PathVariable String username,
-          @RequestHeader(name = "X-GiTinder-token") String accessToken) throws Exception {
-    return profileService.getOtherProfile(username, accessToken);
+          @RequestHeader(name = "X-GiTinder-token") String appToken) throws Exception {
+    return profileService.getOtherProfile(username, appToken);
   }
 
   @GetMapping(value = {"/available/{page}", "/available"})
