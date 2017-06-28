@@ -67,7 +67,7 @@ public class ProfileControllerTest {
     Mockito.when(userRepository.findByUserName("kondfox")).thenReturn(mockUserBuilder.build());
     Mockito.when(userRepository.findByUserNameAndAppToken("kondfox", "123")).thenReturn(mockUserBuilder.build());
     Mockito.when(profileRepository.existsByLogin("kondfox")).thenReturn(true);
-    Mockito.when(profileRepository.findByLogin("kondfox")).thenReturn(mockProfileBuilder.setRefreshDate(new Timestamp(1498577445819L)).build());
+    Mockito.when(profileRepository.findByLogin("kondfox")).thenReturn(mockProfileBuilder.setRefreshDate(new Timestamp(System.currentTimeMillis())).build());
 
     mockMvc.perform(get("/profile").header("X-GiTinder-token", "123"))
             .andExpect(MockMvcResultMatchers.status().isOk())
@@ -90,6 +90,38 @@ public class ProfileControllerTest {
                     + "\"status\" : \"error\","
                     + "\"message\" : \"Unauthorized request!\""
                     + "}"));
+  }
+
+  @Test
+  public void getOtherProfileWithTokenAndName() throws Exception {
+
+    Mockito.when(userRepository.findByAppToken("123")).thenReturn(mockUserBuilder.build());
+    Mockito.when(userRepository.findByUserName("kondfox")).thenReturn(mockUserBuilder.build());
+    Mockito.when(userRepository.findByUserNameAndAppToken("kondfox", "123")).thenReturn(mockUserBuilder.build());
+    Mockito.when(profileRepository.existsByLogin("kondfox")).thenReturn(true);
+    Mockito.when(profileRepository.findByLogin("kondfox")).thenReturn(mockProfileBuilder.setRefreshDate(new Timestamp(System.currentTimeMillis())).build());
+
+    mockMvc.perform(get("/profiles/kondfox").header("X-GiTinder-token", "123"))
+        .andExpect(MockMvcResultMatchers.status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+        .andExpect(jsonPath("$").value(hasKey("login")))
+        .andExpect(jsonPath("$").value(hasKey("avatarUrl")))
+        .andExpect(jsonPath("$").value(hasKey("repos")))
+        .andExpect(jsonPath("$").value(hasKey("languagesList")))
+        .andExpect(jsonPath("$.languagesList").value(
+            anyOf(any(Set.class), nullValue(Set.class))));
+  }
+
+  @Test
+  public void getOtherProfileWithoutToken() throws Exception {
+
+    mockMvc.perform(get("/profiles/kondfox"))
+        .andExpect(status().isUnauthorized())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+        .andExpect(content().json("{"
+            + "\"status\" : \"error\","
+            + "\"message\" : \"Unauthorized request!\""
+            + "}"));
   }
 
   @Test
