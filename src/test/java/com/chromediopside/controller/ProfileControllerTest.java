@@ -9,6 +9,7 @@ import com.chromediopside.mockbuilder.MockUserBuilder;
 import com.chromediopside.model.GiTinderProfile;
 import com.chromediopside.repository.ProfileRepository;
 import com.chromediopside.repository.UserRepository;
+import com.chromediopside.service.ProfileService;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,6 +54,8 @@ public class ProfileControllerTest {
   private MockUserBuilder mockUserBuilder;
   @Autowired
   private MockProfileBuilder mockProfileBuilder;
+  @Autowired
+  ProfileService profileService;
 
   @Before
   public void setup() throws Exception {
@@ -132,4 +135,36 @@ public class ProfileControllerTest {
             .andExpect(jsonPath("$").value(hasKey("count")))
             .andExpect(jsonPath("$").value(hasKey("all")));
   }
+
+  @Test
+  public void getPageWithTokenAndPageNumber() throws Exception {
+    List<GiTinderProfile> testList = new ArrayList<>();
+    for (int i = 0; i < 12; i++) {
+    testList.add(mockProfileBuilder.build());
+    }
+    testList.subList(10, 12);
+
+    Mockito.when(userRepository.findByAppToken("asd"))
+            .thenReturn(mockUserBuilder.build());
+
+    Mockito.when(profileRepository.listTensOrderByEntry("login", 1))
+            .thenReturn(testList);
+    Mockito.when(profileRepository.listTensOrderByEntry("avatar_url", 1))
+            .thenReturn(testList);
+    Mockito.when(profileRepository.listTensOrderByEntry("repos", 1))
+            .thenReturn(testList);
+    Mockito.when(profileRepository.listTensOrderByEntry("refresh_date", 1))
+            .thenReturn(testList);
+    Mockito.when(profileRepository.count()).thenReturn((long)testList.size());
+
+    this.mockMvc.perform(get("/available/{page}", 2).header("X-GiTinder-token", "asd"))
+            .andExpect(MockMvcResultMatchers.status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+            .andExpect(jsonPath("$").value(hasKey("profiles")))
+            .andExpect(jsonPath("$.profiles").value(
+                    anyOf(any(List.class))))
+            .andExpect(jsonPath("$").value(hasKey("count")))
+            .andExpect(jsonPath("$").value(hasKey("all")));
+  }
+
 }
