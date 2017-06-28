@@ -31,8 +31,6 @@ import org.springframework.stereotype.Service;
 public class ProfileService {
 
   private static final long oneDayInMillis = 86400000;
-  private static final String GET_REQUEST_IOERROR
-      = "Some GitHub data of this user is not available for this token!";
 
   private UserRepository userRepository;
   private ProfileRepository profileRepository;
@@ -78,7 +76,7 @@ public class ProfileService {
       giTinderProfile.setAvatarUrl(user.getAvatarUrl());
       return true;
     } catch (IOException e) {
-      System.out.println(GET_REQUEST_IOERROR);
+      System.out.println(GitHubClientSevice.getGetRequestIoerror());
       return false;
     }
   }
@@ -99,7 +97,7 @@ public class ProfileService {
       giTinderProfile.setLanguagesList(languageObjects);
       return true;
     } catch (IOException e) {
-      System.out.println(GET_REQUEST_IOERROR);
+      System.out.println(GitHubClientSevice.getGetRequestIoerror());
       return false;
     }
   }
