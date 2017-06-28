@@ -4,7 +4,7 @@ import com.chromediopside.service.ErrorService;
 import com.chromediopside.service.PageService;
 import com.chromediopside.service.GiTinderUserService;
 import com.chromediopside.service.ProfileService;
-import java.util.Map;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -40,7 +40,8 @@ public class ProfileController {
   }
 
   @GetMapping("/profile")
-  public ResponseEntity<?> getOwnProfile(@RequestHeader(name = "X-GiTinder-token") String appToken) {
+  public ResponseEntity<?> getOwnProfile(
+          @RequestHeader(name = "X-GiTinder-token") String appToken) {
     return profileService.getOwnProfile(appToken);
   }
 
@@ -50,19 +51,19 @@ public class ProfileController {
     return profileService.getOtherProfile(appToken, username);
   }
 
-  @GetMapping(value = {"/available", "/available/{page}"})
+  @GetMapping(value = {"/available/{page}", "/available"})
   public ResponseEntity<?> listAvailableProfilesByPage(
           @RequestHeader(name = "X-GiTinder-token") String appToken,
-          @PathVariable Map<String, Integer> pathVariableMap) {
-    if (pathVariableMap.containsKey("page")) {
-    return profileService.tenProfileByPage(appToken, pathVariableMap.get("page"));
+          @PathVariable Optional<Integer> page) {
+    if (page.isPresent()) {
+      return profileService.tenProfileByPage(appToken, page.get());
     } else {
       return profileService.tenProfileByPage(appToken, 1);
     }
   }
 
   @PutMapping("/profiles/{username}/{direction}")
-  public ResponseEntity<?> swipe(@RequestHeader (name = "X-GiTinder-token") String appToken,
+  public ResponseEntity<?> swipe(@RequestHeader(name = "X-GiTinder-token") String appToken,
           @PathVariable String username,
           @PathVariable String direction) {
     return profileService.handleSwiping(appToken, username, direction);
