@@ -28,17 +28,17 @@ public class MatchService {
     GiTinderUser actualUser = userService.getUserByAppToken(appToken);
     String actualUsersName = actualUser.getUserName();
     List<Swiping> swipeMatches = swipeRepository.findSwipeMatches(actualUsersName);
-    return transformSwipeMatchesListToMatches(swipeMatches, actualUsersName);
+    return transformSwipingListToMatches(swipeMatches, actualUsersName);
   }
 
-  private Matches transformSwipeMatchesListToMatches(List<Swiping> swipeMatches, String actualUsersName) {
+  private Matches transformSwipingListToMatches(List<Swiping> swipeMatches, String actualUsersName) {
     Matches matches = new Matches();
-    List<Match> matchList = transformSwipeListToMatchList(swipeMatches, actualUsersName);
+    List<Match> matchList = swipingToMatch(swipeMatches, actualUsersName);
     matches.setMatches(matchList);
     return matches;
   }
 
-  private List<Match> transformSwipeListToMatchList(List<Swiping> swipeMatches, String actualUsersName) {
+  private List<Match> swipingToMatch(List<Swiping> swipeMatches, String actualUsersName) {
     List<Match> matchList = new ArrayList<>();
     for (Swiping swipe : swipeMatches) {
       Match match = new Match();
