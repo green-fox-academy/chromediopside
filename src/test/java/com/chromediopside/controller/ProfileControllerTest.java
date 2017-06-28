@@ -128,6 +128,21 @@ public class ProfileControllerTest {
   }
 
   @Test
+  public void getOtherProfileWithUserMissingFromDatabase() throws Exception {
+
+    Mockito.when(userRepository.findByAppToken("123")).thenReturn(mockUserBuilder.build());
+    Mockito.when(userRepository.findByUserName("kondfox")).thenReturn(null);
+
+    mockMvc.perform(get("/profiles/kondfox").header("X-GiTinder-token", "123"))
+        .andExpect(status().isNotFound())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+        .andExpect(content().json("{"
+            + "\"status\" : \"error\","
+            + "\"message\" : \"No such user!\""
+            + "}"));
+  }
+
+  @Test
   public void listAvailablePagesWithoutToken() throws Exception {
 
     mockMvc.perform(get("/available"))
