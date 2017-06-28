@@ -2,6 +2,10 @@ package com.chromediopside.service;
 
 import com.chromediopside.datatransfer.LoginForm;
 import com.chromediopside.datatransfer.TokenResponse;
+import java.io.IOException;
+import org.eclipse.egit.github.core.User;
+import org.eclipse.egit.github.core.client.GitHubClient;
+import org.eclipse.egit.github.core.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,8 +36,16 @@ public class LoginService {
   }
 
   public boolean isValidAccesToken(LoginForm loginForm) {
-
-
-
+    GitHubClient gitHubClient =  GitHubClientSevice.setUpGitHubClient(loginForm.getAccessToken());
+    UserService userService = new UserService(gitHubClient);
+    try {
+      User user = userService.getUser();
+      if (user.getLogin().equals(loginForm.getUsername())) {
+        return true;
+      }
+    } catch (IOException e) {
+      System.out.println(GitHubClientSevice.getGetRequestIoerror());
+    }
+    return false;
   }
 }
