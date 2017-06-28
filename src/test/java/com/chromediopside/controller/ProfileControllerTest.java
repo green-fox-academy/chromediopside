@@ -199,4 +199,33 @@ public class ProfileControllerTest {
             .andExpect(jsonPath("$").value(hasKey("all")));
   }
 
+  @Test
+  public void getPageWithTokenAndInvalidPageNumber() throws Exception {
+    List<GiTinderProfile> testList = new ArrayList<>();
+    for (int i = 0; i < 12; i++) {
+      testList.add(mockProfileBuilder.build());
+    }
+
+    Mockito.when(userRepository.findByAppToken("asd"))
+            .thenReturn(mockUserBuilder.build());
+
+    Mockito.when(profileRepository.listTensOrderByEntry("login", 2))
+            .thenReturn(null);
+    Mockito.when(profileRepository.listTensOrderByEntry("avatar_url", 2))
+            .thenReturn(null);
+    Mockito.when(profileRepository.listTensOrderByEntry("repos", 2))
+            .thenReturn(null);
+    Mockito.when(profileRepository.listTensOrderByEntry("refresh_date", 2))
+            .thenReturn(null);
+    Mockito.when(profileRepository.count()).thenReturn((long)testList.size());
+
+    this.mockMvc.perform(get("/available/{page}", 3).header("X-GiTinder-token", "asd"))
+            .andExpect(MockMvcResultMatchers.status().isNoContent())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+            .andExpect(content().json("{"
+                    + "\"status\" : \"ok\","
+                    + "\"message\" : \"No more available profiles for you!\""
+                    + "}"));
+  }
+
 }
