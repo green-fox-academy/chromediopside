@@ -54,10 +54,13 @@ public class GiTinderProfile {
     this.languagesList = languagesList;
   }
 
-  public GiTinderProfile(String login, String avatarUrl, String repos) {
+  public GiTinderProfile(String login, String avatarUrl, String repos, Timestamp refreshDate,
+      String randomCodeLinks) {
     this.login = login;
     this.avatarUrl = avatarUrl;
     this.repos = repos;
+    this.refreshDate = refreshDate;
+    this.randomCodeLinks = randomCodeLinks;
   }
 
   public void updateProfile(String avatarUrl, String repos,
