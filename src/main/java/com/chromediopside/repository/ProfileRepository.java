@@ -12,7 +12,7 @@ public interface ProfileRepository extends CrudRepository<GiTinderProfile, Strin
   GiTinderProfile findByLogin(String login);
   boolean existsByLogin(String login);
 
-  @Query(value = "SELECT login, avatar_url, repos, language_id, refresh_date "
+  @Query(value = "SELECT login, avatar_url, repos, language_id, refresh_date, random_code_links "
           + "FROM gitinder_profile "
           + "JOIN language_to_profile "
           + "ON gitinder_profile.login = language_to_profile.profile_id "
@@ -20,7 +20,7 @@ public interface ProfileRepository extends CrudRepository<GiTinderProfile, Strin
   List<GiTinderProfile> listTensByLanguageOrderByEntry(
           String languageName, String sortingParam, int offset);
 
-  @Query(value = "SELECT login, avatar_url, repos, refresh_date "
+  @Query(value = "SELECT login, avatar_url, repos, refresh_date, random_code_links "
           + "FROM gitinder_profile "
           + "ORDER BY ?1 ASC LIMIT 10 OFFSET ?2", nativeQuery = true)
   List<GiTinderProfile> listTensOrderByEntry(String sortingParam, int offset);
