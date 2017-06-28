@@ -36,6 +36,9 @@ public class LoginService {
   }
 
   public boolean loginFormContainsValidAccessToken(LoginForm loginForm) {
+    if (loginForm.getAccessToken() == null || loginForm.getUsername() == null || loginForm == null) {
+      return false;
+    }
     GitHubClient gitHubClient =  GitHubClientSevice.setUpGitHubClient(loginForm.getAccessToken());
     UserService userService = new UserService(gitHubClient);
     try {
