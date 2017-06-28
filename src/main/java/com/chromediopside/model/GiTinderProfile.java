@@ -31,6 +31,8 @@ public class GiTinderProfile {
   private String repos;
   @Column(name = "refresh_date")
   private Timestamp refreshDate;
+  @Column(name = "random_code_links")
+  private String randomCodeLinks;
 
   @ManyToMany
   @JoinTable(
@@ -42,12 +44,13 @@ public class GiTinderProfile {
   public GiTinderProfile() {
   }
 
-  public GiTinderProfile(String login, String avatarUrl, String repos,
-      Timestamp refreshDate, Set<Language> languagesList) {
+  public GiTinderProfile(String login, String avatarUrl, String repos, Timestamp refreshDate,
+      String randomCodeLinks, Set<Language> languagesList) {
     this.login = login;
     this.avatarUrl = avatarUrl;
     this.repos = repos;
     this.refreshDate = refreshDate;
+    this.randomCodeLinks = randomCodeLinks;
     this.languagesList = languagesList;
   }
 
@@ -103,6 +106,14 @@ public class GiTinderProfile {
 
   public void setRefreshDate(Timestamp refreshDate) {
     this.refreshDate = refreshDate;
+  }
+
+  public String getRandomCodeLinks() {
+    return randomCodeLinks;
+  }
+
+  public void setRandomCodeLinks(String randomCodeLinks) {
+    this.randomCodeLinks = randomCodeLinks;
   }
 
   @Override
