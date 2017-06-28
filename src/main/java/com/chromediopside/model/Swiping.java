@@ -41,4 +41,16 @@ public class Swiping {
   public Timestamp getTimestamp() {
     return timestamp;
   }
+
+  public void setSwipingUsersName(String swipingUsersName) {
+    this.swipingUsersName = swipingUsersName;
+  }
+
+  public void setSwipedUsersName(String swipedUsersName) {
+    this.swipedUsersName = swipedUsersName;
+  }
+
+  public void setTimestamp(Timestamp timestamp) {
+    this.timestamp = timestamp;
+  }
 }

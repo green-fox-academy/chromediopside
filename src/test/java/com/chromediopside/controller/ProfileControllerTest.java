@@ -8,8 +8,8 @@ import com.chromediopside.mockbuilder.MockProfileBuilder;
 import com.chromediopside.mockbuilder.MockUserBuilder;
 import com.chromediopside.model.GiTinderProfile;
 import com.chromediopside.repository.ProfileRepository;
+import com.chromediopside.repository.SwipeRepository;
 import com.chromediopside.repository.UserRepository;
-import com.chromediopside.service.ProfileService;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +31,7 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.hamcrest.Matchers.*;
 
@@ -50,12 +51,12 @@ public class ProfileControllerTest {
   private UserRepository userRepository;
   @MockBean
   private ProfileRepository profileRepository;
+  @MockBean
+  private SwipeRepository swipeRepository;
   @Autowired
   private MockUserBuilder mockUserBuilder;
   @Autowired
   private MockProfileBuilder mockProfileBuilder;
-  @Autowired
-  ProfileService profileService;
 
   @Before
   public void setup() throws Exception {
@@ -141,6 +142,22 @@ public class ProfileControllerTest {
             + "\"message\" : \"No such user!\""
             + "}"));
   }
+
+  @Test
+  public void swipeTestWhenMatchIsNull() throws Exception {
+
+    Mockito.when(userRepository.findByAppToken("123")).thenReturn(mockUserBuilder.build());
+
+    mockMvc.perform(put("/profiles/{username}/{direction}", "kondfox", "right").header("X-GiTinder-token", "123"))
+            .andExpect(MockMvcResultMatchers.status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+            .andExpect(content().json("{"
+                    + "\"status\" : \"ok\","
+                    + "\"message\" : \"success\","
+                    + "\"match\" : null"
+                    + "}"));
+  }
+
 
   @Test
   public void listAvailablePagesWithoutToken() throws Exception {
