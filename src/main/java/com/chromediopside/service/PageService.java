@@ -23,8 +23,9 @@ public class PageService {
   }
 
   public Page setPage(int givenPageNumber) {
-    page.setProfiles(listProfilesPerPage(givenPageNumber));
-    page.setCount(page.getProfiles().size());
+    List<GiTinderProfile> listOfProfiles = listProfilesPerPage(givenPageNumber);
+    page.setProfiles(listOfProfiles);
+    page.setCount(listOfProfiles.size());
     page.setAll((int) profileRepository.count());
     return page;
   }
