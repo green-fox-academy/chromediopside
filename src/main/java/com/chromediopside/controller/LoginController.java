@@ -34,9 +34,11 @@ public class LoginController {
   @PostMapping(value = "/login")
   public ResponseEntity<?> login(@Valid @RequestBody LoginForm loginForm,
           BindingResult bindingResult) {
-
-
-    profileService.fetchAndSaveProfileOnLogin(loginForm);
-    return loginService.login(loginForm, bindingResult);
+    if(loginService.isValidAccesToken(loginForm)) {
+      profileService.fetchAndSaveProfileOnLogin(loginForm);
+      return loginService.login(loginForm, bindingResult);
+    } else {
+      return errorService.unauthorizedRequestError();
+    }
   }
 }
