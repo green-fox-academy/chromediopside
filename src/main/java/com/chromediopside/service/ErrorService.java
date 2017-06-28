@@ -45,10 +45,12 @@ public class ErrorService {
   }
 
   public ResponseEntity<?> unauthorizedRequestError() {
+    errorResponse.setStatus("error");
     return getResponseEntity(UNAUTHORIZED_REQUEST_MESSAGE, HttpStatus.UNAUTHORIZED);
   }
 
   public ResponseEntity<?> noSuchUserError() {
+    errorResponse.setStatus("error");
     return getResponseEntity(NO_SUCH_USER_MESSAGE, HttpStatus.NOT_FOUND);
   }
 
