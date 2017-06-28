@@ -41,6 +41,7 @@ public class ProfileService {
   private Language language;
   private GiTinderUserService userService;
   private SwipeRepository swipeRepository;
+  private GitHubClientSevice gitHubClientSevice;
 
   @Autowired
   public ProfileService(
@@ -52,7 +53,8 @@ public class ProfileService {
       GiTinderProfile giTinderProfile,
       Language language,
       GiTinderUserService userService,
-      SwipeRepository swipeRepository) {
+      SwipeRepository swipeRepository,
+      GitHubClientSevice gitHubClientSevice) {
     this.userRepository = userRepository;
     this.profileRepository = profileRepository;
     this.errorService = errorService;
@@ -62,6 +64,7 @@ public class ProfileService {
     this.language = language;
     this.userService = userService;
     this.swipeRepository = swipeRepository;
+    this.gitHubClientSevice = gitHubClientSevice;
   }
 
   public ProfileService() {
@@ -76,7 +79,7 @@ public class ProfileService {
       giTinderProfile.setAvatarUrl(user.getAvatarUrl());
       return true;
     } catch (IOException e) {
-      System.out.println(GitHubClientSevice.getGetRequestIoerror());
+      System.out.println(gitHubClientSevice.getGetRequestIoerror());
       return false;
     }
   }
@@ -97,7 +100,7 @@ public class ProfileService {
       giTinderProfile.setLanguagesList(languageObjects);
       return true;
     } catch (IOException e) {
-      System.out.println(GitHubClientSevice.getGetRequestIoerror());
+      System.out.println(gitHubClientSevice.getGetRequestIoerror());
       return false;
     }
   }
