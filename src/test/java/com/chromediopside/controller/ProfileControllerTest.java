@@ -104,7 +104,7 @@ public class ProfileControllerTest {
     Mockito.when(profileRepository.existsByLogin("kondfox")).thenReturn(true);
     Mockito.when(profileRepository.findByLogin("kondfox")).thenReturn(mockProfileBuilder.setRefreshDate(new Timestamp(System.currentTimeMillis())).build());
 
-    mockMvc.perform(get("/profiles/kondfox").header("X-GiTinder-token", "123"))
+    mockMvc.perform(get("/profiles/{username}", "kondfox").header("X-GiTinder-token", "123"))
         .andExpect(MockMvcResultMatchers.status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
         .andExpect(jsonPath("$").value(hasKey("login")))
@@ -118,7 +118,7 @@ public class ProfileControllerTest {
   @Test
   public void getOtherProfileWithoutToken() throws Exception {
 
-    this.mockMvc.perform(get("/profiles/kondfox"))
+    this.mockMvc.perform(get("/profiles/{username}", "kondfox"))
         .andExpect(status().isUnauthorized())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
         .andExpect(content().json("{"
@@ -133,7 +133,7 @@ public class ProfileControllerTest {
     Mockito.when(userRepository.findByAppToken("123")).thenReturn(mockUserBuilder.build());
     Mockito.when(userRepository.findByUserName("kondfox")).thenReturn(null);
 
-    mockMvc.perform(get("/profiles/kondfox").header("X-GiTinder-token", "123"))
+    mockMvc.perform(get("/profiles/{username}", "kondfox").header("X-GiTinder-token", "123"))
         .andExpect(status().isNotFound())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
         .andExpect(content().json("{"
