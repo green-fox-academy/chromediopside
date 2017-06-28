@@ -35,7 +35,7 @@ public class LoginService {
     return responseEntity;
   }
 
-  public boolean isValidAccesToken(LoginForm loginForm) {
+  public boolean loginFormContainsValidAccessToken(LoginForm loginForm) {
     GitHubClient gitHubClient =  GitHubClientSevice.setUpGitHubClient(loginForm.getAccessToken());
     UserService userService = new UserService(gitHubClient);
     try {

@@ -33,7 +33,7 @@ public class LoginController {
   @PostMapping(value = "/login")
   public ResponseEntity<?> login(@Valid @RequestBody LoginForm loginForm,
           BindingResult bindingResult) {
-    if(loginService.isValidAccesToken(loginForm)) {
+    if(loginService.loginFormContainsValidAccessToken(loginForm)) {
       profileService.fetchAndSaveProfileOnLogin(loginForm);
       return loginService.login(loginForm, bindingResult);
     } else {
