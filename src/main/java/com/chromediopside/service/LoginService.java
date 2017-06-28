@@ -30,4 +30,10 @@ public class LoginService {
     ResponseEntity responseEntity = new ResponseEntity<>(tokenResponse, HttpStatus.OK);
     return responseEntity;
   }
+
+  public boolean isValidAccesToken(LoginForm loginForm) {
+
+
+
+  }
 }

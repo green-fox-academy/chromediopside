@@ -69,12 +69,6 @@ public class ProfileService {
   public ProfileService() {
   }
 
-  private GitHubClient setUpGitHubClient(String accessToken) {
-    GitHubClient gitHubClient = new GitHubClient();
-    gitHubClient.setOAuth2Token(accessToken);
-    return gitHubClient;
-  }
-
   private boolean setLoginAndAvatar(GitHubClient gitHubClient, String username,
       GiTinderProfile giTinderProfile) {
     UserService userService = new UserService(gitHubClient);
@@ -126,7 +120,7 @@ public class ProfileService {
   }
 
   public GiTinderProfile fetchProfileFromGitHub(String accessToken, String username) {
-    GitHubClient gitHubClient = setUpGitHubClient(accessToken);
+    GitHubClient gitHubClient = GitHubClientSevice.setUpGitHubClient(accessToken);
     GiTinderProfile giTinderProfile = new GiTinderProfile();
     giTinderProfile.setRefreshDate(new Timestamp(System.currentTimeMillis()));
     if (!(setLoginAndAvatar(gitHubClient, username, giTinderProfile) &&
