@@ -1,7 +1,6 @@
 package com.chromediopside.controller;
 
 import com.chromediopside.datatransfer.LoginForm;
-import com.chromediopside.repository.ProfileRepository;
 import com.chromediopside.service.GiTinderUserService;
 import com.chromediopside.service.LoginService;
 import com.chromediopside.service.ErrorService;
