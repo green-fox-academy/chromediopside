@@ -30,4 +30,12 @@ public class Match {
   public ArrayList<String> getMessages() {
     return messages;
   }
+
+  public void setUsername(String username) {
+    this.username = username;
+  }
+
+  public void setMatched_at(Timestamp matched_at) {
+    this.matched_at = matched_at;
+  }
 }
