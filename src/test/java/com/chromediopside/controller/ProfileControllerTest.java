@@ -113,6 +113,18 @@ public class ProfileControllerTest {
   }
 
   @Test
+  public void getOtherProfileWithoutToken() throws Exception {
+
+    mockMvc.perform(get("/profiles/kondfox"))
+        .andExpect(status().isUnauthorized())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+        .andExpect(content().json("{"
+            + "\"status\" : \"error\","
+            + "\"message\" : \"Unauthorized request!\""
+            + "}"));
+  }
+
+  @Test
   public void listAvailablePagesWithoutToken() throws Exception {
 
     mockMvc.perform(get("/available"))
