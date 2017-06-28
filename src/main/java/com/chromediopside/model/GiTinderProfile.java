@@ -63,6 +63,12 @@ public class GiTinderProfile {
     this.randomCodeLinks = randomCodeLinks;
   }
 
+  public GiTinderProfile(String login, String avatarUrl, String repos) {
+    this.login = login;
+    this.avatarUrl = avatarUrl;
+    this.repos = repos;
+  }
+
   public void updateProfile(String avatarUrl, String repos,
       Set<Language> languagesList) {
     this.refreshDate = new Timestamp(System.currentTimeMillis());
