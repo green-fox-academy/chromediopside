@@ -9,6 +9,7 @@ import com.chromediopside.mockbuilder.MockUserBuilder;
 import com.chromediopside.model.GiTinderProfile;
 import com.chromediopside.repository.ProfileRepository;
 import com.chromediopside.repository.UserRepository;
+import com.chromediopside.service.ProfileService;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,6 +54,8 @@ public class ProfileControllerTest {
   private MockUserBuilder mockUserBuilder;
   @Autowired
   private MockProfileBuilder mockProfileBuilder;
+  @Autowired
+  ProfileService profileService;
 
   @Before
   public void setup() throws Exception {
@@ -67,7 +70,7 @@ public class ProfileControllerTest {
     Mockito.when(userRepository.findByUserName("kondfox")).thenReturn(mockUserBuilder.build());
     Mockito.when(userRepository.findByUserNameAndAppToken("kondfox", "123")).thenReturn(mockUserBuilder.build());
     Mockito.when(profileRepository.existsByLogin("kondfox")).thenReturn(true);
-    Mockito.when(profileRepository.findByLogin("kondfox")).thenReturn(mockProfileBuilder.setRefreshDate(new Timestamp(1498577445819L)).build());
+    Mockito.when(profileRepository.findByLogin("kondfox")).thenReturn(mockProfileBuilder.setRefreshDate(new Timestamp(System.currentTimeMillis())).build());
 
     mockMvc.perform(get("/profile").header("X-GiTinder-token", "123"))
             .andExpect(MockMvcResultMatchers.status().isOk())
@@ -93,9 +96,56 @@ public class ProfileControllerTest {
   }
 
   @Test
+  public void getOtherProfileWithTokenAndName() throws Exception {
+
+    Mockito.when(userRepository.findByAppToken("123")).thenReturn(mockUserBuilder.build());
+    Mockito.when(userRepository.findByUserName("kondfox")).thenReturn(mockUserBuilder.build());
+    Mockito.when(userRepository.findByUserNameAndAppToken("kondfox", "123")).thenReturn(mockUserBuilder.build());
+    Mockito.when(profileRepository.existsByLogin("kondfox")).thenReturn(true);
+    Mockito.when(profileRepository.findByLogin("kondfox")).thenReturn(mockProfileBuilder.setRefreshDate(new Timestamp(System.currentTimeMillis())).build());
+
+    mockMvc.perform(get("/profiles/{username}", "kondfox").header("X-GiTinder-token", "123"))
+        .andExpect(MockMvcResultMatchers.status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+        .andExpect(jsonPath("$").value(hasKey("login")))
+        .andExpect(jsonPath("$").value(hasKey("avatarUrl")))
+        .andExpect(jsonPath("$").value(hasKey("repos")))
+        .andExpect(jsonPath("$").value(hasKey("languagesList")))
+        .andExpect(jsonPath("$.languagesList").value(
+            anyOf(any(Set.class), nullValue(Set.class))));
+  }
+
+  @Test
+  public void getOtherProfileWithoutToken() throws Exception {
+
+    this.mockMvc.perform(get("/profiles/{username}", "kondfox"))
+        .andExpect(status().isUnauthorized())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+        .andExpect(content().json("{"
+            + "\"status\" : \"error\","
+            + "\"message\" : \"Unauthorized request!\""
+            + "}"));
+  }
+
+  @Test
+  public void getOtherProfileWithUserMissingFromDatabase() throws Exception {
+
+    Mockito.when(userRepository.findByAppToken("123")).thenReturn(mockUserBuilder.build());
+    Mockito.when(userRepository.findByUserName("kondfox")).thenReturn(null);
+
+    mockMvc.perform(get("/profiles/{username}", "kondfox").header("X-GiTinder-token", "123"))
+        .andExpect(status().isNotFound())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+        .andExpect(content().json("{"
+            + "\"status\" : \"error\","
+            + "\"message\" : \"No such user!\""
+            + "}"));
+  }
+
+  @Test
   public void listAvailablePagesWithoutToken() throws Exception {
 
-    mockMvc.perform(get("/available"))
+    this.mockMvc.perform(get("/available"))
             .andExpect(status().isUnauthorized())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
             .andExpect(content().json("{"
@@ -132,4 +182,65 @@ public class ProfileControllerTest {
             .andExpect(jsonPath("$").value(hasKey("count")))
             .andExpect(jsonPath("$").value(hasKey("all")));
   }
+
+  @Test
+  public void getPageWithTokenAndPageNumber() throws Exception {
+    List<GiTinderProfile> testList = new ArrayList<>();
+    for (int i = 0; i < 12; i++) {
+    testList.add(mockProfileBuilder.build());
+    }
+    testList.subList(10, 12);
+
+    Mockito.when(userRepository.findByAppToken("asd"))
+            .thenReturn(mockUserBuilder.build());
+
+    Mockito.when(profileRepository.listTensOrderByEntry("login", 1))
+            .thenReturn(testList);
+    Mockito.when(profileRepository.listTensOrderByEntry("avatar_url", 1))
+            .thenReturn(testList);
+    Mockito.when(profileRepository.listTensOrderByEntry("repos", 1))
+            .thenReturn(testList);
+    Mockito.when(profileRepository.listTensOrderByEntry("refresh_date", 1))
+            .thenReturn(testList);
+    Mockito.when(profileRepository.count()).thenReturn((long)testList.size());
+
+    this.mockMvc.perform(get("/available/{page}", 2).header("X-GiTinder-token", "asd"))
+            .andExpect(MockMvcResultMatchers.status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+            .andExpect(jsonPath("$").value(hasKey("profiles")))
+            .andExpect(jsonPath("$.profiles").value(
+                    anyOf(any(List.class))))
+            .andExpect(jsonPath("$").value(hasKey("count")))
+            .andExpect(jsonPath("$").value(hasKey("all")));
+  }
+
+  @Test
+  public void getPageWithTokenAndInvalidPageNumber() throws Exception {
+    List<GiTinderProfile> testList = new ArrayList<>();
+    for (int i = 0; i < 12; i++) {
+      testList.add(mockProfileBuilder.build());
+    }
+
+    Mockito.when(userRepository.findByAppToken("asd"))
+            .thenReturn(mockUserBuilder.build());
+
+    Mockito.when(profileRepository.listTensOrderByEntry("login", 2))
+            .thenReturn(null);
+    Mockito.when(profileRepository.listTensOrderByEntry("avatar_url", 2))
+            .thenReturn(null);
+    Mockito.when(profileRepository.listTensOrderByEntry("repos", 2))
+            .thenReturn(null);
+    Mockito.when(profileRepository.listTensOrderByEntry("refresh_date", 2))
+            .thenReturn(null);
+    Mockito.when(profileRepository.count()).thenReturn((long)testList.size());
+
+    this.mockMvc.perform(get("/available/{page}", 3).header("X-GiTinder-token", "asd"))
+            .andExpect(MockMvcResultMatchers.status().isNoContent())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+            .andExpect(content().json("{"
+                    + "\"status\" : \"ok\","
+                    + "\"message\" : \"No more available profiles for you!\""
+                    + "}"));
+  }
+
 }
