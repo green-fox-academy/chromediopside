@@ -31,8 +31,6 @@ import org.springframework.stereotype.Service;
 public class ProfileService {
 
   private static final long oneDayInMillis = 86400000;
-  private static final String GET_REQUEST_IOERROR
-      = "Some GitHub data of this user is not available for this token!";
 
   private UserRepository userRepository;
   private ProfileRepository profileRepository;
@@ -43,6 +41,7 @@ public class ProfileService {
   private Language language;
   private GiTinderUserService userService;
   private SwipeRepository swipeRepository;
+  private GitHubClientSevice gitHubClientSevice;
 
   @Autowired
   public ProfileService(
@@ -54,7 +53,8 @@ public class ProfileService {
       GiTinderProfile giTinderProfile,
       Language language,
       GiTinderUserService userService,
-      SwipeRepository swipeRepository) {
+      SwipeRepository swipeRepository,
+      GitHubClientSevice gitHubClientSevice) {
     this.userRepository = userRepository;
     this.profileRepository = profileRepository;
     this.errorService = errorService;
@@ -64,15 +64,10 @@ public class ProfileService {
     this.language = language;
     this.userService = userService;
     this.swipeRepository = swipeRepository;
+    this.gitHubClientSevice = gitHubClientSevice;
   }
 
   public ProfileService() {
-  }
-
-  private GitHubClient setUpGitHubClient(String accessToken) {
-    GitHubClient gitHubClient = new GitHubClient();
-    gitHubClient.setOAuth2Token(accessToken);
-    return gitHubClient;
   }
 
   private boolean setLoginAndAvatar(GitHubClient gitHubClient, String username,
@@ -84,7 +79,7 @@ public class ProfileService {
       giTinderProfile.setAvatarUrl(user.getAvatarUrl());
       return true;
     } catch (IOException e) {
-      System.out.println(GET_REQUEST_IOERROR);
+      System.out.println(gitHubClientSevice.getGetRequestIoerror());
       return false;
     }
   }
@@ -105,7 +100,7 @@ public class ProfileService {
       giTinderProfile.setLanguagesList(languageObjects);
       return true;
     } catch (IOException e) {
-      System.out.println(GET_REQUEST_IOERROR);
+      System.out.println(gitHubClientSevice.getGetRequestIoerror());
       return false;
     }
   }
@@ -126,7 +121,7 @@ public class ProfileService {
   }
 
   public GiTinderProfile fetchProfileFromGitHub(String accessToken, String username) {
-    GitHubClient gitHubClient = setUpGitHubClient(accessToken);
+    GitHubClient gitHubClient = GitHubClientSevice.setUpGitHubClient(accessToken);
     GiTinderProfile giTinderProfile = new GiTinderProfile();
     giTinderProfile.setRefreshDate(new Timestamp(System.currentTimeMillis()));
     if (!(setLoginAndAvatar(gitHubClient, username, giTinderProfile) &&
