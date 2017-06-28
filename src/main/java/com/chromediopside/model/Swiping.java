@@ -29,4 +29,16 @@ public class Swiping {
       this.swipedUsersName = swipedUsersName;
       this.timestamp = timestamp;
     }
+
+  public String getSwipingUsersName() {
+    return swipingUsersName;
+  }
+
+  public String getSwipedUsersName() {
+    return swipedUsersName;
+  }
+
+  public Timestamp getTimestamp() {
+    return timestamp;
+  }
 }
