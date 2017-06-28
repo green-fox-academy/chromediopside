@@ -47,14 +47,14 @@ public class ProfileController {
 
   @RequestMapping("/profiles/{username}")
   public ResponseEntity<?> getOtherProfile(@PathVariable String username,
-          @RequestHeader(name = "X-GiTinder-token") String appToken) {
+          @RequestHeader(name = "X-GiTinder-token") String appToken) throws Exception {
     return profileService.getOtherProfile(appToken, username);
   }
 
   @GetMapping(value = {"/available/{page}", "/available"})
   public ResponseEntity<?> listAvailableProfilesByPage(
           @RequestHeader(name = "X-GiTinder-token") String appToken,
-          @PathVariable Optional<Integer> page) {
+          @PathVariable Optional<Integer> page) throws Exception {
     if (page.isPresent()) {
       return profileService.tenProfileByPage(appToken, page.get());
     } else {

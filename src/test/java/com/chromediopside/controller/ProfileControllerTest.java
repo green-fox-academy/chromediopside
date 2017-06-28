@@ -118,7 +118,7 @@ public class ProfileControllerTest {
   @Test
   public void getOtherProfileWithoutToken() throws Exception {
 
-    mockMvc.perform(get("/profiles/kondfox"))
+    this.mockMvc.perform(get("/profiles/kondfox"))
         .andExpect(status().isUnauthorized())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
         .andExpect(content().json("{"
@@ -145,7 +145,7 @@ public class ProfileControllerTest {
   @Test
   public void listAvailablePagesWithoutToken() throws Exception {
 
-    mockMvc.perform(get("/available"))
+    this.mockMvc.perform(get("/available"))
             .andExpect(status().isUnauthorized())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
             .andExpect(content().json("{"
@@ -212,6 +212,35 @@ public class ProfileControllerTest {
                     anyOf(any(List.class))))
             .andExpect(jsonPath("$").value(hasKey("count")))
             .andExpect(jsonPath("$").value(hasKey("all")));
+  }
+
+  @Test
+  public void getPageWithTokenAndInvalidPageNumber() throws Exception {
+    List<GiTinderProfile> testList = new ArrayList<>();
+    for (int i = 0; i < 12; i++) {
+      testList.add(mockProfileBuilder.build());
+    }
+
+    Mockito.when(userRepository.findByAppToken("asd"))
+            .thenReturn(mockUserBuilder.build());
+
+    Mockito.when(profileRepository.listTensOrderByEntry("login", 2))
+            .thenReturn(null);
+    Mockito.when(profileRepository.listTensOrderByEntry("avatar_url", 2))
+            .thenReturn(null);
+    Mockito.when(profileRepository.listTensOrderByEntry("repos", 2))
+            .thenReturn(null);
+    Mockito.when(profileRepository.listTensOrderByEntry("refresh_date", 2))
+            .thenReturn(null);
+    Mockito.when(profileRepository.count()).thenReturn((long)testList.size());
+
+    this.mockMvc.perform(get("/available/{page}", 3).header("X-GiTinder-token", "asd"))
+            .andExpect(MockMvcResultMatchers.status().isNoContent())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+            .andExpect(content().json("{"
+                    + "\"status\" : \"ok\","
+                    + "\"message\" : \"No more available profiles for you!\""
+                    + "}"));
   }
 
 }
