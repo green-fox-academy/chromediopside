@@ -7,6 +7,7 @@ import com.chromediopside.service.ProfileService;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -39,18 +40,21 @@ public class ProfileController {
     return errorService.unauthorizedRequestError();
   }
 
+  @CrossOrigin("*")
   @GetMapping("/profile")
   public ResponseEntity<?> getOwnProfile(
           @RequestHeader(name = "X-GiTinder-token") String appToken) {
     return profileService.getOwnProfile(appToken);
   }
 
+  @CrossOrigin("*")
   @RequestMapping("/profiles/{username}")
   public ResponseEntity<?> getOtherProfile(@PathVariable String username,
           @RequestHeader(name = "X-GiTinder-token") String appToken) throws Exception {
     return profileService.getOtherProfile(appToken, username);
   }
 
+  @CrossOrigin("*")
   @GetMapping(value = {"/available/{page}", "/available"})
   public ResponseEntity<?> listAvailableProfilesByPage(
           @RequestHeader(name = "X-GiTinder-token") String appToken,
@@ -62,6 +66,7 @@ public class ProfileController {
     }
   }
 
+  @CrossOrigin("*")
   @PutMapping("/profiles/{username}/{direction}")
   public ResponseEntity<?> swipe(@RequestHeader(name = "X-GiTinder-token") String appToken,
           @PathVariable String username,
