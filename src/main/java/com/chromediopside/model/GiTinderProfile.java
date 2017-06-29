@@ -1,6 +1,9 @@
 package com.chromediopside.model;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import javax.persistence.Column;
@@ -11,7 +14,9 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import org.springframework.stereotype.Component;
 
+@Component
 @Entity
 @Table(name = "gitinder_profile")
 public class GiTinderProfile {
@@ -26,6 +31,8 @@ public class GiTinderProfile {
   private String repos;
   @Column(name = "refresh_date")
   private Timestamp refreshDate;
+  @Column(name = "random_code_links")
+  private String randomCodeLinks;
 
   @ManyToMany
   @JoinTable(
@@ -37,19 +44,37 @@ public class GiTinderProfile {
   public GiTinderProfile() {
   }
 
-  public GiTinderProfile(String login, String avatarUrl, String repos,
-      Timestamp refreshDate, Set<Language> languagesList) {
+  public GiTinderProfile(String login, String avatarUrl, String repos, Timestamp refreshDate,
+      String randomCodeLinks, Set<Language> languagesList) {
     this.login = login;
     this.avatarUrl = avatarUrl;
     this.repos = repos;
     this.refreshDate = refreshDate;
+    this.randomCodeLinks = randomCodeLinks;
     this.languagesList = languagesList;
+  }
+
+  public GiTinderProfile(String login, String avatarUrl, String repos, Timestamp refreshDate,
+      String randomCodeLinks) {
+    this.login = login;
+    this.avatarUrl = avatarUrl;
+    this.repos = repos;
+    this.refreshDate = refreshDate;
+    this.randomCodeLinks = randomCodeLinks;
   }
 
   public GiTinderProfile(String login, String avatarUrl, String repos) {
     this.login = login;
     this.avatarUrl = avatarUrl;
     this.repos = repos;
+  }
+
+  public void updateProfile(String avatarUrl, String repos,
+      Set<Language> languagesList) {
+    this.refreshDate = new Timestamp(System.currentTimeMillis());
+    this.avatarUrl = avatarUrl;
+    this.repos = repos;
+    this.languagesList = languagesList;
   }
 
   public String getLogin() {
@@ -92,31 +117,33 @@ public class GiTinderProfile {
     this.refreshDate = refreshDate;
   }
 
+  public String getRandomCodeLinks() {
+    return randomCodeLinks;
+  }
+
+  public void setRandomCodeLinks(String randomCodeLinks) {
+    this.randomCodeLinks = randomCodeLinks;
+  }
+
   @Override
   public boolean equals(Object o) {
-
     if (!(o instanceof GiTinderProfile)) {
       return false;
     }
-
     GiTinderProfile profile = (GiTinderProfile) o;
-
     return Objects.equals(login, profile.login) &&
         Objects.equals(avatarUrl, profile.avatarUrl) &&
         Objects.equals(repos, profile.repos) &&
-        Objects.equals(languagesList, profile.languagesList);
+        Objects.equals(languageStringsListFromSet(languagesList),
+            languageStringsListFromSet(profile.languagesList));
   }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(login, avatarUrl, repos, refreshDate, languagesList);
-  }
-
-  @Override
-  public String toString() {
-    return login + "\n" +
-        avatarUrl + "\n" +
-        repos + "\n" +
-        languagesList.toString();
+  private List<String> languageStringsListFromSet(Set<Language> languageSet) {
+    List<String> languageStrings = new ArrayList<>();
+    for (Language current : languageSet) {
+      languageStrings.add(current.getLanguageName());
+    }
+    Collections.sort(languageStrings);
+    return languageStrings;
   }
 }
