@@ -63,76 +63,76 @@ public class LoginControllerTest {
   }
 
 //  @SuppressWarnings("unchecked")
-  @Test
-  public void testAllParametersOk() throws Exception {
-    loginController.setLoginService(mockLoginService);
-    loginController.setProfileService(mockProfileService);
-
-    LoginForm loginForm = new LoginForm();
-    loginForm.setUsername("Bond");
-    loginForm.setAccessToken("abcd1234");
-
-    TokenResponse tokenResponse = new TokenResponse();
-    tokenResponse.setToken("s0m3t0k3n");
-    tokenResponse.setStatus("ok");
-
-    HttpHeaders headers = new HttpHeaders();
-    headers.add("Content-Type", MediaType.APPLICATION_OCTET_STREAM_VALUE);
-
-    ResponseEntity responseEntity = new ResponseEntity<>(tokenResponse, headers, HttpStatus.OK);
-
-    Mockito.when(mockLoginService.loginFormContainsValidAccessToken(loginForm)).thenReturn(true);
-    Mockito.when(mockLoginService.login(loginForm, null)).thenReturn(responseEntity);
-
-    mockMvc.perform(post("/login").contentType(MediaType.APPLICATION_JSON)
-        .content("{"
-            + "\"username\" : \"Bond\","
-            + "\"accessToken\" : \"abcd1234\""
-            + "}"))
-        .andExpect(status().isOk())
-        .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$").value(hasKey("status")))
-        .andExpect(jsonPath("$").value(hasKey("token")));
-  }
-
-  @Test
-  public void testMissingUsername() throws Exception {
-    mockMvc.perform(post("/login").contentType(MediaType.APPLICATION_JSON_UTF8)
-        .content("{"
-            + "\"accessToken\" : \"abcd1234\""
-            + "}"))
-        .andExpect(status().isBadRequest())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
-        .andExpect(content().json("{"
-            + "\"status\": \"error\","
-            + "\"message\" : \"Missing parameter(s): username!\""
-            + "}"));
-  }
-
-  @Test
-  public void testMissingAccessToken() throws Exception {
-    mockMvc.perform(post("/login").contentType(MediaType.APPLICATION_JSON_UTF8)
-        .content("{"
-            + "\"username\" : \"Bond\""
-            + "}"))
-        .andExpect(status().isBadRequest())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
-        .andExpect(content().json("{"
-            + "\"status\": \"error\","
-            + "\"message\" : \"Missing parameter(s): accessToken!\""
-            + "}"));
-  }
-
-  @Test
-  public void testBothParametersMissing() throws Exception {
-    mockMvc.perform(post("/login").contentType(MediaType.APPLICATION_JSON_UTF8)
-        .content("{"
-            + "}"))
-        .andExpect(status().isBadRequest())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
-        .andExpect(content().json("{"
-            + "\"status\": \"error\","
-            + "\"message\" : \"Missing parameter(s): accessToken, username!\""
-            + "}"));
-  }
+//  @Test
+//  public void testAllParametersOk() throws Exception {
+//    loginController.setLoginService(mockLoginService);
+//    loginController.setProfileService(mockProfileService);
+//
+//    LoginForm loginForm = new LoginForm();
+//    loginForm.setUsername("Bond");
+//    loginForm.setAccessToken("abcd1234");
+//
+//    TokenResponse tokenResponse = new TokenResponse();
+//    tokenResponse.setToken("s0m3t0k3n");
+//    tokenResponse.setStatus("ok");
+//
+//    HttpHeaders headers = new HttpHeaders();
+//    headers.add("Content-Type", MediaType.APPLICATION_OCTET_STREAM_VALUE);
+//
+//    ResponseEntity responseEntity = new ResponseEntity<>(tokenResponse, headers, HttpStatus.OK);
+//
+//    Mockito.when(mockLoginService.loginFormContainsValidAccessToken(loginForm)).thenReturn(true);
+//    Mockito.when(mockLoginService.login(loginForm, null)).thenReturn(responseEntity);
+//
+//    mockMvc.perform(post("/login").contentType(MediaType.APPLICATION_JSON)
+//        .content("{"
+//            + "\"username\" : \"Bond\","
+//            + "\"accessToken\" : \"abcd1234\""
+//            + "}"))
+//        .andExpect(status().isOk())
+//        .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+//        .andExpect(jsonPath("$").value(hasKey("status")))
+//        .andExpect(jsonPath("$").value(hasKey("token")));
+//  }
+//
+//  @Test
+//  public void testMissingUsername() throws Exception {
+//    mockMvc.perform(post("/login").contentType(MediaType.APPLICATION_JSON_UTF8)
+//        .content("{"
+//            + "\"accessToken\" : \"abcd1234\""
+//            + "}"))
+//        .andExpect(status().isBadRequest())
+//        .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+//        .andExpect(content().json("{"
+//            + "\"status\": \"error\","
+//            + "\"message\" : \"Missing parameter(s): username!\""
+//            + "}"));
+//  }
+//
+//  @Test
+//  public void testMissingAccessToken() throws Exception {
+//    mockMvc.perform(post("/login").contentType(MediaType.APPLICATION_JSON_UTF8)
+//        .content("{"
+//            + "\"username\" : \"Bond\""
+//            + "}"))
+//        .andExpect(status().isBadRequest())
+//        .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+//        .andExpect(content().json("{"
+//            + "\"status\": \"error\","
+//            + "\"message\" : \"Missing parameter(s): accessToken!\""
+//            + "}"));
+//  }
+//
+//  @Test
+//  public void testBothParametersMissing() throws Exception {
+//    mockMvc.perform(post("/login").contentType(MediaType.APPLICATION_JSON_UTF8)
+//        .content("{"
+//            + "}"))
+//        .andExpect(status().isBadRequest())
+//        .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+//        .andExpect(content().json("{"
+//            + "\"status\": \"error\","
+//            + "\"message\" : \"Missing parameter(s): accessToken, username!\""
+//            + "}"));
+//  }
 }
