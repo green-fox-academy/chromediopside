@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -17,17 +15,12 @@ public class ErrorService {
   private static final String UNAUTHORIZED_REQUEST_MESSAGE = "Unauthorized request!";
   private static final String NO_SUCH_USER_MESSAGE = "No such user!";
   private static final String MISSING_PARAMS_MESSAGE = "Missing parameter(s): ";
+  private static final String NO_MORE_PROFILES_AVAILABLE_ERROR = "No more available profiles for you!";
   private ErrorResponse errorResponse;
 
   @Autowired
   public ErrorService(ErrorResponse errorResponse) {
     this.errorResponse = errorResponse;
-  }
-
-  public ResponseEntity<?> fieldErrors(BindingResult bindingResult) {
-    errorResponse.setStatus("error");
-    errorResponse.setMessage(MISSING_PARAMS_MESSAGE + missingValues(bindingResult));
-    return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
   }
 
   private String missingValues(BindingResult bindingResult) {
@@ -39,23 +32,27 @@ public class ErrorService {
     return String.join(", ", missingFields) + "!";
   }
 
-  public ResponseEntity<?> getResponseEntity(String message, HttpStatus httpStatus) {
-    errorResponse.setMessage(message);
-    return new ResponseEntity<>(errorResponse, httpStatus);
-  }
-
-  public ResponseEntity<?> unauthorizedRequestError() {
+  public ErrorResponse fieldErrors(BindingResult bindingResult) {
     errorResponse.setStatus("error");
-    return getResponseEntity(UNAUTHORIZED_REQUEST_MESSAGE, HttpStatus.UNAUTHORIZED);
+    errorResponse.setMessage(MISSING_PARAMS_MESSAGE + missingValues(bindingResult));
+    return errorResponse;
   }
 
-  public ResponseEntity<?> noSuchUserError() {
+  public ErrorResponse unauthorizedRequestError() {
     errorResponse.setStatus("error");
-    return getResponseEntity(NO_SUCH_USER_MESSAGE, HttpStatus.NOT_FOUND);
+    errorResponse.setMessage(UNAUTHORIZED_REQUEST_MESSAGE);
+    return errorResponse;
   }
 
-  public ResponseEntity<?> getNoMoreAvailableProfiles() {
+  public ErrorResponse noSuchUserError() {
+    errorResponse.setStatus("error");
+    errorResponse.setMessage(NO_SUCH_USER_MESSAGE);
+    return errorResponse;
+  }
+
+  public ErrorResponse getNoMoreAvailableProfiles() {
     errorResponse.setStatus("ok");
-    return getResponseEntity("No more available profiles for you!", HttpStatus.NO_CONTENT);
+    errorResponse.setMessage(NO_MORE_PROFILES_AVAILABLE_ERROR);
+    return errorResponse;
   }
 }

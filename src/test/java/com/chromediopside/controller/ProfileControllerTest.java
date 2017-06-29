@@ -103,6 +103,7 @@ public class ProfileControllerTest {
     Mockito.when(userRepository.findByUserName("kondfox")).thenReturn(mockUserBuilder.build());
     Mockito.when(userRepository.findByUserNameAndAppToken("kondfox", "123")).thenReturn(mockUserBuilder.build());
     Mockito.when(profileRepository.existsByLogin("kondfox")).thenReturn(true);
+    Mockito.when(userRepository.existsByUserName("kondfox")).thenReturn(true);
     Mockito.when(profileRepository.findByLogin("kondfox")).thenReturn(mockProfileBuilder.setRefreshDate(new Timestamp(System.currentTimeMillis())).build());
 
     mockMvc.perform(get("/profiles/{username}", "kondfox").header("X-GiTinder-token", "123"))

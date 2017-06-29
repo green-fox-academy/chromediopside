@@ -51,4 +51,8 @@ public class GiTinderUserService {
     userRepo.save(user);
     return appToken;
   }
+
+  public boolean validAppToken(String appToken) {
+    return userRepo.findByAppToken(appToken) != null;
+  }
 }
