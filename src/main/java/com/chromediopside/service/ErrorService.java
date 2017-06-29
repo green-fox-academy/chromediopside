@@ -23,12 +23,6 @@ public class ErrorService {
     this.errorResponse = errorResponse;
   }
 
-  public ErrorResponse fieldErrors(BindingResult bindingResult) {
-    errorResponse.setStatus("error");
-    errorResponse.setMessage(MISSING_PARAMS_MESSAGE + missingValues(bindingResult));
-    return errorResponse;
-  }
-
   private String missingValues(BindingResult bindingResult) {
     List<String> missingFields = new ArrayList<>();
     for (FieldError currentFieldError : bindingResult.getFieldErrors()) {
@@ -36,6 +30,12 @@ public class ErrorService {
     }
     Collections.sort(missingFields);
     return String.join(", ", missingFields) + "!";
+  }
+
+  public ErrorResponse fieldErrors(BindingResult bindingResult) {
+    errorResponse.setStatus("error");
+    errorResponse.setMessage(MISSING_PARAMS_MESSAGE + missingValues(bindingResult));
+    return errorResponse;
   }
 
   public ErrorResponse unauthorizedRequestError() {

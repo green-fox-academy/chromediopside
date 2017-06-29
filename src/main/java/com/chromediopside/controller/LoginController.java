@@ -6,6 +6,7 @@ import com.chromediopside.service.ErrorService;
 import com.chromediopside.service.ProfileService;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -33,11 +34,14 @@ public class LoginController {
   @PostMapping(produces = {MediaType.APPLICATION_JSON_VALUE}, value = "/login")
   public ResponseEntity<?> login(@Valid @RequestBody LoginForm loginForm,
           BindingResult bindingResult) {
+    if (bindingResult.hasErrors()) {
+      return new ResponseEntity<Object>(errorService.fieldErrors(bindingResult), HttpStatus.BAD_REQUEST);
+    }
     if(loginService.loginFormContainsValidAccessToken(loginForm)) {
       profileService.fetchAndSaveProfileOnLogin(loginForm);
-      return loginService.login(loginForm, bindingResult);
+      return new ResponseEntity<>(loginService.login(loginForm), HttpStatus.OK);
     } else {
-      return errorService.unauthorizedRequestError();
+      return new ResponseEntity<>(errorService.unauthorizedRequestError(), HttpStatus.UNAUTHORIZED);
     }
   }
 

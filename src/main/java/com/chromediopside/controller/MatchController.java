@@ -1,11 +1,10 @@
 package com.chromediopside.controller;
 
 import com.chromediopside.datatransfer.Matches;
-import com.chromediopside.model.Swiping;
 import com.chromediopside.service.ErrorService;
 import com.chromediopside.service.MatchService;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,7 +26,7 @@ public class MatchController {
 
   @ExceptionHandler(Exception.class)
   public ResponseEntity<?> exception(Exception ex) {
-    return errorService.unauthorizedRequestError();
+    return new ResponseEntity<>(errorService.unauthorizedRequestError(), HttpStatus.UNAUTHORIZED);
   }
 
   @GetMapping("/matches")

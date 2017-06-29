@@ -7,10 +7,7 @@ import org.eclipse.egit.github.core.User;
 import org.eclipse.egit.github.core.client.GitHubClient;
 import org.eclipse.egit.github.core.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.BindingResult;
 
 @Service
 public class LoginService {
@@ -24,15 +21,10 @@ public class LoginService {
     this.errorService = errorService;
   }
 
-  public ResponseEntity<?> login(LoginForm loginForm,
-          BindingResult bindingResult) {
-    if (bindingResult.hasErrors()) {
-      return errorService.fieldErrors(bindingResult);
-    }
+  public TokenResponse login(LoginForm loginForm) {
     String appToken = userService.createAndSaveUser(loginForm);
     TokenResponse tokenResponse = new TokenResponse(appToken);
-    ResponseEntity responseEntity = new ResponseEntity<>(tokenResponse, HttpStatus.OK);
-    return responseEntity;
+    return tokenResponse;
   }
 
   public boolean loginFormContainsValidAccessToken(LoginForm loginForm) {

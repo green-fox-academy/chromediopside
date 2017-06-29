@@ -7,6 +7,7 @@ import com.chromediopside.model.GiTinderProfile;
 import com.chromediopside.model.GiTinderUser;
 import com.chromediopside.model.Language;
 import com.chromediopside.model.Match;
+import com.chromediopside.model.Page;
 import com.chromediopside.model.Swiping;
 import com.chromediopside.repository.ProfileRepository;
 import com.chromediopside.repository.SwipeRepository;
@@ -23,8 +24,6 @@ import org.eclipse.egit.github.core.client.GitHubClient;
 import org.eclipse.egit.github.core.service.RepositoryService;
 import org.eclipse.egit.github.core.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -131,24 +130,19 @@ public class ProfileService {
     return giTinderProfile;
   }
 
-  public ResponseEntity<?> getOtherProfile(String appToken, String username) {
-    if (!validAppToken(appToken)) {
-      return errorService.unauthorizedRequestError();
-    }
-    if (userRepository.findByUserName(username) == null) {
-      return errorService.noSuchUserError();
-    }
+  public GiTinderProfile getOtherProfile(String appToken, String username) {
+
     GiTinderUser giTinderUser = userRepository.findByUserNameAndAppToken(username, appToken);
     if (profileRepository.existsByLogin(giTinderUser.getUserName())
-        || refreshRequired(profileRepository.findByLogin(giTinderUser.getUserName()))) {
+        && refreshRequired(profileRepository.findByLogin(giTinderUser.getUserName()))) {
       profileRepository.save(fetchProfileFromGitHub(giTinderUser.getAccessToken(), username));
     }
     GiTinderProfile upToDateProfile = profileRepository
         .findByLogin(giTinderUser.getUserName());
-    return new ResponseEntity<Object>(upToDateProfile, HttpStatus.OK);
+    return upToDateProfile;
   }
 
-  public ResponseEntity<?> getOwnProfile(String appToken) {
+  public GiTinderProfile getOwnProfile(String appToken) {
     return getOtherProfile(appToken, getUserNameByAppToken(appToken));
   }
 
@@ -193,26 +187,15 @@ public class ProfileService {
     }
   }
 
-  public ResponseEntity<?> tenProfileByPage(String appToken, int pageNumber) {
-    if (validAppToken(appToken)) {
-      if (enoughProfiles(pageNumber)) {
-        return new ResponseEntity<Object>(pageService.setPage(pageNumber), HttpStatus.OK);
-      }
-      return errorService.getNoMoreAvailableProfiles();
-    } else {
-      return errorService.unauthorizedRequestError();
-    }
+  public Page tenProfileByPage(int pageNumber) {
+    return pageService.setPage(pageNumber);
   }
 
-  private boolean enoughProfiles(int pageNumber) {
+  public boolean enoughProfiles(int pageNumber) {
     return profileRepository.count() > ((pageNumber - 1) * PageService.PROFILES_PER_PAGE);
   }
 
-  private boolean validAppToken(String appToken) {
-    return userRepository.findByAppToken(appToken) != null;
-  }
-
-  public ResponseEntity<?> handleSwiping(String appToken, String username, String direction) {
+  public SwipeResponse handleSwiping(String appToken, String username, String direction) {
     SwipeResponse swipeResponse = new SwipeResponse();
     if (direction.equals("right")) {
       GiTinderUser swipingUser = userService.getUserByAppToken(appToken);
@@ -229,7 +212,6 @@ public class ProfileService {
         swipeResponse.setMatch(match);
       }
     }
-    ResponseEntity<?> responseEntity = new ResponseEntity<Object>(swipeResponse, HttpStatus.OK);
-    return responseEntity;
+    return swipeResponse;
   }
 }
