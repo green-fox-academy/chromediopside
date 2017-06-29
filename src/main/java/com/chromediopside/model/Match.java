@@ -8,15 +8,15 @@ import org.springframework.stereotype.Component;
 public class Match {
 
   private String username;
-  private Timestamp matched_at;
+  private Timestamp matchedAt;
   private ArrayList<String> messages;
 
   public Match() {
   }
 
-  public Match(String username, Timestamp matched_at) {
+  public Match(String username, Timestamp matchedAt) {
     this.username = username;
-    this.matched_at = matched_at;
+    this.matchedAt = matchedAt;
   }
 
   public String getUsername() {
@@ -24,7 +24,7 @@ public class Match {
   }
 
   public Timestamp getMatched_at() {
-    return matched_at;
+    return matchedAt;
   }
 
   public ArrayList<String> getMessages() {
@@ -36,6 +36,6 @@ public class Match {
   }
 
   public void setMatched_at(Timestamp matched_at) {
-    this.matched_at = matched_at;
+    this.matchedAt = matched_at;
   }
 }

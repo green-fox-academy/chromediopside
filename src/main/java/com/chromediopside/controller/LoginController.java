@@ -1,12 +1,12 @@
 package com.chromediopside.controller;
 
 import com.chromediopside.datatransfer.LoginForm;
-import com.chromediopside.service.GiTinderUserService;
 import com.chromediopside.service.LoginService;
 import com.chromediopside.service.ErrorService;
 import com.chromediopside.service.ProfileService;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,20 +17,20 @@ import org.springframework.web.bind.annotation.RestController;
 public class LoginController {
 
   private LoginService loginService;
-  private GiTinderUserService userService;
   private ErrorService errorService;
   private ProfileService profileService;
 
   @Autowired
-  public LoginController(LoginService loginService,
-      GiTinderUserService userService, ErrorService errorService, ProfileService profileService) {
+  public LoginController(
+      LoginService loginService,
+      ErrorService errorService,
+      ProfileService profileService) {
     this.loginService = loginService;
-    this.userService = userService;
     this.errorService = errorService;
     this.profileService = profileService;
   }
 
-  @PostMapping(value = "/login")
+  @PostMapping(produces = {MediaType.APPLICATION_JSON_VALUE}, value = "/login")
   public ResponseEntity<?> login(@Valid @RequestBody LoginForm loginForm,
           BindingResult bindingResult) {
     if(loginService.loginFormContainsValidAccessToken(loginForm)) {
@@ -39,5 +39,29 @@ public class LoginController {
     } else {
       return errorService.unauthorizedRequestError();
     }
+  }
+
+  public LoginService getLoginService() {
+    return loginService;
+  }
+
+  public void setLoginService(LoginService loginService) {
+    this.loginService = loginService;
+  }
+
+  public ErrorService getErrorService() {
+    return errorService;
+  }
+
+  public void setErrorService(ErrorService errorService) {
+    this.errorService = errorService;
+  }
+
+  public ProfileService getProfileService() {
+    return profileService;
+  }
+
+  public void setProfileService(ProfileService profileService) {
+    this.profileService = profileService;
   }
 }

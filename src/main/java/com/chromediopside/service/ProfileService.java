@@ -124,8 +124,8 @@ public class ProfileService {
     GitHubClient gitHubClient = GitHubClientSevice.setUpGitHubClient(accessToken);
     GiTinderProfile giTinderProfile = new GiTinderProfile();
     giTinderProfile.setRefreshDate(new Timestamp(System.currentTimeMillis()));
-    if (!(setLoginAndAvatar(gitHubClient, username, giTinderProfile) &&
-        setReposAndLanguages(gitHubClient, username, giTinderProfile))) {
+    if (!(setLoginAndAvatar(gitHubClient, username, giTinderProfile))
+        || !(setReposAndLanguages(gitHubClient, username, giTinderProfile))) {
       giTinderProfile = null;
     }
     return giTinderProfile;
