@@ -9,6 +9,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -43,6 +44,7 @@ public class ProfileController {
     return new ResponseEntity<>(errorService.unauthorizedRequestError(), HttpStatus.UNAUTHORIZED);
   }
 
+  @CrossOrigin("*")
   @GetMapping("/profile")
   public ResponseEntity<?> getOwnProfile(
           @RequestHeader(name = "X-GiTinder-token") String appToken) {
@@ -52,6 +54,7 @@ public class ProfileController {
     return new ResponseEntity<>(profileService.getOwnProfile(appToken), HttpStatus.OK);
   }
 
+  @CrossOrigin("*")
   @RequestMapping("/profiles/{username}")
   public ResponseEntity<?> getOtherProfile(@PathVariable String username,
           @RequestHeader(name = "X-GiTinder-token") String appToken) throws Exception {
@@ -64,6 +67,7 @@ public class ProfileController {
     return new ResponseEntity<>(profileService.getOtherProfile(appToken, username), HttpStatus.OK);
   }
 
+  @CrossOrigin("*")
   @GetMapping(value = {"/available/{page}", "/available"})
   public ResponseEntity<?> listAvailableProfilesByPage(
           @RequestHeader(name = "X-GiTinder-token") String appToken,
@@ -83,6 +87,7 @@ public class ProfileController {
     return new ResponseEntity<>(profileService.tenProfileByPage(1), HttpStatus.OK);
   }
 
+  @CrossOrigin("*")
   @PutMapping("/profiles/{username}/{direction}")
   public ResponseEntity<?> swipe(@RequestHeader(name = "X-GiTinder-token") String appToken,
           @PathVariable String username,
