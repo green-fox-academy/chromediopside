@@ -38,6 +38,8 @@ public class ProfileServiceTest {
   private static final long oneDayInMillis = 86400000;
 
   @Autowired
+  private GiTinderProfile profileToCheck;
+  @Autowired
   private ProfileService profileService;
   @Autowired
   private MockProfileBuilder mockProfileBuilder;
@@ -86,21 +88,18 @@ public class ProfileServiceTest {
 
   @Test
   public void refreshRequiredIfZeroHoursPassed() throws Exception {
-    GiTinderProfile profileToCheck = new GiTinderProfile();
     profileToCheck.setRefreshDate(new Timestamp(System.currentTimeMillis()));
     assertFalse(profileService.refreshRequired(profileToCheck));
   }
 
   @Test
   public void refreshRequiredSince1970() throws Exception {
-    GiTinderProfile profileToCheck = new GiTinderProfile();
     profileToCheck.setRefreshDate(new Timestamp(00000000000l));
     assertTrue(profileService.refreshRequired(profileToCheck));
   }
 
   @Test
   public void refreshRequiredSinceNowMinus24Hours() throws Exception {
-    GiTinderProfile profileToCheck = new GiTinderProfile();
     profileToCheck.setRefreshDate(new Timestamp(currentTime.getTime() - oneDayInMillis));
     assertTrue(profileService.refreshRequired(profileToCheck));
   }
