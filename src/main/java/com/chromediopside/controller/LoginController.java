@@ -33,9 +33,8 @@ public class LoginController {
   }
 
   @CrossOrigin("*")
-  @PostMapping(produces = {MediaType.APPLICATION_JSON_VALUE}, value = "/login")
-  public ResponseEntity<?> login(@Valid @RequestBody LoginForm loginForm,
-          BindingResult bindingResult) {
+  @PostMapping(value = "/login")
+  public ResponseEntity<?> login(@RequestBody LoginForm loginForm) {
     if (loginForm.getUsername() == null || loginForm.getAccessToken() == null) {
       return new ResponseEntity<Object>(errorService.fieldErrors(loginForm), HttpStatus.BAD_REQUEST);
     }
