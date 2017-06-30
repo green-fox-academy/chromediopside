@@ -36,8 +36,8 @@ public class LoginController {
   @PostMapping(produces = {MediaType.APPLICATION_JSON_VALUE}, value = "/login")
   public ResponseEntity<?> login(@Valid @RequestBody LoginForm loginForm,
           BindingResult bindingResult) {
-    if (bindingResult.hasErrors()) {
-      return new ResponseEntity<Object>(errorService.fieldErrors(bindingResult), HttpStatus.BAD_REQUEST);
+    if (loginForm.getUsername() == null || loginForm.getAccessToken() == null) {
+      return new ResponseEntity<Object>(errorService.fieldErrors(loginForm), HttpStatus.BAD_REQUEST);
     }
     if(loginService.loginFormContainsValidAccessToken(loginForm)) {
       profileService.fetchAndSaveProfileOnLogin(loginForm);

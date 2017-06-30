@@ -1,14 +1,19 @@
 package com.chromediopside.datatransfer;
 
 import com.chromediopside.model.GiTinderProfile;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Objects;
 import javax.validation.constraints.NotNull;
 
 public class LoginForm {
 
   @NotNull
+  @JsonProperty("user_name")
   private String username;
   @NotNull
+  @JsonProperty("access_token")
   private String accessToken;
 
   public LoginForm() {
