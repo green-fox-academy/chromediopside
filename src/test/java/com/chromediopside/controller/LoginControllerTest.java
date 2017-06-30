@@ -86,8 +86,8 @@ public class LoginControllerTest {
 
     mockMvc.perform(post("/login").contentType(MediaType.APPLICATION_JSON)
         .content("{"
-            + "\"username\" : \"Bond\","
-            + "\"accessToken\" : \"abcd1234\""
+            + "\"user_name\" : \"Bond\","
+            + "\"access_token\" : \"abcd1234\""
             + "}"))
         .andExpect(status().isOk())
         .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -99,7 +99,7 @@ public class LoginControllerTest {
   public void testMissingUsername() throws Exception {
     mockMvc.perform(post("/login").contentType(MediaType.APPLICATION_JSON_UTF8)
         .content("{"
-            + "\"accessToken\" : \"abcd1234\""
+            + "\"access_token\" : \"abcd1234\""
             + "}"))
         .andExpect(status().isBadRequest())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
@@ -113,7 +113,7 @@ public class LoginControllerTest {
   public void testMissingAccessToken() throws Exception {
     mockMvc.perform(post("/login").contentType(MediaType.APPLICATION_JSON_UTF8)
         .content("{"
-            + "\"username\" : \"Bond\""
+            + "\"user_name\" : \"Bond\""
             + "}"))
         .andExpect(status().isBadRequest())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))

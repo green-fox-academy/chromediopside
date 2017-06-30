@@ -1,0 +1,9 @@
+INSERT INTO language VALUES ('Java');
+INSERT INTO language VALUES ('HTML');
+INSERT INTO language VALUES ('CSS');
+INSERT INTO language VALUES ('C#');
+INSERT INTO language VALUES ('C++');
+INSERT INTO language VALUES ('PHP');
+INSERT INTO language VALUES ('Python');
+INSERT INTO language VALUES ('JavaScript');
+INSERT INTO language VALUES ('C');
