@@ -1,8 +1,5 @@
 package com.chromediopside.datatransfer;
 
-import com.chromediopside.model.GiTinderProfile;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Objects;
 import javax.validation.constraints.NotNull;
@@ -17,6 +14,11 @@ public class LoginForm {
   private String accessToken;
 
   public LoginForm() {
+  }
+
+  public LoginForm(String username, String accessToken) {
+    this.username = username;
+    this.accessToken = accessToken;
   }
 
   public String getUsername() {
@@ -42,6 +44,6 @@ public class LoginForm {
     }
     LoginForm form = (LoginForm) o;
     return Objects.equals(username, form.username) &&
-        Objects.equals(accessToken, form.accessToken);
+            Objects.equals(accessToken, form.accessToken);
   }
 }
