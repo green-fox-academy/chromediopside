@@ -32,7 +32,7 @@ public class ProfileServiceTest {
   private static final String testLogin = System.getenv("TEST_LOGIN");
   private static final String testAvatarUrl = System.getenv("TEST_AVATAR_URL");
   private static final String testRepos = "exam-basics;exam-trial-basics;"
-      + "git-lesson-repository;lagopus-spring-exam;p-czigany.github.io";
+          + "git-lesson-repository;lagopus-spring-exam;p-czigany.github.io";
   private static final Timestamp currentTime = new Timestamp(System.currentTimeMillis());
   private Set<Language> testLanguagesList = new HashSet<>();
 
@@ -53,21 +53,21 @@ public class ProfileServiceTest {
   @Test
   public void validAccessToken() throws Exception {
     GiTinderProfile expectedProfile = mockProfileBuilder
-        .setLogin(testLogin)
-        .setAvatarUrl(testAvatarUrl)
-        .setRepos(testRepos)
-        .setLanguagesList(testLanguagesList)
-        .setRefreshDate(currentTime)
-        .build();
+            .setLogin(testLogin)
+            .setAvatarUrl(testAvatarUrl)
+            .setRepos(testRepos)
+            .setLanguagesList(testLanguagesList)
+            .setRefreshDate(currentTime)
+            .build();
     GiTinderProfile actualProfile = profileService
-        .fetchProfileFromGitHub(validAccessToken, testLogin);
+            .fetchProfileFromGitHub(validAccessToken, testLogin);
     assertEquals(expectedProfile, actualProfile);
   }
 
   @Test
   public void invalidAccessToken() throws Exception {
     GiTinderProfile actualProfile = profileService
-        .fetchProfileFromGitHub(invalidAccessToken, testLogin);
+            .fetchProfileFromGitHub(invalidAccessToken, testLogin);
     assertNull(actualProfile);
   }
 
@@ -124,16 +124,15 @@ public class ProfileServiceTest {
     Mockito.when(profileRepository.count()).thenReturn(10L);
 
     boolean mockEnoughProfiles = profileService.enoughProfiles(1);
-    assertEquals(true, mockEnoughProfiles );
+    assertEquals(true, mockEnoughProfiles);
   }
-
 
   @Test
   public void notEnoughProfilesOnGivenPage() {
     Mockito.when(profileRepository.count()).thenReturn(10L);
 
     boolean mockEnoughProfiles = profileService.enoughProfiles(2);
-    assertEquals(false, mockEnoughProfiles );
+    assertEquals(false, mockEnoughProfiles);
   }
 
   @Test
@@ -141,7 +140,7 @@ public class ProfileServiceTest {
     Mockito.when(profileRepository.count()).thenReturn(0L);
 
     boolean mockEnoughProfiles = profileService.enoughProfiles(1);
-    assertEquals(false, mockEnoughProfiles );
+    assertEquals(false, mockEnoughProfiles);
   }
 
   @Test
@@ -149,7 +148,7 @@ public class ProfileServiceTest {
     Mockito.when(profileRepository.count()).thenReturn(31L);
 
     boolean mockEnoughProfiles = profileService.enoughProfiles(4);
-    assertEquals(true, mockEnoughProfiles );
+    assertEquals(true, mockEnoughProfiles);
   }
 
 }
