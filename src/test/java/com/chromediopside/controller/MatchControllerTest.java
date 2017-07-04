@@ -93,4 +93,23 @@ public class MatchControllerTest {
                   + "\"messages\": null}]}"));
   }
 
+  @Test
+  public void getMatchesWithoutAppToken() throws Exception {
+    mockMvc.perform(get("/matches"))
+            .andExpect(status().isUnauthorized())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+            .andExpect(content().json("{"
+                    +"\"status\": \"error\","
+                    +"\"message\": \"Unauthorized request!\"}"));
+  }
+
+  @Test
+  public void getMatchesWithInvalidAppToken() throws Exception {
+    mockMvc.perform(get("/matches").header("X-GiTinder-token", "abc"))
+            .andExpect(status().isUnauthorized())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+            .andExpect(content().json("{"
+                    + "\"status\": \"error\","
+                    + "\"message\": \"Unauthorized request!\"}"));
+  }
 }
