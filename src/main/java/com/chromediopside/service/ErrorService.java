@@ -1,6 +1,7 @@
 package com.chromediopside.service;
 
 import com.chromediopside.datatransfer.ErrorResponse;
+import com.chromediopside.datatransfer.LoginForm;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -23,18 +24,22 @@ public class ErrorService {
     this.errorResponse = errorResponse;
   }
 
-  private String missingValues(BindingResult bindingResult) {
+  private String missingValues(LoginForm loginForm) {
     List<String> missingFields = new ArrayList<>();
-    for (FieldError currentFieldError : bindingResult.getFieldErrors()) {
-      missingFields.add(currentFieldError.getField());
+    if (loginForm.getUsername() == null) {
+      missingFields.add("username");
+    }
+    if (loginForm.getAccessToken() == null) {
+      missingFields.add("accessToken");
+
     }
     Collections.sort(missingFields);
     return String.join(", ", missingFields) + "!";
   }
 
-  public ErrorResponse fieldErrors(BindingResult bindingResult) {
+  public ErrorResponse fieldErrors(LoginForm loginForm) {
     errorResponse.setStatus("error");
-    errorResponse.setMessage(MISSING_PARAMS_MESSAGE + missingValues(bindingResult));
+    errorResponse.setMessage(MISSING_PARAMS_MESSAGE + missingValues(loginForm));
     return errorResponse;
   }
 
