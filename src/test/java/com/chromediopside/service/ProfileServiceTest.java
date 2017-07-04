@@ -22,6 +22,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @SpringBootTest
 public class ProfileServiceTest {
 
+  private static final long oneDayInMillis = 86400000;
+
   private static final String validAccessToken = System.getenv("TEST_ACCESS_TOKEN");
   private static final String invalidAccessToken = "1nval1dt0k3n";
   private static final String testLogin = System.getenv("TEST_LOGIN");
@@ -31,10 +33,7 @@ public class ProfileServiceTest {
   private static final Timestamp currentTime = new Timestamp(System.currentTimeMillis());
   private Set<Language> testLanguagesList = new HashSet<>();
 
-  private static final long oneDayInMillis = 86400000;
 
-  @Autowired
-  private GiTinderProfile profileToCheck;
   @Autowired
   private ProfileService profileService;
   @Autowired
@@ -93,19 +92,25 @@ public class ProfileServiceTest {
 
   @Test
   public void refreshRequiredIfZeroHoursPassed() throws Exception {
+    GiTinderProfile profileToCheck = new GiTinderProfile();
     profileToCheck.setRefreshDate(new Timestamp(System.currentTimeMillis()));
-    assertFalse(profileService.refreshRequired(profileToCheck));
+    boolean refreshRequired = profileService.refreshRequired(profileToCheck);
+    assertFalse(refreshRequired);
   }
 
   @Test
   public void refreshRequiredSince1970() throws Exception {
+    GiTinderProfile profileToCheck = new GiTinderProfile();
     profileToCheck.setRefreshDate(new Timestamp(00000000000l));
-    assertTrue(profileService.refreshRequired(profileToCheck));
+    boolean refreshRequired = profileService.refreshRequired(profileToCheck);
+    assertTrue(refreshRequired);
   }
 
   @Test
   public void refreshRequiredSinceNowMinus24Hours() throws Exception {
+    GiTinderProfile profileToCheck = new GiTinderProfile();
     profileToCheck.setRefreshDate(new Timestamp(currentTime.getTime() - oneDayInMillis));
-    assertTrue(profileService.refreshRequired(profileToCheck));
+    boolean refreshRequired = profileService.refreshRequired(profileToCheck);
+    assertTrue(refreshRequired);
   }
 }
