@@ -4,7 +4,7 @@ import org.eclipse.egit.github.core.client.GitHubClient;
 import org.springframework.stereotype.Service;
 
 @Service
-public class GitHubClientSevice {
+public class GitHubClientService {
 
   private static final String GET_REQUEST_IOERROR
       = "Some GitHub data of this user is not available for this token!";

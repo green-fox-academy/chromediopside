@@ -38,9 +38,9 @@ public class ProfileService {
   private PageService pageService;
   private GiTinderProfile giTinderProfile;
   private Language language;
-  private GiTinderUserService userService;
+  private GiTinderUserService giTinderUserService;
   private SwipeRepository swipeRepository;
-  private GitHubClientSevice gitHubClientSevice;
+  private GitHubClientService gitHubClientService;
 
   @Autowired
   public ProfileService(
@@ -51,9 +51,9 @@ public class ProfileService {
       MockProfileBuilder mockProfileBuilder,
       GiTinderProfile giTinderProfile,
       Language language,
-      GiTinderUserService userService,
+      GiTinderUserService giTinderUserService,
       SwipeRepository swipeRepository,
-      GitHubClientSevice gitHubClientSevice) {
+      GitHubClientService gitHubClientSevice) {
     this.userRepository = userRepository;
     this.profileRepository = profileRepository;
     this.errorService = errorService;
@@ -61,16 +61,16 @@ public class ProfileService {
     this.pageService = pageService;
     this.giTinderProfile = giTinderProfile;
     this.language = language;
-    this.userService = userService;
+    this.giTinderUserService = giTinderUserService;
     this.swipeRepository = swipeRepository;
-    this.gitHubClientSevice = gitHubClientSevice;
+    this.gitHubClientService = gitHubClientService;
   }
 
   public ProfileService() {
   }
 
   private boolean setLoginAndAvatar(GitHubClient gitHubClient, String username,
-      GiTinderProfile giTinderProfile) {
+          GiTinderProfile giTinderProfile) {
     UserService userService = new UserService(gitHubClient);
     try {
       User user = userService.getUser(username);
@@ -78,13 +78,13 @@ public class ProfileService {
       giTinderProfile.setAvatarUrl(user.getAvatarUrl());
       return true;
     } catch (IOException e) {
-      System.out.println(gitHubClientSevice.getGetRequestIoerror());
+      System.out.println(gitHubClientService.getGetRequestIoerror());
       return false;
     }
   }
 
   private boolean setReposAndLanguages(GitHubClient gitHubClient, String username,
-      GiTinderProfile giTinderProfile) {
+          GiTinderProfile giTinderProfile) {
     RepositoryService repositoryService = new RepositoryService(gitHubClient);
     try {
       List<Repository> repositoryList = repositoryService.getRepositories(username);
@@ -99,7 +99,7 @@ public class ProfileService {
       giTinderProfile.setLanguagesList(languageObjects);
       return true;
     } catch (IOException e) {
-      System.out.println(gitHubClientSevice.getGetRequestIoerror());
+      System.out.println(gitHubClientService.getGetRequestIoerror());
       return false;
     }
   }
@@ -120,11 +120,11 @@ public class ProfileService {
   }
 
   public GiTinderProfile fetchProfileFromGitHub(String accessToken, String username) {
-    GitHubClient gitHubClient = GitHubClientSevice.setUpGitHubClient(accessToken);
+    GitHubClient gitHubClient = GitHubClientService.setUpGitHubClient(accessToken);
     GiTinderProfile giTinderProfile = new GiTinderProfile();
     giTinderProfile.setRefreshDate(new Timestamp(System.currentTimeMillis()));
     if (!(setLoginAndAvatar(gitHubClient, username, giTinderProfile))
-        || !(setReposAndLanguages(gitHubClient, username, giTinderProfile))) {
+            || !(setReposAndLanguages(gitHubClient, username, giTinderProfile))) {
       giTinderProfile = null;
     }
     return giTinderProfile;
@@ -138,7 +138,7 @@ public class ProfileService {
       profileRepository.save(giTinderProfile);
     }
     giTinderProfile = profileRepository
-        .findByLogin(giTinderUser.getUserName());
+            .findByLogin(giTinderUser.getUserName());
     return giTinderProfile;
   }
 
@@ -157,7 +157,7 @@ public class ProfileService {
     } else {
       differenceAsLong = date2.getTime() - date1.getTime();
     }
-    int differenceAsDays = (int)(differenceAsLong / oneDayInMillis);
+    int differenceAsDays = (int) (differenceAsLong / oneDayInMillis);
     return differenceAsDays;
   }
 
@@ -198,7 +198,7 @@ public class ProfileService {
   public SwipeResponse handleSwiping(String appToken, String username, String direction) {
     SwipeResponse swipeResponse = new SwipeResponse();
     if (direction.equals("right")) {
-      GiTinderUser swipingUser = userService.getUserByAppToken(appToken);
+      GiTinderUser swipingUser = giTinderUserService.getUserByAppToken(appToken);
       String swipingUsersName = swipingUser.getUserName();
       if (!swipeRepository.existsBySwipingUsersNameAndSwipedUsersName(username, swipingUsersName)) {
 
