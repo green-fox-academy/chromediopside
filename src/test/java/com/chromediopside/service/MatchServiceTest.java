@@ -2,6 +2,7 @@ package com.chromediopside.service;
 
 import static org.junit.Assert.*;
 
+import com.chromediopside.datatransfer.Matches;
 import com.chromediopside.model.Match;
 import com.chromediopside.model.Swiping;
 import java.sql.Timestamp;
@@ -27,7 +28,23 @@ public class MatchServiceTest {
 
   @Test
   public void transformSwipingListToMatches() throws Exception {
+    List<Swiping> swipeMatches = new ArrayList<>();
+    Timestamp timestamp = new Timestamp(1498563273079l);
+    swipeMatches.add(new Swiping("nori", "dani", timestamp));
+    swipeMatches.add(new Swiping("nori", "dori", timestamp));
+    swipeMatches.add(new Swiping("peti", "nori", timestamp));
+    String actualUserName = "nori";
 
+    Matches matches = matchService.transformSwipingListToMatches(swipeMatches, actualUserName);
+
+    List<Match> matchList = new ArrayList<>();
+    matchList.add(new Match("dani", timestamp ));
+    matchList.add(new Match("dori", timestamp ));
+    matchList.add(new Match("peti", timestamp ));
+    Matches expected = new Matches();
+    expected.setMatches(matchList);
+
+    assertEquals(expected.getMatches(), matches.getMatches());
   }
 
   @Test
