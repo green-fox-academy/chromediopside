@@ -31,18 +31,17 @@ public class MatchService {
     return transformSwipingListToMatches(swipeMatches, actualUsersName);
   }
 
-  private Matches transformSwipingListToMatches(List<Swiping> swipeMatches, String actualUsersName) {
+  public Matches transformSwipingListToMatches(List<Swiping> swipeMatches, String actualUsersName) {
     Matches matches = new Matches();
     List<Match> matchList = swipingToMatch(swipeMatches, actualUsersName);
     matches.setMatches(matchList);
     return matches;
   }
 
-  private List<Match> swipingToMatch(List<Swiping> swipeMatches, String actualUsersName) {
+  public List<Match> swipingToMatch(List<Swiping> swipeMatches, String actualUsersName) {
     List<Match> matchList = new ArrayList<>();
     for (Swiping swipe : swipeMatches) {
       Match match = new Match();
-
       String username = swipe.getSwipingUsersName();
       if (swipe.getSwipingUsersName().equals(actualUsersName)) {
         username = swipe.getSwipedUsersName();

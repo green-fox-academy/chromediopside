@@ -2,6 +2,7 @@ package com.chromediopside.model;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Objects;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -37,5 +38,16 @@ public class Match {
 
   public void setMatched_at(Timestamp matched_at) {
     this.matchedAt = matched_at;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (!(o instanceof Match)) {
+      return false;
+    }
+    Match match = (Match) o;
+    return Objects.equals(username, match.username)
+            && Objects.equals(matchedAt, match.matchedAt)
+            && Objects.equals(messages, match.messages);
   }
 }
