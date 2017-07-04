@@ -8,14 +8,17 @@ import static org.junit.Assert.assertTrue;
 import com.chromediopside.mockbuilder.MockProfileBuilder;
 import com.chromediopside.model.GiTinderProfile;
 import com.chromediopside.model.Language;
+import com.chromediopside.repository.ProfileRepository;
 import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -38,6 +41,8 @@ public class ProfileServiceTest {
   private ProfileService profileService;
   @Autowired
   private MockProfileBuilder mockProfileBuilder;
+  @MockBean
+  ProfileRepository profileRepository;
 
   @Before
   public void setup() throws Exception {
@@ -113,4 +118,38 @@ public class ProfileServiceTest {
     boolean refreshRequired = profileService.refreshRequired(profileToCheck);
     assertTrue(refreshRequired);
   }
+
+  @Test
+  public void enoughProfilesOnGivenPage() {
+    Mockito.when(profileRepository.count()).thenReturn(10L);
+
+    boolean mockEnoughProfiles = profileService.enoughProfiles(1);
+    assertEquals(true, mockEnoughProfiles );
+  }
+
+
+  @Test
+  public void notEnoughProfilesOnGivenPage() {
+    Mockito.when(profileRepository.count()).thenReturn(10L);
+
+    boolean mockEnoughProfiles = profileService.enoughProfiles(2);
+    assertEquals(false, mockEnoughProfiles );
+  }
+
+  @Test
+  public void noProfilesAvaialable() {
+    Mockito.when(profileRepository.count()).thenReturn(0L);
+
+    boolean mockEnoughProfiles = profileService.enoughProfiles(1);
+    assertEquals(false, mockEnoughProfiles );
+  }
+
+  @Test
+  public void moreThanOneAvaialblePagesEnoughProfiles() {
+    Mockito.when(profileRepository.count()).thenReturn(31L);
+
+    boolean mockEnoughProfiles = profileService.enoughProfiles(4);
+    assertEquals(true, mockEnoughProfiles );
+  }
+
 }
