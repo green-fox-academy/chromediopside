@@ -24,7 +24,7 @@ public class ErrorService {
     this.errorResponse = errorResponse;
   }
 
-  private String missingValues(LoginForm loginForm) {
+  String missingValues(LoginForm loginForm) {
     List<String> missingFields = new ArrayList<>();
     if (loginForm.getUsername() == null) {
       missingFields.add("username");

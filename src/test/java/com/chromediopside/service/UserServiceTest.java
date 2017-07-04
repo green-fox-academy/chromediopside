@@ -28,8 +28,30 @@ public class UserServiceTest {
   @Test
   public void getUserObjectByAppTokenTest() {
     Mockito.when(userRepository.findByAppToken("aa345678910111aa")).thenReturn(mockUserBuilder.build());
-    Object actualGiTinderUser = userService.getUserObjectByAppToken("aa345678910111aa");
+    Object actualGiTinderUser = userService.getUserByAppToken("aa345678910111aa");
 
     assertEquals(mockUserBuilder.build(), actualGiTinderUser);
   }
+
+  @Test
+  public void validAppTokenTest() {
+
+    Mockito.when(userRepository.findByAppToken("v4lid4ppT0k3n")).thenReturn(mockUserBuilder.build());
+
+    String appToken = "v4lid4ppT0k3n";
+    boolean mockAppTokenChecker = userService.validAppToken(appToken);
+    assertEquals(true, mockAppTokenChecker);
+  }
+
+  @Test
+  public void inValidAppTokenTest() {
+
+    Mockito.when(userRepository.findByAppToken("inV4lid4ppT0k3n")).thenReturn(mockUserBuilder.build());
+
+    String appToken = "";
+    boolean mockAppTokenChecker = userService.validAppToken(appToken);
+    assertEquals(false, mockAppTokenChecker);
+  }
+
+
 }
