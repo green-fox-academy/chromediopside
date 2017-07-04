@@ -70,11 +70,12 @@ public class GiTinderProfile {
   }
 
   public void updateProfile(String avatarUrl, String repos,
-      Set<Language> languagesList) {
+      Set<Language> languagesList, String randomCodeLinks) {
     this.refreshDate = new Timestamp(System.currentTimeMillis());
     this.avatarUrl = avatarUrl;
     this.repos = repos;
     this.languagesList = languagesList;
+    this.randomCodeLinks = randomCodeLinks;
   }
 
   public String getLogin() {

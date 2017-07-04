@@ -31,7 +31,7 @@ public class LoginService {
     if (loginForm.getAccessToken() == null || loginForm.getUsername() == null || loginForm == null) {
       return false;
     }
-    GitHubClient gitHubClient =  GitHubClientSevice.setUpGitHubClient(loginForm.getAccessToken());
+    GitHubClient gitHubClient =  GitHubClientService.setUpGitHubClient(loginForm.getAccessToken());
     UserService userService = new UserService(gitHubClient);
     try {
       User user = userService.getUser();
@@ -39,7 +39,7 @@ public class LoginService {
         return true;
       }
     } catch (IOException e) {
-      System.out.println(GitHubClientSevice.getGetRequestIoerror());
+      System.out.println(GitHubClientService.getGetRequestIoerror());
     }
     return false;
   }

@@ -14,6 +14,8 @@ public class Language {
   @Id
   @Column(name = "language_name")
   private String languageName;
+  @Column(name = "file_extension")
+  private String fileExtension;
 
   public Language(String languageName) {
     this.languageName = languageName;
@@ -42,5 +44,13 @@ public class Language {
 
   public void setLanguageName(String languageName) {
     this.languageName = languageName;
+  }
+
+  public String getFileExtension() {
+    return fileExtension;
+  }
+
+  public void setFileExtension(String fileExtension) {
+    this.fileExtension = fileExtension;
   }
 }
