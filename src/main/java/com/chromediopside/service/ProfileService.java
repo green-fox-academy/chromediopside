@@ -133,13 +133,13 @@ public class ProfileService {
   public GiTinderProfile getOtherProfile(String appToken, String username) {
 
     GiTinderUser giTinderUser = userRepository.findByUserNameAndAppToken(username, appToken);
-    if (profileRepository.existsByLogin(giTinderUser.getUserName())
-        && refreshRequired(profileRepository.findByLogin(giTinderUser.getUserName()))) {
-      profileRepository.save(fetchProfileFromGitHub(giTinderUser.getAccessToken(), username));
+    if (refreshRequired(profileRepository.findByLogin(giTinderUser.getUserName()))) {
+      giTinderProfile = fetchProfileFromGitHub(giTinderUser.getAccessToken(), username);
+      profileRepository.save(giTinderProfile);
     }
-    GiTinderProfile upToDateProfile = profileRepository
+    giTinderProfile = profileRepository
         .findByLogin(giTinderUser.getUserName());
-    return upToDateProfile;
+    return giTinderProfile;
   }
 
   public GiTinderProfile getOwnProfile(String appToken) {

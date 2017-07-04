@@ -26,7 +26,7 @@ public class MatchController {
   }
 
   @ExceptionHandler(Exception.class)
-  public ResponseEntity<?> exception(Exception ex) {
+  public ResponseEntity<Object> exception(Exception ex) {
     return new ResponseEntity<>(errorService.unauthorizedRequestError(), HttpStatus.UNAUTHORIZED);
   }
 

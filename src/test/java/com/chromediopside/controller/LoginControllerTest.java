@@ -10,20 +10,16 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
 import com.chromediopside.GitinderApplication;
 import com.chromediopside.datatransfer.LoginForm;
 import com.chromediopside.datatransfer.TokenResponse;
-import com.chromediopside.service.ErrorService;
 import com.chromediopside.service.LoginService;
-import com.chromediopside.service.ProfileService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
@@ -38,17 +34,12 @@ public class LoginControllerTest {
 
   private MockMvc mockMvc;
 
-  @Autowired
-  private LoginController loginController;
-
   @Mock
   private LoginService mockLoginService;
 
-  @Mock
-  private ErrorService mockErrorService;
-
-  @Mock
-  private ProfileService mockProfileService;
+  @InjectMocks
+  @Autowired
+  private LoginController loginController;
 
   @Autowired
   private WebApplicationContext webApplicationContext;
@@ -62,32 +53,20 @@ public class LoginControllerTest {
   public void controllerTestContextLoads() throws Exception {
   }
 
-  @SuppressWarnings("unchecked")
   @Test
-  public void testAllParametersOk() throws Exception {
-    loginController.setLoginService(mockLoginService);
-    loginController.setProfileService(mockProfileService);
+  public void allParametersGiven() throws Exception {
 
-    LoginForm loginForm = new LoginForm();
-    loginForm.setUsername("Bond");
-    loginForm.setAccessToken("abcd1234");
+    LoginForm loginForm = new LoginForm("Bond", "abcd1234");
 
-    TokenResponse tokenResponse = new TokenResponse();
-    tokenResponse.setToken("s0m3t0k3n");
-    tokenResponse.setStatus("ok");
-
-    HttpHeaders headers = new HttpHeaders();
-    headers.add("Content-Type", MediaType.APPLICATION_OCTET_STREAM_VALUE);
-
-    ResponseEntity responseEntity = new ResponseEntity<>(tokenResponse, headers, HttpStatus.OK);
+    TokenResponse tokenResponse = new TokenResponse("s0m3t0k3n");
 
     Mockito.when(mockLoginService.loginFormContainsValidAccessToken(loginForm)).thenReturn(true);
     Mockito.when(mockLoginService.login(loginForm)).thenReturn(tokenResponse);
 
     mockMvc.perform(post("/login").contentType(MediaType.APPLICATION_JSON)
         .content("{"
-            + "\"username\" : \"Bond\","
-            + "\"accessToken\" : \"abcd1234\""
+            + "\"user_name\" : \"Bond\","
+            + "\"access_token\" : \"abcd1234\""
             + "}"))
         .andExpect(status().isOk())
         .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -99,7 +78,7 @@ public class LoginControllerTest {
   public void testMissingUsername() throws Exception {
     mockMvc.perform(post("/login").contentType(MediaType.APPLICATION_JSON_UTF8)
         .content("{"
-            + "\"accessToken\" : \"abcd1234\""
+            + "\"access_token\" : \"abcd1234\""
             + "}"))
         .andExpect(status().isBadRequest())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
@@ -113,7 +92,7 @@ public class LoginControllerTest {
   public void testMissingAccessToken() throws Exception {
     mockMvc.perform(post("/login").contentType(MediaType.APPLICATION_JSON_UTF8)
         .content("{"
-            + "\"username\" : \"Bond\""
+            + "\"user_name\" : \"Bond\""
             + "}"))
         .andExpect(status().isBadRequest())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
