@@ -1,5 +1,7 @@
 package com.chromediopside.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -12,6 +14,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import org.springframework.stereotype.Component;
@@ -40,6 +44,11 @@ public class GiTinderProfile {
       joinColumns = @JoinColumn(name = "profile_id", referencedColumnName = "login"),
       inverseJoinColumns = @JoinColumn(name = "language_id", referencedColumnName = "language_name"))
   private Set<Language> languagesList;
+
+  @OneToOne
+  @PrimaryKeyJoinColumn
+  @JsonIgnore  
+  private Settings settings;
 
   public GiTinderProfile() {
   }
