@@ -6,9 +6,11 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import com.chromediopside.mockbuilder.MockProfileBuilder;
+import com.chromediopside.mockbuilder.MockUserBuilder;
 import com.chromediopside.model.GiTinderProfile;
 import com.chromediopside.model.Language;
 import com.chromediopside.repository.ProfileRepository;
+import com.chromediopside.repository.UserRepository;
 import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
@@ -41,8 +43,12 @@ public class ProfileServiceTest {
   private ProfileService profileService;
   @Autowired
   private MockProfileBuilder mockProfileBuilder;
+  @Autowired
+  MockUserBuilder mockUserBuilder;
   @MockBean
   ProfileRepository profileRepository;
+  @MockBean
+  UserRepository userRepository;
 
   @Before
   public void setup() throws Exception {
@@ -149,6 +155,14 @@ public class ProfileServiceTest {
 
     boolean mockEnoughProfiles = profileService.enoughProfiles(4);
     assertEquals(true, mockEnoughProfiles);
+  }
+
+  @Test
+  public void getUserNameByAppToken() {
+    Mockito.when(userRepository.findByAppToken("4ppT0k3n")).thenReturn(mockUserBuilder.build());
+
+    String username = profileService.getUserNameByAppToken("4ppT0k3n");
+    assertEquals("kondfox", username);
   }
 
 }
