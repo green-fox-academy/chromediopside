@@ -1,15 +1,12 @@
 package com.chromediopside.controller;
 
 import com.chromediopside.datatransfer.LoginForm;
-import com.chromediopside.service.LoginService;
 import com.chromediopside.service.ErrorService;
+import com.chromediopside.service.LoginService;
 import com.chromediopside.service.ProfileService;
-import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,9 +21,9 @@ public class LoginController {
 
   @Autowired
   public LoginController(
-      LoginService loginService,
-      ErrorService errorService,
-      ProfileService profileService) {
+          LoginService loginService,
+          ErrorService errorService,
+          ProfileService profileService) {
     this.loginService = loginService;
     this.errorService = errorService;
     this.profileService = profileService;
@@ -34,11 +31,11 @@ public class LoginController {
 
   @CrossOrigin("*")
   @PostMapping(value = "/login")
-  public ResponseEntity<?> login(@RequestBody LoginForm loginForm) {
+  public ResponseEntity<Object> login(@RequestBody LoginForm loginForm) {
     if (loginForm.getUsername() == null || loginForm.getAccessToken() == null) {
-      return new ResponseEntity<Object>(errorService.fieldErrors(loginForm), HttpStatus.BAD_REQUEST);
+      return new ResponseEntity<>(errorService.fieldErrors(loginForm), HttpStatus.BAD_REQUEST);
     }
-    if(loginService.loginFormContainsValidAccessToken(loginForm)) {
+    if (loginService.loginFormContainsValidAccessToken(loginForm)) {
       profileService.fetchAndSaveProfileOnLogin(loginForm);
       return new ResponseEntity<>(loginService.login(loginForm), HttpStatus.OK);
     } else {

@@ -6,43 +6,49 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import com.chromediopside.mockbuilder.MockProfileBuilder;
+import com.chromediopside.mockbuilder.MockUserBuilder;
 import com.chromediopside.model.GiTinderProfile;
 import com.chromediopside.model.Language;
+import com.chromediopside.repository.ProfileRepository;
+import com.chromediopside.repository.UserRepository;
 import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
 public class ProfileServiceTest {
 
+  private static final long oneDayInMillis = 86400000;
+
   private static final String validAccessToken = System.getenv("TEST_ACCESS_TOKEN");
   private static final String invalidAccessToken = "1nval1dt0k3n";
   private static final String testLogin = System.getenv("TEST_LOGIN");
   private static final String testAvatarUrl = System.getenv("TEST_AVATAR_URL");
   private static final String testRepos = "exam-basics;exam-trial-basics;"
-      + "git-lesson-repository;lagopus-spring-exam;p-czigany.github.io";
+          + "git-lesson-repository;lagopus-spring-exam;p-czigany.github.io";
   private static final Timestamp currentTime = new Timestamp(System.currentTimeMillis());
   private Set<Language> testLanguagesList = new HashSet<>();
 
-  private static final Timestamp lastRefresh = new Timestamp(1497441600000l);                  //2017-06-14 14:00:00.0
-  private static final Timestamp eightHoursAfterLastRefresh = new Timestamp(1497470400000l);   //2017-06-14 22:00:00.0
-  private static final Timestamp fourDaysAfterLastRefresh = new Timestamp(1497794400000l);     //2017-06-18 16:00:00.0
 
-  private static final long oneDayInMillis = 86400000;
-
-  @Autowired
-  private GiTinderProfile profileToCheck;
   @Autowired
   private ProfileService profileService;
   @Autowired
   private MockProfileBuilder mockProfileBuilder;
+  @Autowired
+  MockUserBuilder mockUserBuilder;
+  @MockBean
+  ProfileRepository profileRepository;
+  @MockBean
+  UserRepository userRepository;
 
   @Before
   public void setup() throws Exception {
@@ -53,54 +59,110 @@ public class ProfileServiceTest {
   @Test
   public void validAccessToken() throws Exception {
     GiTinderProfile expectedProfile = mockProfileBuilder
-        .setLogin(testLogin)
-        .setAvatarUrl(testAvatarUrl)
-        .setRepos(testRepos)
-        .setLanguagesList(testLanguagesList)
-        .setRefreshDate(currentTime)
-        .build();
+            .setLogin(testLogin)
+            .setAvatarUrl(testAvatarUrl)
+            .setRepos(testRepos)
+            .setLanguagesList(testLanguagesList)
+            .setRefreshDate(currentTime)
+            .build();
     GiTinderProfile actualProfile = profileService
-        .fetchProfileFromGitHub(validAccessToken, testLogin);
+            .fetchProfileFromGitHub(validAccessToken, testLogin);
     assertEquals(expectedProfile, actualProfile);
   }
 
   @Test
   public void invalidAccessToken() throws Exception {
     GiTinderProfile actualProfile = profileService
-        .fetchProfileFromGitHub(invalidAccessToken, testLogin);
+            .fetchProfileFromGitHub(invalidAccessToken, testLogin);
     assertNull(actualProfile);
   }
 
   @Test
   public void daysPassedWhenEightHoursPassedBetweenDates() throws Exception {
-    assertEquals(0, profileService.daysPassedBetweenDates(lastRefresh, eightHoursAfterLastRefresh));
+    Timestamp lastRefresh = new Timestamp(1497441600000l);                 //2017-06-14 14:00:00.0
+    Timestamp eightHoursAfterLastRefresh = new Timestamp(1497470400000l);  //2017-06-14 22:00:00.0
+    int daysPassed = profileService.daysPassedBetweenDates(lastRefresh, eightHoursAfterLastRefresh);
+    assertEquals(0, daysPassed);
   }
 
   @Test
   public void daysPassedWhenFourDaysPassedBetweenDates() throws Exception {
-    assertEquals(4, profileService.daysPassedBetweenDates(lastRefresh, fourDaysAfterLastRefresh));
+    Timestamp lastRefresh = new Timestamp(1497441600000l);                 //2017-06-14 14:00:00.0
+    Timestamp fourDaysAfterLastRefresh = new Timestamp(1497794400000l);    //2017-06-18 16:00:00.0
+    int daysPassed = profileService.daysPassedBetweenDates(lastRefresh, fourDaysAfterLastRefresh);
+    assertEquals(4, daysPassed);
   }
 
   @Test
   public void daysPassedAfter24Hours() throws Exception {
-    assertEquals(1, profileService.daysPassedBetweenDates(lastRefresh, new Timestamp(lastRefresh.getTime() - oneDayInMillis)));
+    Timestamp lastRefresh = new Timestamp(1497441600000l);                 //2017-06-14 14:00:00.0
+    Timestamp lastRefreshMinusOneDay = new Timestamp(lastRefresh.getTime() - oneDayInMillis);
+    int daysPassed = profileService.daysPassedBetweenDates(lastRefresh, lastRefreshMinusOneDay);
+    assertEquals(1, daysPassed);
   }
 
   @Test
   public void refreshRequiredIfZeroHoursPassed() throws Exception {
+    GiTinderProfile profileToCheck = new GiTinderProfile();
     profileToCheck.setRefreshDate(new Timestamp(System.currentTimeMillis()));
-    assertFalse(profileService.refreshRequired(profileToCheck));
+    boolean refreshRequired = profileService.refreshRequired(profileToCheck);
+    assertFalse(refreshRequired);
   }
 
   @Test
   public void refreshRequiredSince1970() throws Exception {
+    GiTinderProfile profileToCheck = new GiTinderProfile();
     profileToCheck.setRefreshDate(new Timestamp(00000000000l));
-    assertTrue(profileService.refreshRequired(profileToCheck));
+    boolean refreshRequired = profileService.refreshRequired(profileToCheck);
+    assertTrue(refreshRequired);
   }
 
   @Test
   public void refreshRequiredSinceNowMinus24Hours() throws Exception {
+    GiTinderProfile profileToCheck = new GiTinderProfile();
     profileToCheck.setRefreshDate(new Timestamp(currentTime.getTime() - oneDayInMillis));
-    assertTrue(profileService.refreshRequired(profileToCheck));
+    boolean refreshRequired = profileService.refreshRequired(profileToCheck);
+    assertTrue(refreshRequired);
   }
+
+  @Test
+  public void enoughProfilesOnGivenPage() {
+    Mockito.when(profileRepository.count()).thenReturn(10L);
+
+    boolean mockEnoughProfiles = profileService.enoughProfiles(1);
+    assertEquals(true, mockEnoughProfiles);
+  }
+
+  @Test
+  public void notEnoughProfilesOnGivenPage() {
+    Mockito.when(profileRepository.count()).thenReturn(10L);
+
+    boolean mockEnoughProfiles = profileService.enoughProfiles(2);
+    assertEquals(false, mockEnoughProfiles);
+  }
+
+  @Test
+  public void noProfilesAvaialable() {
+    Mockito.when(profileRepository.count()).thenReturn(0L);
+
+    boolean mockEnoughProfiles = profileService.enoughProfiles(1);
+    assertEquals(false, mockEnoughProfiles);
+  }
+
+  @Test
+  public void moreThanOneAvaialblePagesEnoughProfiles() {
+    Mockito.when(profileRepository.count()).thenReturn(31L);
+
+    boolean mockEnoughProfiles = profileService.enoughProfiles(4);
+    assertEquals(true, mockEnoughProfiles);
+  }
+
+  @Test
+  public void getUserNameByAppToken() {
+    Mockito.when(userRepository.findByAppToken("4ppT0k3n")).thenReturn(mockUserBuilder.build());
+
+    String username = profileService.getUserNameByAppToken("4ppT0k3n");
+    assertEquals("kondfox", username);
+  }
+
 }

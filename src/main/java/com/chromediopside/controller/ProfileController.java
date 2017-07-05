@@ -2,7 +2,6 @@ package com.chromediopside.controller;
 
 import com.chromediopside.repository.UserRepository;
 import com.chromediopside.service.ErrorService;
-import com.chromediopside.service.PageService;
 import com.chromediopside.service.GiTinderUserService;
 import com.chromediopside.service.ProfileService;
 import java.util.Optional;
@@ -24,29 +23,28 @@ public class ProfileController {
   private ProfileService profileService;
   private ErrorService errorService;
   private GiTinderUserService userService;
-  private PageService pageService;
   private UserRepository userRepository;
 
   @Autowired
-  public ProfileController(ProfileService profileService,
+  public ProfileController(
+          ProfileService profileService,
           ErrorService errorService,
           GiTinderUserService userService,
-          PageService pageService, UserRepository userRepository) {
+          UserRepository userRepository) {
     this.profileService = profileService;
     this.errorService = errorService;
     this.userService = userService;
-    this.pageService = pageService;
     this.userRepository = userRepository;
   }
 
   @ExceptionHandler(Exception.class)
-  public ResponseEntity<?> exception(Exception ex) {
+  public ResponseEntity<Object> exception(Exception ex) {
     return new ResponseEntity<>(errorService.unauthorizedRequestError(), HttpStatus.UNAUTHORIZED);
   }
 
   @CrossOrigin("*")
   @GetMapping("/profile")
-  public ResponseEntity<?> getOwnProfile(
+  public ResponseEntity<Object> getOwnProfile(
           @RequestHeader(name = "X-GiTinder-token") String appToken) {
     if (!userService.validAppToken(appToken)) {
       return new ResponseEntity<>(errorService.unauthorizedRequestError(), HttpStatus.UNAUTHORIZED);
@@ -56,7 +54,7 @@ public class ProfileController {
 
   @CrossOrigin("*")
   @RequestMapping("/profiles/{username}")
-  public ResponseEntity<?> getOtherProfile(@PathVariable String username,
+  public ResponseEntity<Object> getOtherProfile(@PathVariable String username,
           @RequestHeader(name = "X-GiTinder-token") String appToken) throws Exception {
     if (!userService.validAppToken(appToken)) {
       return new ResponseEntity<>(errorService.unauthorizedRequestError(), HttpStatus.UNAUTHORIZED);
@@ -69,7 +67,7 @@ public class ProfileController {
 
   @CrossOrigin("*")
   @GetMapping(value = {"/available/{page}", "/available"})
-  public ResponseEntity<?> listAvailableProfilesByPage(
+  public ResponseEntity<Object> listAvailableProfilesByPage(
           @RequestHeader(name = "X-GiTinder-token") String appToken,
           @PathVariable Optional<Integer> page) throws Exception {
     if (!userService.validAppToken(appToken)) {
@@ -89,7 +87,7 @@ public class ProfileController {
 
   @CrossOrigin("*")
   @PutMapping("/profiles/{username}/{direction}")
-  public ResponseEntity<?> swipe(@RequestHeader(name = "X-GiTinder-token") String appToken,
+  public ResponseEntity<Object> swipe(@RequestHeader(name = "X-GiTinder-token") String appToken,
           @PathVariable String username,
           @PathVariable String direction) {
     return new ResponseEntity<>(profileService.handleSwiping(appToken, username, direction), HttpStatus.OK) ;
