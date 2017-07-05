@@ -26,12 +26,15 @@ public class Settings {
   @Column(name = "login")
   private String login;
   @Column(name = "enable_notifications")
+  @JsonProperty("enable_notifications")
   private boolean enableNotifications;
   @Column(name = "enable_background_sync")
+  @JsonProperty("enable_background_sync")
   private boolean enableBackgroundSync;
   @Min(1)
   @Max(100)
   @Column(name = "max_distance")
+  @JsonProperty("max_distance")
   private int maxDistance;
 
   @ManyToMany
