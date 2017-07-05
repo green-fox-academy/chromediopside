@@ -93,7 +93,7 @@ public class SettingsControllerTest {
   }
 
   @Test
-  public void putSettingsWithoutToken() throws Exception {
+  public void updateSettingsWithoutToken() throws Exception {
 
     this.mockMvc.perform(put("/settings"))
             .andExpect(status().isUnauthorized())
@@ -104,4 +104,36 @@ public class SettingsControllerTest {
                     + "}"));
   }
 
+  @Test
+  public void updateSettingsWithTokenAllFieldsProvided() throws Exception {
+
+    Mockito.when(userRepository.findByAppToken("abcdef")).thenReturn(mockUserBuilder.build());
+    Mockito.when(settingRepository.findByLogin("kondfox")).thenReturn(mockSettingsBuilder.build());
+
+    mockMvc.perform(get("/settings").header("X-GiTinder-token", "abcdef")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content("{\n"
+                    + "\"enable_notifications\": true,\n"
+                    + "\"enable_background_sync\": true,\n"
+                    + "\"max_distance\": 50,\n"
+                    + "\"preferred_languages\": [\n"
+                    + "\"Java\",\n"
+                    + "\"Python\",\n"
+                    + "\"Javascript\"\n"
+                    + "]\n"
+                    + "}"))
+            .andExpect(MockMvcResultMatchers.status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+            .andExpect(jsonPath("$").value(hasKey("enable_notifications")))
+            .andExpect(jsonPath("$").value(hasKey("enable_background_sync")))
+            .andExpect(jsonPath("$").value(hasKey("max_distance")))
+            .andExpect(jsonPath("$").value(hasKey("preferred_languages")))
+            .andExpect(jsonPath("$.enable_notifications").value(true))
+            .andExpect(jsonPath("$.enable_background_sync").value(true))
+            .andExpect(jsonPath("$.max_distance").value(50))
+            .andExpect(jsonPath("$.enable_notifications").value(true))
+            .andExpect(jsonPath("$.preferred_languages").value(
+                    anyOf(any(Set.class), nullValue(Set.class))));
+
+  }
 }
