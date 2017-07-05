@@ -7,4 +7,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface SettingRepository extends CrudRepository<Settings, Long> {
 
+  Settings findByLogin(String login);
+
 }
