@@ -27,7 +27,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @SpringBootTest
 public class ProfileServiceTest {
 
-  private static final long oneDayInMillis = 86400000;
+  private static final long ONE_DAY_IN_MILLIS = 86400000;
 
   private static final String validAccessToken = System.getenv("TEST_ACCESS_TOKEN");
   private static final String invalidAccessToken = "1nval1dt0k3n";
@@ -96,7 +96,7 @@ public class ProfileServiceTest {
   @Test
   public void daysPassedAfter24Hours() throws Exception {
     Timestamp lastRefresh = new Timestamp(1497441600000l);                 //2017-06-14 14:00:00.0
-    Timestamp lastRefreshMinusOneDay = new Timestamp(lastRefresh.getTime() - oneDayInMillis);
+    Timestamp lastRefreshMinusOneDay = new Timestamp(lastRefresh.getTime() - ONE_DAY_IN_MILLIS);
     int daysPassed = profileService.daysPassedBetweenDates(lastRefresh, lastRefreshMinusOneDay);
     assertEquals(1, daysPassed);
   }
@@ -120,7 +120,7 @@ public class ProfileServiceTest {
   @Test
   public void refreshRequiredSinceNowMinus24Hours() throws Exception {
     GiTinderProfile profileToCheck = new GiTinderProfile();
-    profileToCheck.setRefreshDate(new Timestamp(currentTime.getTime() - oneDayInMillis));
+    profileToCheck.setRefreshDate(new Timestamp(currentTime.getTime() - ONE_DAY_IN_MILLIS));
     boolean refreshRequired = profileService.refreshRequired(profileToCheck);
     assertTrue(refreshRequired);
   }

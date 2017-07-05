@@ -13,12 +13,12 @@ import org.springframework.stereotype.Service;
 public class LoginService {
 
   private GiTinderUserService userService;
-  private ErrorService errorService;
+  private LogService logService;
 
   @Autowired
-  public LoginService(GiTinderUserService userService, ErrorService errorService) {
+  public LoginService(GiTinderUserService userService, LogService logService) {
     this.userService = userService;
-    this.errorService = errorService;
+    this.logService = logService;
   }
 
   public TokenResponse login(LoginForm loginForm) {
@@ -39,7 +39,7 @@ public class LoginService {
         return true;
       }
     } catch (IOException e) {
-      System.out.println(GitHubClientService.getGetRequestIoerror());
+      logService.printLogMessage(GitHubClientService.getGetRequestIoerror());
     }
     return false;
   }

@@ -43,6 +43,7 @@ public class ProfileService {
   private GiTinderUserService giTinderUserService;
   private SwipeRepository swipeRepository;
   private LanguageRepository languageRepository;
+  private LogService logService;
 
   @Autowired
   public ProfileService(
@@ -52,7 +53,8 @@ public class ProfileService {
       GiTinderProfile giTinderProfile,
       GiTinderUserService giTinderUserService,
       SwipeRepository swipeRepository,
-      LanguageRepository languageRepository) {
+      LanguageRepository languageRepository,
+      LogService logService) {
     this.userRepository = userRepository;
     this.profileRepository = profileRepository;
     this.pageService = pageService;
@@ -60,6 +62,7 @@ public class ProfileService {
     this.giTinderUserService = giTinderUserService;
     this.swipeRepository = swipeRepository;
     this.languageRepository = languageRepository;
+    this.logService = logService;
   }
 
   public ProfileService() {
@@ -74,7 +77,7 @@ public class ProfileService {
       giTinderProfile.setAvatarUrl(user.getAvatarUrl());
       return true;
     } catch (IOException e) {
-      System.out.println(GitHubClientService.getGetRequestIoerror());
+      logService.printLogMessage(GitHubClientService.getGetRequestIoerror());
       return false;
     }
   }
@@ -95,7 +98,7 @@ public class ProfileService {
       giTinderProfile.setLanguagesList(languageObjects);
       return true;
     } catch (IOException e) {
-      System.out.println(GitHubClientService.getGetRequestIoerror());
+      logService.printLogMessage(GitHubClientService.getGetRequestIoerror());
       return false;
     }
   }
@@ -124,7 +127,7 @@ public class ProfileService {
       giTinderProfile.setRandomCodeLinks(urlsInString);
       return true;
     } catch (IOException e) {
-      System.out.println(GitHubClientService.getGetRequestIoerror());
+      logService.printLogMessage(GitHubClientService.getGetRequestIoerror());
       return false;
     }
   }
@@ -204,12 +207,11 @@ public class ProfileService {
     } else {
       differenceAsLong = date2.getTime() - date1.getTime();
     }
-    return (int) (differenceAsLong / ONE_DAY_IN_MILLIS);
+    return (int)(differenceAsLong / ONE_DAY_IN_MILLIS);
   }
 
   public boolean refreshRequired(GiTinderProfile profileToCheck) {
     Timestamp currentDate = new Timestamp(System.currentTimeMillis());
-
     return (daysPassedBetweenDates(profileToCheck.getRefreshDate(), currentDate) >= 1);
   }
 

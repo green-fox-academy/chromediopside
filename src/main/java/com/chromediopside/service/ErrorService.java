@@ -7,8 +7,6 @@ import java.util.Collections;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 
 @Service
 public class ErrorService {
@@ -17,6 +15,8 @@ public class ErrorService {
   private static final String NO_SUCH_USER_MESSAGE = "No such user!";
   private static final String MISSING_PARAMS_MESSAGE = "Missing parameter(s): ";
   private static final String NO_MORE_PROFILES_AVAILABLE_ERROR = "No more available profiles for you!";
+  private static final String NO_SUCH_APP_TOKEN_IN_DATABASE = "No Such AppToken in the Database";
+
   private ErrorResponse errorResponse;
 
   @Autowired
