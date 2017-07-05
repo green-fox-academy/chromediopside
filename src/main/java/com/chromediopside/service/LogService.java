@@ -9,11 +9,15 @@ public class LogService {
   private Timestamp currentTime = new Timestamp(System.currentTimeMillis());
   private String logLevel = System.getenv("LOG_LEVEL");
 
-  public void printLogMessage(String logMessage) {
-    String messageToPrint = currentTime + " " + logLevel + ": " + logMessage;
-    if (logLevel.equals("INFO")) {
+  public void printLogMessage(String logType, String logMessage) {
+    String messageToPrint = currentTime + " " + logType + ": " + logMessage;
+    if (logLevel.equals("ERROR") && logType.equals("ERROR")) {
+      errorLog(messageToPrint);
+    }
+    if (logLevel.equals("INFO") && logType.equals("INFO")) {
       infoLog(messageToPrint);
-    } else {
+    }
+    if (logLevel.equals("INFO") && logType.equals("ERROR")) {
       errorLog(messageToPrint);
     }
   }
