@@ -137,17 +137,9 @@ public class ProfileService {
     return list;
   }
 
-  public boolean isCodeFile(String fileUrl) {
+  private boolean isCodeFile(String fileUrl) {
     String extension = "." + FilenameUtils.getExtension(fileUrl);
-    return extensions().contains(extension);
-  }
-
-  public List<String> extensions() {
-    List<String> extensions = new ArrayList<>();
-    for (Language language : languageRepository.findAll()) {
-      extensions.add(language.getFileExtension());
-    }
-    return extensions;
+    return languageRepository.existsByFileExtension(extension);
   }
 
   private void addRepoLanguage(Repository currentRepo, List<String> languages) {
