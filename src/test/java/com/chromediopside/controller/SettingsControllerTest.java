@@ -6,6 +6,7 @@ import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.Matchers.hasKey;
 import static org.hamcrest.Matchers.nullValue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -89,6 +90,18 @@ public class SettingsControllerTest {
             .andExpect(jsonPath("$").value(hasKey("preferred_languages")))
             .andExpect(jsonPath("$.preferred_languages").value(
                     anyOf(any(Set.class), nullValue(Set.class))));
+  }
+
+  @Test
+  public void putSettingsWithoutToken() throws Exception {
+
+    this.mockMvc.perform(put("/settings"))
+            .andExpect(status().isUnauthorized())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+            .andExpect(content().json("{"
+                    + "\"status\" : \"error\","
+                    + "\"message\" : \"Unauthorized request!\""
+                    + "}"));
   }
 
 }
