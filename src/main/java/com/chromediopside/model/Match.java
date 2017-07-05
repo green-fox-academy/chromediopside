@@ -9,19 +9,25 @@ import org.springframework.stereotype.Component;
 public class Match {
 
   private String username;
+  private String avatarUrl;
   private Timestamp matchedAt;
   private ArrayList<String> messages;
 
   public Match() {
   }
 
-  public Match(String username, Timestamp matchedAt) {
+  public Match(String username, String avatarUrl, Timestamp matchedAt) {
     this.username = username;
+    this.avatarUrl = avatarUrl;
     this.matchedAt = matchedAt;
   }
 
   public String getUsername() {
     return username;
+  }
+
+  public String getAvatarUrl() {
+    return avatarUrl;
   }
 
   public Timestamp getMatched_at() {
@@ -36,6 +42,10 @@ public class Match {
     this.username = username;
   }
 
+  public void setAvatarUrl(String avatarUrl) {
+    this.avatarUrl = avatarUrl;
+  }
+
   public void setMatched_at(Timestamp matched_at) {
     this.matchedAt = matched_at;
   }
@@ -47,6 +57,7 @@ public class Match {
     }
     Match match = (Match) o;
     return Objects.equals(username, match.username)
+            && Objects.equals(avatarUrl, match.avatarUrl)
             && Objects.equals(matchedAt, match.matchedAt)
             && Objects.equals(messages, match.messages);
   }
