@@ -5,6 +5,8 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface SettingRepo extends CrudRepository<Settings, Long> {
+public interface SettingRepository extends CrudRepository<Settings, Long> {
+
+  Settings findByLogin(String login);
 
 }
