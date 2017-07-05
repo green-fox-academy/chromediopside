@@ -19,9 +19,10 @@ public class SettingsController {
   private SettingsService settingsService;
 
   @Autowired
-  public SettingsController(GiTinderUserService userService, ErrorService errorService) {
+  public SettingsController(GiTinderUserService userService, ErrorService errorService, SettingsService settingsService) {
     this.userService = userService;
     this.errorService = errorService;
+    this.settingsService = settingsService;
   }
 
   @CrossOrigin("*")
