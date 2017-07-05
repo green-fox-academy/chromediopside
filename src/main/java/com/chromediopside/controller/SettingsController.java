@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,6 +24,11 @@ public class SettingsController {
     this.userService = userService;
     this.errorService = errorService;
     this.settingsService = settingsService;
+  }
+
+  @ExceptionHandler(Exception.class)
+  public ResponseEntity<Object> exception(Exception ex) {
+    return new ResponseEntity<>(errorService.unauthorizedRequestError(), HttpStatus.UNAUTHORIZED);
   }
 
   @CrossOrigin("*")
