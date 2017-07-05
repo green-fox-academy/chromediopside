@@ -39,7 +39,7 @@ public class LoginService {
         return true;
       }
     } catch (IOException e) {
-      logService.printLogMessage(GitHubClientService.getGetRequestIoerror());
+      logService.printLogMessage("ERROR", GitHubClientService.getGetRequestIoerror());
     }
     return false;
   }
