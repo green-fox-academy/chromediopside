@@ -77,7 +77,7 @@ public class ProfileService {
       giTinderProfile.setAvatarUrl(user.getAvatarUrl());
       return true;
     } catch (IOException e) {
-      logService.printLogMessage(GitHubClientService.getGetRequestIoerror());
+      logService.printLogMessage("ERROR", GitHubClientService.getGetRequestIoerror());
       return false;
     }
   }
@@ -98,7 +98,7 @@ public class ProfileService {
       giTinderProfile.setLanguagesList(languageObjects);
       return true;
     } catch (IOException e) {
-      logService.printLogMessage(GitHubClientService.getGetRequestIoerror());
+      logService.printLogMessage("ERROR", GitHubClientService.getGetRequestIoerror());
       return false;
     }
   }
@@ -127,7 +127,7 @@ public class ProfileService {
       giTinderProfile.setRandomCodeLinks(urlsInString);
       return true;
     } catch (IOException e) {
-      logService.printLogMessage(GitHubClientService.getGetRequestIoerror());
+      logService.printLogMessage("ERROR", GitHubClientService.getGetRequestIoerror());
       return false;
     }
   }
