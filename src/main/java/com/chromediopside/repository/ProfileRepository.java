@@ -24,5 +24,4 @@ public interface ProfileRepository extends CrudRepository<GiTinderProfile, Strin
           + "FROM gitinder_profile "
           + "ORDER BY ?1 ASC LIMIT 10 OFFSET ?2", nativeQuery = true)
   List<GiTinderProfile> listTensOrderByEntry(String sortingParam, int offset);
-
 }

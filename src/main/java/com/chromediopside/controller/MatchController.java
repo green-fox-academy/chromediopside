@@ -35,5 +35,4 @@ public class MatchController {
   public Matches getMatches(@RequestHeader(name = "X-GiTinder-token") String appToken) {
     return matchService.getMatches(appToken);
   }
-
 }
