@@ -169,12 +169,18 @@ public class ProfileService {
     GitHubClient gitHubClient = GitHubClientService.setUpGitHubClient(accessToken);
     GiTinderProfile giTinderProfile = new GiTinderProfile();
     giTinderProfile.setRefreshDate(new Timestamp(System.currentTimeMillis()));
-    if (!(setLoginAndAvatar(gitHubClient, username, giTinderProfile))
-            || !(setReposAndLanguages(gitHubClient, username, giTinderProfile))
-            || !(fetchCodeFileUrls(gitHubClient, username, giTinderProfile))) {
-      giTinderProfile = null;
+    if (!isProfileCompositionSuccessful(gitHubClient, username, giTinderProfile)) {
+      return null;
     }
     return giTinderProfile;
+  }
+
+  private boolean isProfileCompositionSuccessful(
+          GitHubClient gitHubClient, String username, GiTinderProfile giTinderProfile) {
+    boolean isLoginAndAvatarOk = setLoginAndAvatar(gitHubClient, username, giTinderProfile);
+    boolean isReposAndLanguagesOk = setReposAndLanguages(gitHubClient, username, giTinderProfile);
+    boolean isCodeFileUrlsOk = fetchCodeFileUrls(gitHubClient, username, giTinderProfile);
+    return isLoginAndAvatarOk && isReposAndLanguagesOk && isCodeFileUrlsOk;
   }
 
   public GiTinderProfile getOtherProfile(String appToken, String username) {
