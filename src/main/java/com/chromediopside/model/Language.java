@@ -1,5 +1,6 @@
 package com.chromediopside.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -14,6 +15,7 @@ public class Language {
   @Id
   @Column(name = "language_name")
   private String languageName;
+  @JsonIgnore
   @Column(name = "file_extension")
   private String fileExtension;
 
