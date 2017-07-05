@@ -2,7 +2,6 @@ package com.chromediopside.service;
 
 import com.chromediopside.datatransfer.LoginForm;
 import com.chromediopside.datatransfer.SwipeResponse;
-import com.chromediopside.mockbuilder.MockProfileBuilder;
 import com.chromediopside.model.GiTinderProfile;
 import com.chromediopside.model.GiTinderUser;
 import com.chromediopside.model.Language;
@@ -35,43 +34,31 @@ import org.springframework.stereotype.Service;
 @Service
 public class ProfileService {
 
-  private static final long oneDayInMillis = 86400000;
+  private static final long ONE_DAY_IN_MILLIS = 86400000;
 
   private UserRepository userRepository;
   private ProfileRepository profileRepository;
-  private ErrorService errorService;
-  private MockProfileBuilder mockProfileBuilder;
   private PageService pageService;
   private GiTinderProfile giTinderProfile;
-  private Language language;
   private GiTinderUserService giTinderUserService;
   private SwipeRepository swipeRepository;
-  private GitHubClientService gitHubClientService;
   private LanguageRepository languageRepository;
 
   @Autowired
   public ProfileService(
       UserRepository userRepository,
       ProfileRepository profileRepository,
-      ErrorService errorService,
       PageService pageService,
-      MockProfileBuilder mockProfileBuilder,
       GiTinderProfile giTinderProfile,
-      Language language,
       GiTinderUserService giTinderUserService,
       SwipeRepository swipeRepository,
-      GitHubClientService gitHubClientSevice,
       LanguageRepository languageRepository) {
     this.userRepository = userRepository;
     this.profileRepository = profileRepository;
-    this.errorService = errorService;
-    this.mockProfileBuilder = mockProfileBuilder;
     this.pageService = pageService;
     this.giTinderProfile = giTinderProfile;
-    this.language = language;
     this.giTinderUserService = giTinderUserService;
     this.swipeRepository = swipeRepository;
-    this.gitHubClientService = gitHubClientService;
     this.languageRepository = languageRepository;
   }
 
@@ -87,7 +74,7 @@ public class ProfileService {
       giTinderProfile.setAvatarUrl(user.getAvatarUrl());
       return true;
     } catch (IOException e) {
-      System.out.println(gitHubClientService.getGetRequestIoerror());
+      System.out.println(GitHubClientService.getGetRequestIoerror());
       return false;
     }
   }
@@ -108,7 +95,7 @@ public class ProfileService {
       giTinderProfile.setLanguagesList(languageObjects);
       return true;
     } catch (IOException e) {
-      System.out.println(gitHubClientService.getGetRequestIoerror());
+      System.out.println(GitHubClientService.getGetRequestIoerror());
       return false;
     }
   }
@@ -137,7 +124,7 @@ public class ProfileService {
       giTinderProfile.setRandomCodeLinks(urlsInString);
       return true;
     } catch (IOException e) {
-      System.out.println(gitHubClientService.getGetRequestIoerror());
+      System.out.println(GitHubClientService.getGetRequestIoerror());
       return false;
     }
   }
@@ -145,7 +132,7 @@ public class ProfileService {
   public <T> List<T> pickRandomFiveListElements(List<T> list) {
     if(list.size() > 5) {
       Collections.shuffle(list);
-      list = list.subList(0, 5);
+      return list.subList(0, 5);
     }
     return list;
   }
@@ -217,16 +204,13 @@ public class ProfileService {
     } else {
       differenceAsLong = date2.getTime() - date1.getTime();
     }
-    int differenceAsDays = (int) (differenceAsLong / oneDayInMillis);
-    return differenceAsDays;
+    return (int) (differenceAsLong / ONE_DAY_IN_MILLIS);
   }
 
   public boolean refreshRequired(GiTinderProfile profileToCheck) {
     Timestamp currentDate = new Timestamp(System.currentTimeMillis());
-    if (daysPassedBetweenDates(profileToCheck.getRefreshDate(), currentDate) >= 1) {
-      return true;
-    }
-    return false;
+
+    return (daysPassedBetweenDates(profileToCheck.getRefreshDate(), currentDate) >= 1);
   }
 
   public void fetchAndSaveProfileOnLogin(LoginForm loginForm) {
