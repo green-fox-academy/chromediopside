@@ -38,8 +38,7 @@ public class SettingsService {
   }
 
   public Settings updateSettings(String appToken, JSONObject jsonObject) throws JSONException {
-    String userName = profileService.getUserNameByAppToken(appToken);
-    Settings settings = settingRepository.findByLogin(userName);
+    Settings settings = getUserSettings(appToken);
     if (jsonObject.getJSONObject("enable_notifications") != null) {
       settings.setEnableNotifications(jsonObject.getBoolean("enable_notifications"));
     }
