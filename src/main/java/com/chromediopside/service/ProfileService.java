@@ -167,6 +167,7 @@ public class ProfileService {
 
   public GiTinderProfile fetchProfileFromGitHub(String accessToken, String username) {
     GitHubClient gitHubClient = GitHubClientService.setUpGitHubClient(accessToken);
+    GiTinderProfile giTinderProfile = new GiTinderProfile();
     giTinderProfile.setRefreshDate(new Timestamp(System.currentTimeMillis()));
     if (!(setLoginAndAvatar(gitHubClient, username, giTinderProfile))
             || !(setReposAndLanguages(gitHubClient, username, giTinderProfile))
