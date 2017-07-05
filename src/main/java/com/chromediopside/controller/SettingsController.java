@@ -1,6 +1,5 @@
 package com.chromediopside.controller;
 
-import com.chromediopside.model.GiTinderUser;
 import com.chromediopside.service.ErrorService;
 import com.chromediopside.service.GiTinderUserService;
 import com.chromediopside.service.SettingsService;
