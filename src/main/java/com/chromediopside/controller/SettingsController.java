@@ -3,12 +3,16 @@ package com.chromediopside.controller;
 import com.chromediopside.service.ErrorService;
 import com.chromediopside.service.GiTinderUserService;
 import com.chromediopside.service.SettingsService;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -20,7 +24,8 @@ public class SettingsController {
   private SettingsService settingsService;
 
   @Autowired
-  public SettingsController(GiTinderUserService userService, ErrorService errorService, SettingsService settingsService) {
+  public SettingsController(GiTinderUserService userService, ErrorService errorService,
+          SettingsService settingsService) {
     this.userService = userService;
     this.errorService = errorService;
     this.settingsService = settingsService;
@@ -41,4 +46,15 @@ public class SettingsController {
     return new ResponseEntity<>(settingsService.getUserSettings(appToken), HttpStatus.OK);
   }
 
+  @CrossOrigin("*")
+  @PutMapping("/settings")
+  public ResponseEntity<Object> updateUserSettings(
+          @RequestHeader(name = "X-GiTinder-token") String appToken,
+          @RequestBody(required = false) JSONObject jsonObject) throws JSONException {
+    if (!userService.validAppToken(appToken))
+    {
+      return new ResponseEntity<>(errorService.unauthorizedRequestError(), HttpStatus.UNAUTHORIZED);
+    }
+    return new ResponseEntity<>(settingsService.updateSettings(appToken, jsonObject), HttpStatus.OK);
+  }
 }
