@@ -42,6 +42,11 @@ public class MockProfileBuilder {
     return this;
   }
 
+  public MockProfileBuilder setRandomCodeLinks(String randomCodeLinks) {
+    profile.setRandomCodeLinks(randomCodeLinks);
+    return this;
+  }
+
   public GiTinderProfile build() {
     return profile;
   }
