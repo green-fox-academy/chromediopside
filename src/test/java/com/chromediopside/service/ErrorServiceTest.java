@@ -22,7 +22,7 @@ public class ErrorServiceTest {
     loginForm.setAccessToken("4cc355T0k3n");
 
     String actualMissingValue = errorService.missingValues(loginForm);
-    assertEquals("username!", actualMissingValue);
+    assertEquals("username", actualMissingValue);
   }
 
   @Test
@@ -31,7 +31,7 @@ public class ErrorServiceTest {
     loginForm.setUsername("us3rn4m3");
 
     String actualMissingValue = errorService.missingValues(loginForm);
-    assertEquals("accessToken!", actualMissingValue);
+    assertEquals("accessToken", actualMissingValue);
   }
 
   @Test
@@ -39,7 +39,7 @@ public class ErrorServiceTest {
     LoginForm loginForm = new LoginForm();
 
     String actualMissingValues = errorService.missingValues(loginForm);
-    assertEquals("accessToken, username!", actualMissingValues);
+    assertEquals("accessToken, username", actualMissingValues);
   }
 
 

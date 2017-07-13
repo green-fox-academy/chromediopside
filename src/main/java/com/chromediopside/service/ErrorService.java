@@ -34,12 +34,12 @@ public class ErrorService {
 
     }
     Collections.sort(missingFields);
-    return String.join(", ", missingFields) + "!";
+    return String.join(", ", missingFields);
   }
 
   public ErrorResponse fieldErrors(LoginForm loginForm) {
     errorResponse.setStatus("error");
-    errorResponse.setMessage(MISSING_PARAMS_MESSAGE + missingValues(loginForm));
+    errorResponse.setMessage(MISSING_PARAMS_MESSAGE + missingValues(loginForm) + "!");
     return errorResponse;
   }
 
