@@ -1,6 +1,5 @@
 package com.chromediopside.service;
 
-import com.chromediopside.datatransfer.ErrorResponse;
 import com.chromediopside.datatransfer.LoginForm;
 import com.chromediopside.model.GiTinderUser;
 import com.chromediopside.repository.UserRepository;
@@ -11,7 +10,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class GiTinderUserService {
 
-  private final String errorMessage = "No Such AppToken in the Database";
   UserRepository userRepo;
 
   @Autowired

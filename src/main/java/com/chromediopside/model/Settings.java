@@ -1,5 +1,6 @@
 package com.chromediopside.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Set;
 import javax.persistence.Column;
@@ -12,22 +13,28 @@ import javax.persistence.Table;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import org.springframework.stereotype.Component;
 
+@Component
 @Entity
 @Table(name = "settings")
 public class Settings {
 
   @Id
   @NotNull
+  @JsonIgnore
   @Column(name = "login")
   private String login;
   @Column(name = "enable_notifications")
+  @JsonProperty("enable_notifications")
   private boolean enableNotifications;
   @Column(name = "enable_background_sync")
+  @JsonProperty("enable_background_sync")
   private boolean enableBackgroundSync;
   @Min(1)
   @Max(100)
   @Column(name = "max_distance")
+  @JsonProperty("max_distance")
   private int maxDistance;
 
   @ManyToMany

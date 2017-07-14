@@ -1,7 +1,6 @@
 package com.chromediopside.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -146,6 +145,11 @@ public class GiTinderProfile {
         Objects.equals(repos, profile.repos) &&
         Objects.equals(languageStringsListFromSet(languagesList),
             languageStringsListFromSet(profile.languagesList));
+  }
+
+  @Override
+  public int hashCode() {
+      return Objects.hash(login, avatarUrl, repos, languagesList);
   }
 
   private List<String> languageStringsListFromSet(Set<Language> languageSet) {
