@@ -108,36 +108,72 @@ public class ProfileService {
     try {
       List<String> fileUrls = new ArrayList<>();
       RepositoryService repositoryService = new RepositoryService(gitHubClient);
-      List<Repository> repoList = repositoryService.getRepositories(username);
       CommitService commitService = new CommitService(gitHubClient);
-      List<CommitFile> filesInCommit;
-      for (Repository repo : repoList) {
-        for (RepositoryCommit commit : commitService.getCommits(repo)) {
-          filesInCommit = commitService.getCommit(repo, commit.getSha()).getFiles();
-          for (CommitFile file : filesInCommit) {
-            String fileUrl = file.getRawUrl();
-            if (isCodeFile(fileUrl)) {
-              fileUrls.add(fileUrl);
-            }
-          }
-        }
+      List<Repository> repoList = repositoryService.getRepositories(username);
+      if (!userHasMoreThanFiveFiles(repoList, commitService)) {
+        giTinderProfile.setRandomCodeLinks(lessThanFiveLinks(repoList, commitService, fileUrls));
+        return true;
       }
-      fileUrls = pickRandomFiveListElements(fileUrls);
-      String urlsInString = String.join(";", fileUrls);
-      giTinderProfile.setRandomCodeLinks(urlsInString);
-      return true;
+      if (userHasMoreThanFiveFiles(repoList, commitService)) {
+        giTinderProfile.setRandomCodeLinks(moreThanFiveLinks(repoList, commitService, fileUrls));
+        return true;
+      }
+      return false;
     } catch (IOException e) {
       logService.printLogMessage("ERROR", GitHubClientService.getGetRequestIoerror());
       return false;
     }
   }
 
-  public <T> List<T> pickRandomFiveListElements(List<T> list) {
-    if(list.size() > 5) {
-      Collections.shuffle(list);
-      return list.subList(0, 5);
+  public boolean userHasMoreThanFiveFiles(List<Repository> repoList, CommitService commitService) throws IOException {
+    int filecount = 0;
+    for (Repository repo : repoList) {
+      for (RepositoryCommit commit : commitService.getCommits(repo)) {
+        List<CommitFile> filesInCommit = commitService.getCommit(repo, commit.getSha()).getFiles();
+        for (CommitFile file : filesInCommit) {
+          String fileUrl = file.getRawUrl();
+          if (isCodeFile(fileUrl)) {
+            filecount++;
+            if (filecount > 5) {
+              break;
+            }
+          }
+        }
+      }
     }
-    return list;
+    return filecount > 5;
+  }
+
+  public String lessThanFiveLinks(List<Repository> repoList, CommitService commitService, List<String> fileUrls) throws IOException {
+    for (Repository repo : repoList) {
+      for (RepositoryCommit commit : commitService.getCommits(repo)) {
+        List<CommitFile> filesInCommit = commitService.getCommit(repo, commit.getSha()).getFiles();
+        for (CommitFile file : filesInCommit) {
+          String fileUrl = file.getRawUrl();
+          if (isCodeFile(fileUrl)) {
+            fileUrls.add(fileUrl);
+          }
+        }
+      }
+    }
+    return String.join(";", fileUrls);
+  }
+
+  public String moreThanFiveLinks(List<Repository> repoList, CommitService commitService, List<String> fileUrls) throws IOException {
+    while (fileUrls.size() < 5) {
+      Collections.shuffle(repoList);
+      for (Repository repo : repoList) {
+        for (RepositoryCommit commit : commitService.getCommits(repo)) {
+          List<CommitFile> filesInCommit = commitService.getCommit(repo, commit.getSha()).getFiles();
+          Collections.shuffle(filesInCommit);
+            String fileUrl = filesInCommit.get(0).getRawUrl();
+            if (isCodeFile(fileUrl) && !fileUrls.contains(fileUrl)) {
+              fileUrls.add(fileUrl);
+          }
+        }
+      }
+    }
+    return String.join(";", fileUrls);
   }
 
   private boolean isCodeFile(String fileUrl) {
