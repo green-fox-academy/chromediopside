@@ -1,5 +1,6 @@
 package com.chromediopside.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -9,7 +10,9 @@ import org.springframework.stereotype.Component;
 public class Match {
 
   private String username;
+  @JsonProperty("avatar_url")
   private String avatarUrl;
+  @JsonProperty("matched_at")
   private Timestamp matchedAt;
   private ArrayList<String> messages;
 
@@ -30,7 +33,7 @@ public class Match {
     return avatarUrl;
   }
 
-  public Timestamp getMatched_at() {
+  public Timestamp getMatchedAt() {
     return matchedAt;
   }
 

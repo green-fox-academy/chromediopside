@@ -1,15 +1,19 @@
 package com.chromediopside.controller;
 
 import static org.junit.Assert.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
 import com.chromediopside.GitinderApplication;
 import com.chromediopside.mockbuilder.MockUserBuilder;
+import com.chromediopside.model.GiTinderProfile;
 import com.chromediopside.model.Swiping;
+import com.chromediopside.repository.ProfileRepository;
 import com.chromediopside.repository.SwipeRepository;
 import com.chromediopside.repository.UserRepository;
+import com.chromediopside.service.ProfileService;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +50,8 @@ public class MatchControllerTest {
   private UserRepository userRepository;
   @MockBean
   private SwipeRepository swipeRepository;
+  @MockBean
+  private ProfileRepository profileRepository;
 
   @Autowired
   private MockUserBuilder mockUserBuilder;
@@ -74,23 +80,35 @@ public class MatchControllerTest {
     swipingList.add(s3);
     Mockito.when(swipeRepository.findSwipeMatches("nori")).thenReturn(swipingList);
 
+    String avatarUrl = "https://avatars1.githubusercontent.com/u/26329189?v=3";
+    GiTinderProfile daniprofile = new GiTinderProfile("dani", avatarUrl);
+    GiTinderProfile doriprofile = new GiTinderProfile("dori", avatarUrl);
+    GiTinderProfile petiprofile = new GiTinderProfile("peti", avatarUrl);
+    Mockito.when(profileRepository.findByLogin("dani")).thenReturn(daniprofile);
+    Mockito.when(profileRepository.findByLogin("dori")).thenReturn(doriprofile);
+    Mockito.when(profileRepository.findByLogin("peti")).thenReturn(petiprofile);
+
     mockMvc.perform(get("/matches").header("X-GiTinder-token", "321"))
           .andExpect(status().isOk())
           .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+          .andDo(print())
           .andExpect(content().json( "{"
                   + "\"matches\": ["
                   + "{"
                   + "\"username\": \"dani\","
-                  + "\"matched_at\": 1498563273079,"
-                  + "\"messages\": null},"
+                  + "\"avatar_url\": \"https://avatars1.githubusercontent.com/u/26329189?v=3\","
+                  + "\"messages\": null,"
+                  + "\"matched_at\": 1498563273079},"
                   + "{"
                   + "\"username\": \"dori\","
-                  + "\"matched_at\": 1498563273079,"
-                  + "\"messages\": null},"
+                  + "\"avatar_url\":\"https://avatars1.githubusercontent.com/u/26329189?v=3\","
+                  + "\"messages\": null,"
+                  + "\"matched_at\": 1498563273079},"
                   + "{"
                   + "\"username\": \"peti\","
-                  + "\"matched_at\": 1498563273079,"
-                  + "\"messages\": null}]}"));
+                  + "\"avatar_url\":\"https://avatars1.githubusercontent.com/u/26329189?v=3\","
+                  + "\"messages\": null,"
+                  + "\"matched_at\": 1498563273079}]}"));
   }
 
   @Test

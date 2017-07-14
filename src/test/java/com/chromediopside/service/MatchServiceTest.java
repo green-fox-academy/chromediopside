@@ -30,6 +30,8 @@ public class MatchServiceTest {
   private MockUserBuilder mockUserBuilder;
   @MockBean
   private SwipeRepository swipeRepository;
+  @MockBean
+  private ProfileService profileService;
 
   @Test
   public void getMatches() throws Exception {
@@ -48,6 +50,9 @@ public class MatchServiceTest {
     swipeMatches.add(new Swiping("nori", "dori", timestamp));
     swipeMatches.add(new Swiping("peti", "nori", timestamp));
     Mockito.when(swipeRepository.findSwipeMatches(actualUsersName)).thenReturn(swipeMatches);
+    Mockito.when(profileService.getAvatarUrlByUsername("dani")).thenReturn(avatarUrl);
+    Mockito.when(profileService.getAvatarUrlByUsername("dori")).thenReturn(avatarUrl);
+    Mockito.when(profileService.getAvatarUrlByUsername("peti")).thenReturn(avatarUrl);
 
     Matches matches = matchService.getMatches(appToken);
 
@@ -62,9 +67,12 @@ public class MatchServiceTest {
 
   @Test
   public void transformSwipingListToMatches() throws Exception {
+    String avatarUrl = "https://avatars1.githubusercontent.com/u/26329189?v=3";
+    Mockito.when(profileService.getAvatarUrlByUsername("dani")).thenReturn(avatarUrl);
+    Mockito.when(profileService.getAvatarUrlByUsername("dori")).thenReturn(avatarUrl);
+    Mockito.when(profileService.getAvatarUrlByUsername("peti")).thenReturn(avatarUrl);
     List<Swiping> swipeMatches = new ArrayList<>();
     Timestamp timestamp = new Timestamp(1498563273079l);
-    String avatarUrl = "https://avatars1.githubusercontent.com/u/26329189?v=3";
     swipeMatches.add(new Swiping("nori", "dani", timestamp));
     swipeMatches.add(new Swiping("nori", "dori", timestamp));
     swipeMatches.add(new Swiping("peti", "nori", timestamp));
@@ -84,9 +92,12 @@ public class MatchServiceTest {
 
   @Test
   public void swipingToMatch() throws Exception {
+    String avatarUrl = "https://avatars1.githubusercontent.com/u/26329189?v=3";
+    Mockito.when(profileService.getAvatarUrlByUsername("dani")).thenReturn(avatarUrl);
+    Mockito.when(profileService.getAvatarUrlByUsername("dori")).thenReturn(avatarUrl);
+    Mockito.when(profileService.getAvatarUrlByUsername("peti")).thenReturn(avatarUrl);
     List<Swiping> swipeMatches = new ArrayList<>();
     Timestamp timestamp = new Timestamp(1498563273079l);
-    String avatarUrl = "https://avatars1.githubusercontent.com/u/26329189?v=3";
 
     swipeMatches.add(new Swiping("nori", "dani", timestamp));
     swipeMatches.add(new Swiping("nori", "dori", timestamp));
