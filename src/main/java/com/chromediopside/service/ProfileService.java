@@ -15,11 +15,13 @@ import com.chromediopside.repository.UserRepository;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.apache.commons.io.FilenameUtils;
+import org.eclipse.egit.github.core.Commit;
 import org.eclipse.egit.github.core.CommitFile;
 import org.eclipse.egit.github.core.Repository;
 import org.eclipse.egit.github.core.RepositoryCommit;
@@ -162,15 +164,15 @@ public class ProfileService {
   public String moreThanFiveLinks(List<Repository> repoList, CommitService commitService, List<String> fileUrls) throws IOException {
     while (fileUrls.size() < 5) {
       Collections.shuffle(repoList);
-      for (Repository repo : repoList) {
-        for (RepositoryCommit commit : commitService.getCommits(repo)) {
-          List<CommitFile> filesInCommit = commitService.getCommit(repo, commit.getSha()).getFiles();
-          Collections.shuffle(filesInCommit);
-            String fileUrl = filesInCommit.get(0).getRawUrl();
-            if (isCodeFile(fileUrl) && !fileUrls.contains(fileUrl)) {
-              fileUrls.add(fileUrl);
-          }
-        }
+      Repository repo = repoList.get(0);
+      List<RepositoryCommit> commits = commitService.getCommits(repo);
+      Collections.shuffle(commits);
+      RepositoryCommit commit = commits.get(0);
+      List<CommitFile> filesInCommit = commitService.getCommit(repo, commit.getSha()).getFiles();
+      Collections.shuffle(filesInCommit);
+      String fileUrl = filesInCommit.get(0).getRawUrl();
+      if (isCodeFile(fileUrl) && !fileUrls.contains(fileUrl)) {
+        fileUrls.add(fileUrl);
       }
     }
     return String.join(";", fileUrls);
