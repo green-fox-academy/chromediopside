@@ -146,7 +146,7 @@ public class GiTinderProfile {
     }
     GiTinderProfile profile = (GiTinderProfile) o;
     return Objects.equals(login, profile.login) &&
-        Objects.equals(avatarUrl, profile.avatarUrl) &&
+        avatarUrl.substring(41, 49).equals(profile.avatarUrl.substring(41, 49)) &&
         Objects.equals(repos, profile.repos) &&
         Objects.equals(languageStringsListFromSet(languagesList),
             languageStringsListFromSet(profile.languagesList));
