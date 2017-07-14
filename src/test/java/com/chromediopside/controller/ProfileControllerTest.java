@@ -64,6 +64,7 @@ public class ProfileControllerTest {
     mockUserBuilder.setUserName("kondfox")
             .setAccessToken("a23456789101112a")
             .setAppToken("aa345678910111aa");
+    mockProfileBuilder.setRandomCodeLinks("sg.java;fakefile.cs");
   }
 
 
@@ -80,11 +81,11 @@ public class ProfileControllerTest {
             .andExpect(MockMvcResultMatchers.status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
             .andExpect(jsonPath("$").value(hasKey("login")))
-            .andExpect(jsonPath("$").value(hasKey("avatarUrl")))
+            .andExpect(jsonPath("$").value(hasKey("avatar_url")))
             .andExpect(jsonPath("$").value(hasKey("repos")))
-            .andExpect(jsonPath("$").value(hasKey("languagesList")))
-            .andExpect(jsonPath("$.languagesList").value(
-                    anyOf(any(Set.class), nullValue(Set.class))));
+            .andExpect(jsonPath("$").value(hasKey("languages")))
+            .andExpect(jsonPath("$.languages").value(
+                    anyOf(any(List.class), nullValue(List.class))));
   }
 
   @Test
@@ -113,11 +114,11 @@ public class ProfileControllerTest {
         .andExpect(MockMvcResultMatchers.status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
         .andExpect(jsonPath("$").value(hasKey("login")))
-        .andExpect(jsonPath("$").value(hasKey("avatarUrl")))
+        .andExpect(jsonPath("$").value(hasKey("avatar_url")))
         .andExpect(jsonPath("$").value(hasKey("repos")))
-        .andExpect(jsonPath("$").value(hasKey("languagesList")))
-        .andExpect(jsonPath("$.languagesList").value(
-            anyOf(any(Set.class), nullValue(Set.class))));
+        .andExpect(jsonPath("$").value(hasKey("languages")))
+        .andExpect(jsonPath("$.languages").value(
+            anyOf(any(List.class), nullValue(List.class))));
   }
 
   @Test

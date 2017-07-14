@@ -1,6 +1,7 @@
 package com.chromediopside.service;
 
 import com.chromediopside.datatransfer.LoginForm;
+import com.chromediopside.datatransfer.ProfileResponse;
 import com.chromediopside.datatransfer.SwipeResponse;
 import com.chromediopside.model.GiTinderProfile;
 import com.chromediopside.model.GiTinderUser;
@@ -216,7 +217,7 @@ public class ProfileService {
     return isLoginAndAvatarOk && isReposAndLanguagesOk && isCodeFileUrlsOk;
   }
 
-  public GiTinderProfile getOtherProfile(String appToken, String username) {
+  public ProfileResponse getOtherProfile(String appToken, String username) {
 
     GiTinderUser giTinderUser = userRepository.findByUserNameAndAppToken(username, appToken);
     if (refreshRequired(profileRepository.findByLogin(giTinderUser.getUserName()))) {
@@ -225,10 +226,10 @@ public class ProfileService {
     }
     giTinderProfile = profileRepository
             .findByLogin(giTinderUser.getUserName());
-    return giTinderProfile;
+    return new ProfileResponse(giTinderProfile);
   }
 
-  public GiTinderProfile getOwnProfile(String appToken) {
+  public ProfileResponse getOwnProfile(String appToken) {
     return getOtherProfile(appToken, getUserNameByAppToken(appToken));
   }
 
