@@ -159,10 +159,12 @@ public class GiTinderProfile {
 
   public List<String> languageStringsListFromSet(Set<Language> languageSet) {
     List<String> languageStrings = new ArrayList<>();
-    for (Language current : languageSet) {
-      languageStrings.add(current.getLanguageName());
+    if (languageSet != null) {
+      for (Language current : languageSet) {
+        languageStrings.add(current.getLanguageName());
+      }
+      Collections.sort(languageStrings);
     }
-    Collections.sort(languageStrings);
     return languageStrings;
   }
 }
