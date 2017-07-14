@@ -11,14 +11,11 @@ public class LogService {
 
   public void printLogMessage(String logType, String logMessage) {
     String messageToPrint = currentTime + " " + logType + ": " + logMessage;
-    if (logLevel.equals("ERROR") && logType.equals("ERROR")) {
+    if (logType.equals("ERROR")) {
       errorLog(messageToPrint);
     }
     if (logLevel.equals("INFO") && logType.equals("INFO")) {
       infoLog(messageToPrint);
-    }
-    if (logLevel.equals("INFO") && logType.equals("ERROR")) {
-      errorLog(messageToPrint);
     }
   }
 
