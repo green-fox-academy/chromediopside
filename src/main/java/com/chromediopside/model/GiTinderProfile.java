@@ -147,6 +147,11 @@ public class GiTinderProfile {
             languageStringsListFromSet(profile.languagesList));
   }
 
+  @Override
+  public int hashCode() {
+      return Objects.hash(login, avatarUrl, repos, languagesList);
+  }
+
   private List<String> languageStringsListFromSet(Set<Language> languageSet) {
     List<String> languageStrings = new ArrayList<>();
     for (Language current : languageSet) {

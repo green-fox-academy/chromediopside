@@ -32,9 +32,9 @@ public class ProfileServiceTest {
   private static final String validAccessToken = System.getenv("TEST_ACCESS_TOKEN");
   private static final String invalidAccessToken = "1nval1dt0k3n";
   private static final String testLogin = System.getenv("TEST_LOGIN");
-  private static final String testAvatarUrl = System.getenv("TEST_AVATAR_URL");
+  private static final String testAvatarUrl = "https://avatars1.githubusercontent.com/u/23168669?v=4";
   private static final String testRepos = "exam-basics;exam-trial-basics;"
-          + "git-lesson-repository;lagopus-spring-exam;p-czigany.github.io";
+          + "git-lesson-repository;lagopus-spring-exam;p-czigany.github.io;prio";
   private static final Timestamp currentTime = new Timestamp(System.currentTimeMillis());
   private Set<Language> testLanguagesList = new HashSet<>();
 
@@ -44,11 +44,11 @@ public class ProfileServiceTest {
   @Autowired
   private MockProfileBuilder mockProfileBuilder;
   @Autowired
-  MockUserBuilder mockUserBuilder;
+  private MockUserBuilder mockUserBuilder;
   @MockBean
-  ProfileRepository profileRepository;
+  private ProfileRepository profileRepository;
   @MockBean
-  UserRepository userRepository;
+  private UserRepository userRepository;
 
   @Before
   public void setup() throws Exception {
