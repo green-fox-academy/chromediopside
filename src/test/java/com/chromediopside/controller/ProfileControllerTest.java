@@ -61,6 +61,9 @@ public class ProfileControllerTest {
   @Before
   public void setup() throws Exception {
     this.mockMvc = webAppContextSetup(webApplicationContext).build();
+    mockUserBuilder.setUserName("kondfox")
+            .setAccessToken("a23456789101112a")
+            .setAppToken("aa345678910111aa");
   }
 
 
