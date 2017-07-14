@@ -60,4 +60,10 @@ public class ErrorService {
     errorResponse.setMessage(NO_MORE_PROFILES_AVAILABLE_ERROR);
     return errorResponse;
   }
+
+  public ErrorResponse noSuchAppTokenInDatabase() {
+    errorResponse.setStatus("error");
+    errorResponse.setMessage(NO_SUCH_APP_TOKEN_IN_DATABASE);
+    return errorResponse;
+  }
 }
