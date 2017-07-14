@@ -253,10 +253,17 @@ public class ProfileService {
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         Swiping matchingSwipe = new Swiping(username, swipingUsersName, timestamp);
         swipeRepository.save(matchingSwipe);
-        Match match = new Match(username, timestamp);
+        String avatarUrl = getAvatarUrlByUsername(username);
+        Match match = new Match(username, avatarUrl, timestamp);
         swipeResponse.setMatch(match);
       }
     }
     return swipeResponse;
+  }
+
+  public String getAvatarUrlByUsername(String username) {
+    GiTinderProfile profile = profileRepository.findByLogin(username);
+    String avatarUrl = profile.getAvatarUrl();
+    return avatarUrl;
   }
 }

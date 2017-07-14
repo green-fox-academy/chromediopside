@@ -52,6 +52,11 @@ public class GiTinderProfile {
   public GiTinderProfile() {
   }
 
+  public GiTinderProfile(String login, String avatarUrl) {
+    this.login = login;
+    this.avatarUrl = avatarUrl;
+  }
+
   public GiTinderProfile(String login, String avatarUrl, String repos, Timestamp refreshDate,
       String randomCodeLinks, Set<Language> languagesList) {
     this.login = login;
