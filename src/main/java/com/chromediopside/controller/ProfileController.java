@@ -37,10 +37,10 @@ public class ProfileController {
     this.userRepository = userRepository;
   }
 
-  @ExceptionHandler(Exception.class)
+  /*@ExceptionHandler(Exception.class)
   public ResponseEntity<Object> exception(Exception ex) {
     return new ResponseEntity<>(errorService.unauthorizedRequestError(), HttpStatus.UNAUTHORIZED);
-  }
+  }*/
 
   @CrossOrigin("*")
   @GetMapping("/profile")
