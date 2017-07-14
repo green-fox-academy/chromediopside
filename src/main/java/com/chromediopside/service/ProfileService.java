@@ -111,7 +111,7 @@ public class ProfileService {
       CommitService commitService = new CommitService(gitHubClient);
       List<Repository> repoList = repositoryService.getRepositories(username);
       if (!userHasMoreThanFiveFiles(repoList, commitService)) {
-        giTinderProfile.setRandomCodeLinks(lessThanFiveLinks(repoList, commitService, fileUrls));
+        giTinderProfile.setRandomCodeLinks(fiveOrLessLinks(repoList, commitService, fileUrls));
         return true;
       }
       if (userHasMoreThanFiveFiles(repoList, commitService)) {
@@ -144,7 +144,7 @@ public class ProfileService {
     return filecount > 5;
   }
 
-  public String lessThanFiveLinks(List<Repository> repoList, CommitService commitService, List<String> fileUrls) throws IOException {
+  public String fiveOrLessLinks(List<Repository> repoList, CommitService commitService, List<String> fileUrls) throws IOException {
     for (Repository repo : repoList) {
       for (RepositoryCommit commit : commitService.getCommits(repo)) {
         List<CommitFile> filesInCommit = commitService.getCommit(repo, commit.getSha()).getFiles();
