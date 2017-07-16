@@ -20,9 +20,15 @@ public class ProfileResponse {
   public ProfileResponse(GiTinderProfile giTinderProfile) {
     login = giTinderProfile.getLogin();
     avatarUrl = giTinderProfile.getAvatarUrl();
-    repos = Arrays.asList(giTinderProfile.getRepos().split(";"));
-    languages = giTinderProfile.languageStringsListFromSet(giTinderProfile.getLanguagesList());
-    snippets = Arrays.asList(giTinderProfile.getRandomCodeLinks().split(";"));
+    if (giTinderProfile.getRepos() != null) {
+      repos = Arrays.asList(giTinderProfile.getRepos().split(";"));
+    }
+    if (giTinderProfile.getLanguagesList() != null) {
+      languages = giTinderProfile.languageStringsListFromSet(giTinderProfile.getLanguagesList());
+    }
+    if (giTinderProfile.getRandomCodeLinks() != null) {
+      snippets = Arrays.asList(giTinderProfile.getRandomCodeLinks().split(";"));
+    }
   }
 
   public String getLogin() {

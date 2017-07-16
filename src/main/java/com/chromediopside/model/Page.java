@@ -1,16 +1,17 @@
 package com.chromediopside.model;
 
 import java.util.List;
+import com.chromediopside.datatransfer.ProfileResponse;
 import org.springframework.stereotype.Component;
 
 @Component
 public class Page {
 
-  List<GiTinderProfile> profiles;
-  int count;
-  int all;
+  private List<ProfileResponse> profiles;
+  private int count;
+  private int all;
 
-  public Page(List<GiTinderProfile> profiles, int count, int all) {
+  public Page(List<ProfileResponse> profiles, int count, int all) {
     this.profiles = profiles;
     this.count = count;
     this.all = all;
@@ -22,19 +23,19 @@ public class Page {
   @Override
   public String toString() {
     String profilesToString = "";
-    for (GiTinderProfile profileElement : profiles) {
+    for (ProfileResponse profileElement : profiles) {
       profilesToString =
               profileElement.getLogin() + ", " + profileElement.getAvatarUrl() + ", " + profileElement.getRepos()
-                      + ", " + profileElement.getLanguagesList() + ", " + profileElement.getRefreshDate();
+                      + ", " + profileElement.getLanguages();
     }
     return profilesToString + ", " + count + ", " + all;
   }
 
-  public List<GiTinderProfile> getProfiles() {
+  public List<ProfileResponse> getProfiles() {
     return profiles;
   }
 
-  public void setProfiles(List<GiTinderProfile> profiles) {
+  public void setProfiles(List<ProfileResponse> profiles) {
     this.profiles = profiles;
   }
 
