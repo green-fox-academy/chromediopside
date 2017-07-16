@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -53,7 +52,7 @@ public class ProfileController {
   }
 
   @CrossOrigin("*")
-  @RequestMapping("/profiles/{username}")
+  @GetMapping("/profiles/{username}")
   public ResponseEntity<Object> getOtherProfile(@PathVariable String username,
           @RequestHeader(name = "X-GiTinder-token") String appToken) throws Exception {
     if (!userService.validAppToken(appToken)) {
