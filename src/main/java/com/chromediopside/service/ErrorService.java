@@ -16,6 +16,7 @@ public class ErrorService {
   private static final String MISSING_PARAMS_MESSAGE = "Missing parameter(s): ";
   private static final String NO_MORE_PROFILES_AVAILABLE_ERROR = "No more available profiles for you!";
   private static final String NO_SUCH_APP_TOKEN_IN_DATABASE = "No Such AppToken in the Database";
+  private static final String ERROR_STATUS = "error";
 
   private ErrorResponse errorResponse;
 
@@ -38,19 +39,19 @@ public class ErrorService {
   }
 
   public ErrorResponse fieldErrors(LoginForm loginForm) {
-    errorResponse.setStatus("error");
+    errorResponse.setStatus(ERROR_STATUS);
     errorResponse.setMessage(MISSING_PARAMS_MESSAGE + missingValues(loginForm) + "!");
     return errorResponse;
   }
 
   public ErrorResponse unauthorizedRequestError() {
-    errorResponse.setStatus("error");
+    errorResponse.setStatus(ERROR_STATUS);
     errorResponse.setMessage(UNAUTHORIZED_REQUEST_MESSAGE);
     return errorResponse;
   }
 
   public ErrorResponse noSuchUserError() {
-    errorResponse.setStatus("error");
+    errorResponse.setStatus(ERROR_STATUS);
     errorResponse.setMessage(NO_SUCH_USER_MESSAGE);
     return errorResponse;
   }
@@ -62,7 +63,7 @@ public class ErrorService {
   }
 
   public ErrorResponse noSuchAppTokenInDatabase() {
-    errorResponse.setStatus("error");
+    errorResponse.setStatus(ERROR_STATUS);
     errorResponse.setMessage(NO_SUCH_APP_TOKEN_IN_DATABASE);
     return errorResponse;
   }
