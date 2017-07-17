@@ -115,18 +115,15 @@ public class ProfileService {
         giTinderProfile.setRandomCodeLinks(fiveOrLessLinks(repoList, commitService, fileUrls));
         return true;
       }
-      if (userHasMoreThanFiveFiles(repoList, commitService)) {
-        giTinderProfile.setRandomCodeLinks(moreThanFiveLinks(repoList, commitService, fileUrls));
-        return true;
-      }
-      return false;
+      giTinderProfile.setRandomCodeLinks(moreThanFiveLinks(repoList, commitService, fileUrls));
+      return true;
     } catch (IOException e) {
       logService.printLogMessage("ERROR", GitHubClientService.getGetRequestIoerror());
       return false;
     }
   }
 
-  public boolean userHasMoreThanFiveFiles(List<Repository> repoList, CommitService commitService) throws IOException {
+  private boolean userHasMoreThanFiveFiles(List<Repository> repoList, CommitService commitService) throws IOException {
     int filecount = 0;
     for (Repository repo : repoList) {
       for (RepositoryCommit commit : commitService.getCommits(repo)) {
@@ -145,7 +142,7 @@ public class ProfileService {
     return filecount > 5;
   }
 
-  public String fiveOrLessLinks(List<Repository> repoList, CommitService commitService, List<String> fileUrls) throws IOException {
+  private String fiveOrLessLinks(List<Repository> repoList, CommitService commitService, List<String> fileUrls) throws IOException {
     for (Repository repo : repoList) {
       for (RepositoryCommit commit : commitService.getCommits(repo)) {
         List<CommitFile> filesInCommit = commitService.getCommit(repo, commit.getSha()).getFiles();
@@ -160,7 +157,7 @@ public class ProfileService {
     return String.join(";", fileUrls);
   }
 
-  public String moreThanFiveLinks(List<Repository> repoList, CommitService commitService, List<String> fileUrls) throws IOException {
+  private String moreThanFiveLinks(List<Repository> repoList, CommitService commitService, List<String> fileUrls) throws IOException {
     while (fileUrls.size() < 5) {
       Collections.shuffle(repoList);
       Repository repo = repoList.get(0);
@@ -199,7 +196,6 @@ public class ProfileService {
 
   public GiTinderProfile fetchProfileFromGitHub(String accessToken, String username) {
     GitHubClient gitHubClient = GitHubClientService.setUpGitHubClient(accessToken);
-    GiTinderProfile giTinderProfile = new GiTinderProfile();
     giTinderProfile.setRefreshDate(new Timestamp(System.currentTimeMillis()));
     if (!isProfileCompositionSuccessful(gitHubClient, username, giTinderProfile)) {
       return null;
@@ -236,7 +232,7 @@ public class ProfileService {
   }
 
   public int daysPassedBetweenDates(Timestamp date1, Timestamp date2) {
-    long differenceAsLong = 0;
+    long differenceAsLong;
     if (date1.getTime() > date2.getTime()) {
       differenceAsLong = date1.getTime() - date2.getTime();
     } else {
