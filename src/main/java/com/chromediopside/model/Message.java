@@ -1,11 +1,13 @@
 package com.chromediopside.model;
 
 import java.sql.Timestamp;
-import org.springframework.stereotype.Component;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 
-@Component
+@Entity
 public class Message {
 
+  @Id
   private long id;
   private String from;
   private String to;
