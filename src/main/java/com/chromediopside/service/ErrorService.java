@@ -15,7 +15,6 @@ public class ErrorService {
   private static final String NO_SUCH_USER_MESSAGE = "No such user!";
   private static final String MISSING_PARAMS_MESSAGE = "Missing parameter(s): ";
   private static final String NO_MORE_PROFILES_AVAILABLE_ERROR = "No more available profiles for you!";
-  private static final String NO_SUCH_APP_TOKEN_IN_DATABASE = "No Such AppToken in the Database";
   private static final String ERROR_STATUS = "error";
 
   private ErrorResponse errorResponse;
@@ -59,12 +58,6 @@ public class ErrorService {
   public ErrorResponse getNoMoreAvailableProfiles() {
     errorResponse.setStatus("ok");
     errorResponse.setMessage(NO_MORE_PROFILES_AVAILABLE_ERROR);
-    return errorResponse;
-  }
-
-  public ErrorResponse noSuchAppTokenInDatabase() {
-    errorResponse.setStatus(ERROR_STATUS);
-    errorResponse.setMessage(NO_SUCH_APP_TOKEN_IN_DATABASE);
     return errorResponse;
   }
 }
