@@ -42,28 +42,4 @@ public class LoginController {
       return new ResponseEntity<>(errorService.unauthorizedRequestError(), HttpStatus.UNAUTHORIZED);
     }
   }
-
-  public LoginService getLoginService() {
-    return loginService;
-  }
-
-  public void setLoginService(LoginService loginService) {
-    this.loginService = loginService;
-  }
-
-  public ErrorService getErrorService() {
-    return errorService;
-  }
-
-  public void setErrorService(ErrorService errorService) {
-    this.errorService = errorService;
-  }
-
-  public ProfileService getProfileService() {
-    return profileService;
-  }
-
-  public void setProfileService(ProfileService profileService) {
-    this.profileService = profileService;
-  }
 }
