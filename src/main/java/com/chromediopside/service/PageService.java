@@ -39,13 +39,14 @@ public class PageService {
 
   private List<GiTinderProfile> listProfilesPerPage(int givenPageNumber) {
     int offset = (givenPageNumber - 1) * PROFILES_PER_PAGE;
-    List<GiTinderProfile> listOfProfilesPerPage = profileRepository.listTensOrderByEntry(randomSortingParam(), givenPageNumber);
+    List<GiTinderProfile> listOfProfilesPerPage = profileRepository
+        .listTensOrderByEntry(randomSortingParam(), offset);
     return listOfProfilesPerPage;
   }
 
   private String randomSortingParam() {
     List<String> listOfSortingValues = Arrays
-            .asList("login", "avatar_url", "repos", "refresh_date");
+        .asList("login", "avatar_url", "repos", "refresh_date");
     Collections.shuffle(listOfSortingValues);
     return listOfSortingValues.get(0);
   }
