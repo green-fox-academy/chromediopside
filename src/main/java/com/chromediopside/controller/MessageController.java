@@ -32,7 +32,7 @@ public class MessageController {
     this.errorService = errorService;
   }
 
-  @GetMapping(value = "/messages/{to}")
+  @GetMapping(value = "/messages/{otherUser}")
   public ResponseEntity<Object> getMessages(@RequestHeader(name = "X-GiTinder-token") String appToken, @PathVariable String otherUser) {
     if (!userService.validAppToken(appToken)) {
       return new ResponseEntity<>(errorService.unauthorizedRequestError(), HttpStatus.UNAUTHORIZED);
