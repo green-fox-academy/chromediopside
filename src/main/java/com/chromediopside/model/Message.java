@@ -9,9 +9,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import org.springframework.stereotype.Component;
 
 @Entity
 @Table(name = "message")
+@Component
 public class Message {
 
   @Id

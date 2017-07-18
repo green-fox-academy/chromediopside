@@ -3,6 +3,7 @@ package com.chromediopside.controller;
 import com.chromediopside.datatransfer.MessageDTO;
 import com.chromediopside.datatransfer.MessageStatusOK;
 import com.chromediopside.datatransfer.StatusResponseOK;
+import com.chromediopside.model.Message;
 import com.chromediopside.service.ErrorService;
 import com.chromediopside.service.GiTinderUserService;
 import com.chromediopside.service.MessageService;
@@ -50,8 +51,9 @@ public class MessageController {
     if (!userService.validAppToken(appToken)) {
       return new ResponseEntity<>(errorService.unauthorizedRequestError(), HttpStatus.UNAUTHORIZED);
     }
-    messageService.saveMessage(messageDTO, appToken);
-    return new ResponseEntity<>(new MessageStatusOK(messageDTO), HttpStatus.OK);
+    Message message = messageService.saveMessage(messageDTO, appToken);
+    MessageStatusOK messageStatusOK = new MessageStatusOK(message);
+    return new ResponseEntity(messageStatusOK, HttpStatus.OK);
   }
 
   @DeleteMapping(value = "/messages/{id}")
