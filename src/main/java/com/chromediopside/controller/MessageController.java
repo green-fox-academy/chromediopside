@@ -1,6 +1,7 @@
 package com.chromediopside.controller;
 
 import com.chromediopside.datatransfer.MessageDTO;
+import com.chromediopside.datatransfer.MessageStatusOK;
 import com.chromediopside.datatransfer.StatusResponseOK;
 import com.chromediopside.model.Message;
 import com.chromediopside.service.ErrorService;
@@ -46,8 +47,8 @@ public class MessageController {
     if (!userService.validAppToken(appToken)) {
       return new ResponseEntity<>(errorService.unauthorizedRequestError(), HttpStatus.UNAUTHORIZED);
     }
-    Message messageToSave = messageService.saveMessage(messageDTO);
-    return new ResponseEntity<>(messageToSave, HttpStatus.OK);
+    messageService.saveMessage(messageDTO);
+    return new ResponseEntity<>(new MessageStatusOK(messageDTO), HttpStatus.OK);
   }
 
   @DeleteMapping(value = "/messages/{id}")

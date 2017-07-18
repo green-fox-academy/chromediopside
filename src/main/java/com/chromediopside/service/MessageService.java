@@ -31,9 +31,8 @@ public class MessageService {
     messageRepository.delete(id);
   }
 
-  public Message saveMessage(MessageDTO messageDTO) {
+  public void saveMessage(MessageDTO messageDTO) {
     Message messageToSave = new Message(messageDTO.getFrom(), messageDTO.getTo(), messageDTO.getCreatedAt(), messageDTO.getMessage());
     messageRepository.save(messageToSave);
-    return messageToSave;
   }
 }
