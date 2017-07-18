@@ -1,6 +1,7 @@
 package com.chromediopside.service;
 
 import com.chromediopside.datatransfer.MessageDTO;
+import com.chromediopside.datatransfer.Messages;
 import com.chromediopside.model.GiTinderUser;
 import com.chromediopside.model.Message;
 import com.chromediopside.repository.MessageRepository;
@@ -22,13 +23,12 @@ public class MessageService {
     this.giTinderUserService = giTinderUserService;
   }
 
-  public List<Message> getConversationBetweenUsers(String user1, String user2) {
-    List<Message> messagesFromUser1 = messageRepository.findByFromInAndToIn(user1, user2);
-    List<Message> messagesFromUser2 = messageRepository.findByFromInAndToIn(user2, user1);
-    List<Message> conversation = new ArrayList<>(messagesFromUser1.size() + messagesFromUser2.size());
-    conversation.addAll(messagesFromUser1);
-    conversation.addAll(messagesFromUser2);
-    return conversation;
+  public Messages getConversationBetweenUsers(String appToken, String username) {
+    GiTinderUser actualUser = giTinderUserService.getUserByAppToken(appToken);
+    String actualUsersName = actualUser.getUserName();
+    List<Message> conversation = messageRepository.findMessagesBetween(actualUsersName, username);
+    Messages messages = new Messages(conversation);
+    return messages;
   }
 
   public void deleteMessage(long id) {
