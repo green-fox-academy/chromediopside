@@ -84,7 +84,7 @@ public class ProfileService {
   }
 
   private boolean setReposAndLanguages(GitHubClient gitHubClient, String username,
-          GiTinderProfile giTinderProfile) {
+      GiTinderProfile giTinderProfile) {
     RepositoryService repositoryService = new RepositoryService(gitHubClient);
     try {
       List<Repository> repositoryList = repositoryService.getRepositories(username);
@@ -180,6 +180,9 @@ public class ProfileService {
   }
 
   private void addRepoLanguage(Repository currentRepo, List<String> languages) {
+    if (currentRepo.getLanguage() == null) {
+      return;
+    }
     String repoLanguage = currentRepo.getLanguage();
     if (!languages.contains(repoLanguage)) {
       languages.add(repoLanguage);
