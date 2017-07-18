@@ -188,7 +188,7 @@ public class ProfileService {
   }
 
   private void addRepoLanguage(Repository currentRepo, List<String> languages) {
-    if (currentRepo.getLanguage() == null || currentRepo.getLanguage().equals("")) {
+    if (currentRepo.getLanguage() == null) {
       return;
     }
     String repoLanguage = currentRepo.getLanguage();
