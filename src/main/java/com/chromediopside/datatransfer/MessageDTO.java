@@ -1,46 +1,24 @@
-package com.chromediopside.model;
+package com.chromediopside.datatransfer;
 
 import java.sql.Timestamp;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import org.springframework.stereotype.Component;
 
-@Entity
-@Table(name = "message")
-public class Message {
+@Component
+public class MessageDTO {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  @Column(name = "message_id")
-  private long id;
-  @Column(name = "message_sender")
   private String from;
-  @Column(name = "recipient")
   private String to;
-  @Column(name = "created_at")
   private Timestamp createdAt;
-  @Column(name = "message_text")
   private String message;
 
-  public Message() {
+  public MessageDTO() {
   }
 
-  public Message(String from, String to, Timestamp createdAt, String message) {
+  public MessageDTO(String from, String to, Timestamp createdAt, String message) {
     this.from = from;
     this.to = to;
     this.createdAt = createdAt;
     this.message = message;
-  }
-
-  public long getId() {
-    return id;
-  }
-
-  public void setId(long id) {
-    this.id = id;
   }
 
   public String getFrom() {
