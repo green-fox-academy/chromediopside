@@ -29,10 +29,13 @@ public class MessageController {
 
   @Autowired
   public MessageController(MessageService messageService,
-      GiTinderUserService userService, ErrorService errorService) {
+      GiTinderUserService userService,
+      ErrorService errorService,
+      MatchService matchService) {
     this.messageService = messageService;
     this.userService = userService;
     this.errorService = errorService;
+    this.matchService = matchService;
   }
 
   @GetMapping(value = "/messages/{username}")
