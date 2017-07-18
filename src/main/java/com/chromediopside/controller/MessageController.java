@@ -3,7 +3,6 @@ package com.chromediopside.controller;
 import com.chromediopside.datatransfer.MessageDTO;
 import com.chromediopside.datatransfer.MessageStatusOK;
 import com.chromediopside.datatransfer.StatusResponseOK;
-import com.chromediopside.model.Message;
 import com.chromediopside.service.ErrorService;
 import com.chromediopside.service.GiTinderUserService;
 import com.chromediopside.service.MessageService;
