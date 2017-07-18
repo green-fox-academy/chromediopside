@@ -66,10 +66,11 @@ public class MessageController {
   public ResponseEntity<Object> deleteMessage(
           @RequestHeader(name = "X-GiTinder-token") String appToken,
           @PathVariable long id) {
-    if (!userService.validAppToken(appToken)) {
+    if (!userService.validAppToken(appToken) || !messageService.isOwnMessage(appToken, id)) {
       return new ResponseEntity<>(errorService.unauthorizedRequestError(), HttpStatus.UNAUTHORIZED);
     }
     messageService.deleteMessage(id);
-    return new ResponseEntity<>(new StatusResponseOK(), HttpStatus.OK);
+    StatusResponseOK ok = new StatusResponseOK();
+    return new ResponseEntity<>(ok, HttpStatus.OK);
   }
 }

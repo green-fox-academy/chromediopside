@@ -42,4 +42,14 @@ public class MessageService {
     messageRepository.save(messageToSave);
     return messageToSave;
   }
+
+  public boolean isOwnMessage(String appToken, long id) {
+    GiTinderUser actualUser = giTinderUserService.getUserByAppToken(appToken);
+    String actualUsersName = actualUser.getUserName();
+    Message message = messageRepository.findOne(id);
+    if(message.getFrom().equals(actualUsersName)) {
+      return true;
+    }
+    return false;
+  }
 }
