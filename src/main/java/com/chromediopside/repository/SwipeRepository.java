@@ -25,4 +25,12 @@ public interface SwipeRepository extends CrudRepository<Swiping, SwipeId> {
           + "AND (swiping_users_name = ?1 OR swiped_users_name = ?1)",
           nativeQuery = true)
   List<Swiping> findSwipeMatches(String username);
+
+  @Query(value = "SELECT EXISTS("
+          + "SELECT 1 FROM swiping "
+          + "WHERE timestamp IS NOT NULL "
+          + "AND ((swiping_users_name = ?1 AND swiped_users_name = ?2) "
+          + "OR (swiping_users_name = ?2 AND swiped_users_name = ?1)) )",
+          nativeQuery = true)
+  boolean areTheyMatched(String actualUsersName, String otherUsersName);
 }

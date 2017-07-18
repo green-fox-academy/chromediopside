@@ -1,6 +1,7 @@
 package com.chromediopside.service;
 
 import com.chromediopside.datatransfer.Matches;
+import com.chromediopside.datatransfer.MessageDTO;
 import com.chromediopside.model.GiTinderUser;
 import com.chromediopside.model.Match;
 import com.chromediopside.model.Swiping;
@@ -57,5 +58,13 @@ public class MatchService {
       matchList.add(match);
     }
     return matchList;
+  }
+
+  public boolean areTheyMatched(String appToken, MessageDTO messageDTO) {
+    GiTinderUser actualUser = userService.getUserByAppToken(appToken);
+    String actualUsersName = actualUser.getUserName();
+    String otherUsersName = messageDTO.getTo();
+    boolean areTheyMatched = swipeRepository.areTheyMatched(actualUsersName, otherUsersName);
+    return areTheyMatched;
   }
 }

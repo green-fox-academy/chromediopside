@@ -6,6 +6,7 @@ import com.chromediopside.datatransfer.StatusResponseOK;
 import com.chromediopside.model.Message;
 import com.chromediopside.service.ErrorService;
 import com.chromediopside.service.GiTinderUserService;
+import com.chromediopside.service.MatchService;
 import com.chromediopside.service.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,6 +25,7 @@ public class MessageController {
   private MessageService messageService;
   private GiTinderUserService userService;
   private ErrorService errorService;
+  private MatchService matchService;
 
   @Autowired
   public MessageController(MessageService messageService,
@@ -48,10 +50,10 @@ public class MessageController {
   public ResponseEntity<Object> postMessage(
           @RequestHeader(name = "X-GiTinder-token") String appToken,
           @RequestBody MessageDTO messageDTO) {
-    if (!userService.validAppToken(appToken)) {
+    if (!userService.validAppToken(appToken) || !matchService.areTheyMatched(appToken, messageDTO)) {
       return new ResponseEntity<>(errorService.unauthorizedRequestError(), HttpStatus.UNAUTHORIZED);
     }
-    Message message = messageService.saveMessage(messageDTO, appToken);
+    Message message = messageService.postMessage(messageDTO, appToken);
     MessageStatusOK messageStatusOK = new MessageStatusOK(message);
     return new ResponseEntity(messageStatusOK, HttpStatus.OK);
   }

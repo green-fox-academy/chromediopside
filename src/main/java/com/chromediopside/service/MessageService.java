@@ -35,7 +35,7 @@ public class MessageService {
     messageRepository.delete(id);
   }
 
-  public Message saveMessage(MessageDTO messageDTO, String appToken) {
+  public Message postMessage(MessageDTO messageDTO, String appToken) {
     GiTinderUser actualUser = giTinderUserService.getUserByAppToken(appToken);
     String actualUsersName = actualUser.getUserName();
     Message messageToSave = new Message(actualUsersName, messageDTO.getTo(), messageDTO.getMessage());
