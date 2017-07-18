@@ -20,9 +20,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class MessageController {
 
-  MessageService messageService;
-  GiTinderUserService userService;
-  ErrorService errorService;
+  private MessageService messageService;
+  private GiTinderUserService userService;
+  private ErrorService errorService;
 
   @Autowired
   public MessageController(MessageService messageService,
@@ -32,8 +32,10 @@ public class MessageController {
     this.errorService = errorService;
   }
 
-  @GetMapping(value = "/messages/{to}")
-  public ResponseEntity<Object> getMessages(@RequestHeader(name = "X-GiTinder-token") String appToken, @PathVariable String otherUser) {
+  @GetMapping(value = "/messages/{username}")
+  public ResponseEntity<Object> getMessages(
+          @RequestHeader(name = "X-GiTinder-token") String appToken,
+          @PathVariable String otherUser) {
     if (!userService.validAppToken(appToken)) {
       return new ResponseEntity<>(errorService.unauthorizedRequestError(), HttpStatus.UNAUTHORIZED);
     }
@@ -42,16 +44,20 @@ public class MessageController {
   }
 
   @PostMapping(value = "/messages")
-  public ResponseEntity<Object> postMessage(@RequestHeader(name = "X-GiTinder-token") String appToken, @RequestBody MessageDTO messageDTO) {
+  public ResponseEntity<Object> postMessage(
+          @RequestHeader(name = "X-GiTinder-token") String appToken,
+          @RequestBody MessageDTO messageDTO) {
     if (!userService.validAppToken(appToken)) {
       return new ResponseEntity<>(errorService.unauthorizedRequestError(), HttpStatus.UNAUTHORIZED);
     }
-    messageService.saveMessage(messageDTO);
+    messageService.saveMessage(messageDTO, appToken);
     return new ResponseEntity<>(new MessageStatusOK(messageDTO), HttpStatus.OK);
   }
 
   @DeleteMapping(value = "/messages/{id}")
-  public ResponseEntity<Object> deleteMessage(@RequestHeader(name = "X-GiTinder-token") String appToken, @PathVariable long id) {
+  public ResponseEntity<Object> deleteMessage(
+          @RequestHeader(name = "X-GiTinder-token") String appToken,
+          @PathVariable long id) {
     if (!userService.validAppToken(appToken)) {
       return new ResponseEntity<>(errorService.unauthorizedRequestError(), HttpStatus.UNAUTHORIZED);
     }

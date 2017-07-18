@@ -1,5 +1,6 @@
 package com.chromediopside.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.sql.Timestamp;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -7,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "message")
@@ -14,24 +16,28 @@ public class Message {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
-  @Column(name = "message_id")
+  @NotNull
   private long id;
-  @Column(name = "message_sender")
+  @NotNull
+  @Column(name = "\"from\"")
   private String from;
-  @Column(name = "recipient")
+  @NotNull
+  @Column(name = "\"to\"")
   private String to;
+  @JsonProperty("created_at")
   @Column(name = "created_at")
+  @NotNull
   private Timestamp createdAt;
-  @Column(name = "message_text")
+  @NotNull
   private String message;
 
   public Message() {
   }
 
-  public Message(String from, String to, Timestamp createdAt, String message) {
+  public Message(String from, String to, String message) {
     this.from = from;
     this.to = to;
-    this.createdAt = createdAt;
+    this.createdAt = new Timestamp(System.currentTimeMillis());
     this.message = message;
   }
 
