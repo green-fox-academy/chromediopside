@@ -34,6 +34,6 @@ public class PageServiceTest {
     page.setProfiles(testList);
     page.setCount(1);
     page.setAll(1);
-    assertEquals(page.toString(), pageService.setPage(1).toString());
+    assertEquals(page, pageService.setPage(1));
   }
 }
