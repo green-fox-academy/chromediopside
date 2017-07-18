@@ -52,6 +52,11 @@ public class GiTinderProfile {
   public GiTinderProfile() {
   }
 
+  public GiTinderProfile(String login, String avatarUrl) {
+    this.login = login;
+    this.avatarUrl = avatarUrl;
+  }
+
   public GiTinderProfile(String login, String avatarUrl, String repos, Timestamp refreshDate,
       String randomCodeLinks, Set<Language> languagesList) {
     this.login = login;
@@ -141,7 +146,7 @@ public class GiTinderProfile {
     }
     GiTinderProfile profile = (GiTinderProfile) o;
     return Objects.equals(login, profile.login) &&
-        Objects.equals(avatarUrl, profile.avatarUrl) &&
+        avatarUrl.substring(41, 49).equals(profile.avatarUrl.substring(41, 49)) &&
         Objects.equals(repos, profile.repos) &&
         Objects.equals(languageStringsListFromSet(languagesList),
             languageStringsListFromSet(profile.languagesList));
@@ -152,12 +157,14 @@ public class GiTinderProfile {
       return Objects.hash(login, avatarUrl, repos, languagesList);
   }
 
-  private List<String> languageStringsListFromSet(Set<Language> languageSet) {
+  public List<String> languageStringsListFromSet(Set<Language> languageSet) {
     List<String> languageStrings = new ArrayList<>();
-    for (Language current : languageSet) {
-      languageStrings.add(current.getLanguageName());
+    if (languageSet != null) {
+      for (Language current : languageSet) {
+        languageStrings.add(current.getLanguageName());
+      }
+      Collections.sort(languageStrings);
     }
-    Collections.sort(languageStrings);
     return languageStrings;
   }
 }

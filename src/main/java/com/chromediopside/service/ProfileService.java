@@ -1,6 +1,7 @@
 package com.chromediopside.service;
 
 import com.chromediopside.datatransfer.LoginForm;
+import com.chromediopside.datatransfer.ProfileResponse;
 import com.chromediopside.datatransfer.SwipeResponse;
 import com.chromediopside.model.GiTinderProfile;
 import com.chromediopside.model.GiTinderUser;
@@ -108,23 +109,13 @@ public class ProfileService {
     try {
       List<String> fileUrls = new ArrayList<>();
       RepositoryService repositoryService = new RepositoryService(gitHubClient);
-      List<Repository> repoList = repositoryService.getRepositories(username);
       CommitService commitService = new CommitService(gitHubClient);
-      List<CommitFile> filesInCommit;
-      for (Repository repo : repoList) {
-        for (RepositoryCommit commit : commitService.getCommits(repo)) {
-          filesInCommit = commitService.getCommit(repo, commit.getSha()).getFiles();
-          for (CommitFile file : filesInCommit) {
-            String fileUrl = file.getRawUrl();
-            if (isCodeFile(fileUrl)) {
-              fileUrls.add(fileUrl);
-            }
-          }
-        }
+      List<Repository> repoList = repositoryService.getRepositories(username);
+      if (!userHasMoreThanFiveFiles(repoList, commitService)) {
+        giTinderProfile.setRandomCodeLinks(fiveOrLessLinks(repoList, commitService, fileUrls));
+        return true;
       }
-      fileUrls = pickRandomFiveListElements(fileUrls);
-      String urlsInString = String.join(";", fileUrls);
-      giTinderProfile.setRandomCodeLinks(urlsInString);
+      giTinderProfile.setRandomCodeLinks(moreThanFiveLinks(repoList, commitService, fileUrls));
       return true;
     } catch (IOException e) {
       logService.printLogMessage("ERROR", GitHubClientService.getGetRequestIoerror());
@@ -132,12 +123,55 @@ public class ProfileService {
     }
   }
 
-  public <T> List<T> pickRandomFiveListElements(List<T> list) {
-    if(list.size() > 5) {
-      Collections.shuffle(list);
-      return list.subList(0, 5);
+  private boolean userHasMoreThanFiveFiles(List<Repository> repoList, CommitService commitService) throws IOException {
+    int filecount = 0;
+    for (Repository repo : repoList) {
+      for (RepositoryCommit commit : commitService.getCommits(repo)) {
+        List<CommitFile> filesInCommit = commitService.getCommit(repo, commit.getSha()).getFiles();
+        for (CommitFile file : filesInCommit) {
+          String fileUrl = file.getRawUrl();
+          if (isCodeFile(fileUrl)) {
+            filecount++;
+            if (filecount > 5) {
+              break;
+            }
+          }
+        }
+      }
     }
-    return list;
+    return filecount > 5;
+  }
+
+  private String fiveOrLessLinks(List<Repository> repoList, CommitService commitService, List<String> fileUrls) throws IOException {
+    for (Repository repo : repoList) {
+      for (RepositoryCommit commit : commitService.getCommits(repo)) {
+        List<CommitFile> filesInCommit = commitService.getCommit(repo, commit.getSha()).getFiles();
+        for (CommitFile file : filesInCommit) {
+          String fileUrl = file.getRawUrl();
+          if (isCodeFile(fileUrl)) {
+            fileUrls.add(fileUrl);
+          }
+        }
+      }
+    }
+    return String.join(";", fileUrls);
+  }
+
+  private String moreThanFiveLinks(List<Repository> repoList, CommitService commitService, List<String> fileUrls) throws IOException {
+    while (fileUrls.size() < 5) {
+      Collections.shuffle(repoList);
+      Repository repo = repoList.get(0);
+      List<RepositoryCommit> commits = commitService.getCommits(repo);
+      Collections.shuffle(commits);
+      RepositoryCommit commit = commits.get(0);
+      List<CommitFile> filesInCommit = commitService.getCommit(repo, commit.getSha()).getFiles();
+      Collections.shuffle(filesInCommit);
+      String fileUrl = filesInCommit.get(0).getRawUrl();
+      if (isCodeFile(fileUrl) && !fileUrls.contains(fileUrl)) {
+        fileUrls.add(fileUrl);
+      }
+    }
+    return String.join(";", fileUrls);
   }
 
   private boolean isCodeFile(String fileUrl) {
@@ -162,7 +196,6 @@ public class ProfileService {
 
   public GiTinderProfile fetchProfileFromGitHub(String accessToken, String username) {
     GitHubClient gitHubClient = GitHubClientService.setUpGitHubClient(accessToken);
-    GiTinderProfile giTinderProfile = new GiTinderProfile();
     giTinderProfile.setRefreshDate(new Timestamp(System.currentTimeMillis()));
     if (!isProfileCompositionSuccessful(gitHubClient, username, giTinderProfile)) {
       return null;
@@ -178,7 +211,7 @@ public class ProfileService {
     return isLoginAndAvatarOk && isReposAndLanguagesOk && isCodeFileUrlsOk;
   }
 
-  public GiTinderProfile getOtherProfile(String appToken, String username) {
+  public ProfileResponse getOtherProfile(String appToken, String username) {
 
     GiTinderUser giTinderUser = userRepository.findByUserNameAndAppToken(username, appToken);
     if (refreshRequired(profileRepository.findByLogin(giTinderUser.getUserName()))) {
@@ -187,10 +220,10 @@ public class ProfileService {
     }
     giTinderProfile = profileRepository
             .findByLogin(giTinderUser.getUserName());
-    return giTinderProfile;
+    return new ProfileResponse(giTinderProfile);
   }
 
-  public GiTinderProfile getOwnProfile(String appToken) {
+  public ProfileResponse getOwnProfile(String appToken) {
     return getOtherProfile(appToken, getUserNameByAppToken(appToken));
   }
 
@@ -199,7 +232,7 @@ public class ProfileService {
   }
 
   public int daysPassedBetweenDates(Timestamp date1, Timestamp date2) {
-    long differenceAsLong = 0;
+    long differenceAsLong;
     if (date1.getTime() > date2.getTime()) {
       differenceAsLong = date1.getTime() - date2.getTime();
     } else {
@@ -253,10 +286,17 @@ public class ProfileService {
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         Swiping matchingSwipe = new Swiping(username, swipingUsersName, timestamp);
         swipeRepository.save(matchingSwipe);
-        Match match = new Match(username, timestamp);
+        String avatarUrl = getAvatarUrlByUsername(username);
+        Match match = new Match(username, avatarUrl, timestamp);
         swipeResponse.setMatch(match);
       }
     }
     return swipeResponse;
+  }
+
+  public String getAvatarUrlByUsername(String username) {
+    GiTinderProfile profile = profileRepository.findByLogin(username);
+    String avatarUrl = profile.getAvatarUrl();
+    return avatarUrl;
   }
 }

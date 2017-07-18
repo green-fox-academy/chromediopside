@@ -16,19 +16,23 @@ public class MatchService {
 
   private GiTinderUserService userService;
   private SwipeRepository swipeRepository;
+  private ProfileService profileService;
 
   @Autowired
   public MatchService(GiTinderUserService userService,
-          SwipeRepository swipeRepository) {
+          SwipeRepository swipeRepository,
+          ProfileService profileService) {
     this.userService = userService;
     this.swipeRepository = swipeRepository;
+    this.profileService = profileService;
   }
 
   public Matches getMatches(String appToken) {
     GiTinderUser actualUser = userService.getUserByAppToken(appToken);
     String actualUsersName = actualUser.getUserName();
     List<Swiping> swipeMatches = swipeRepository.findSwipeMatches(actualUsersName);
-    return transformSwipingListToMatches(swipeMatches, actualUsersName);
+    Matches matches = transformSwipingListToMatches(swipeMatches, actualUsersName);
+    return matches;
   }
 
   public Matches transformSwipingListToMatches(List<Swiping> swipeMatches, String actualUsersName) {
@@ -41,16 +45,15 @@ public class MatchService {
   public List<Match> swipingToMatch(List<Swiping> swipeMatches, String actualUsersName) {
     List<Match> matchList = new ArrayList<>();
     for (Swiping swipe : swipeMatches) {
-      Match match = new Match();
+
       String username = swipe.getSwipingUsersName();
       if (swipe.getSwipingUsersName().equals(actualUsersName)) {
         username = swipe.getSwipedUsersName();
       }
-      match.setUsername(username);
-
+      String avatarUrl = profileService.getAvatarUrlByUsername(username);
       Timestamp matched_at = swipe.getTimestamp();
-      match.setMatched_at(matched_at);
 
+      Match match = new Match(username, avatarUrl, matched_at);
       matchList.add(match);
     }
     return matchList;

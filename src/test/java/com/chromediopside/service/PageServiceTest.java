@@ -1,7 +1,7 @@
 package com.chromediopside.service;
 
+import com.chromediopside.datatransfer.ProfileResponse;
 import com.chromediopside.mockbuilder.MockProfileBuilder;
-import com.chromediopside.model.GiTinderProfile;
 import com.chromediopside.model.Page;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,8 +28,8 @@ public class PageServiceTest {
 
   @Test
   public void pageObjectHasAllFields() {
-    List<GiTinderProfile> testList = new ArrayList<>();
-    testList.add(mockProfileBuilder.getProfile());
+    List<ProfileResponse> testList = new ArrayList<>();
+    testList.add(new ProfileResponse(mockProfileBuilder.getProfile()));
 
     page.setProfiles(testList);
     page.setCount(1);

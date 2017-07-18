@@ -30,6 +30,8 @@ public class MatchServiceTest {
   private MockUserBuilder mockUserBuilder;
   @MockBean
   private SwipeRepository swipeRepository;
+  @MockBean
+  private ProfileService profileService;
 
   @Test
   public void getMatches() throws Exception {
@@ -43,17 +45,21 @@ public class MatchServiceTest {
 
     List<Swiping> swipeMatches = new ArrayList<>();
     Timestamp timestamp = new Timestamp(1498563273079l);
+    String avatarUrl = "https://avatars1.githubusercontent.com/u/26329189?v=3";
     swipeMatches.add(new Swiping("nori", "dani", timestamp));
     swipeMatches.add(new Swiping("nori", "dori", timestamp));
     swipeMatches.add(new Swiping("peti", "nori", timestamp));
     Mockito.when(swipeRepository.findSwipeMatches(actualUsersName)).thenReturn(swipeMatches);
+    Mockito.when(profileService.getAvatarUrlByUsername("dani")).thenReturn(avatarUrl);
+    Mockito.when(profileService.getAvatarUrlByUsername("dori")).thenReturn(avatarUrl);
+    Mockito.when(profileService.getAvatarUrlByUsername("peti")).thenReturn(avatarUrl);
 
     Matches matches = matchService.getMatches(appToken);
 
     List<Match> matchList = new ArrayList<>();
-    matchList.add(new Match("dani", timestamp ));
-    matchList.add(new Match("dori", timestamp ));
-    matchList.add(new Match("peti", timestamp ));
+    matchList.add(new Match("dani", avatarUrl, timestamp ));
+    matchList.add(new Match("dori", avatarUrl, timestamp ));
+    matchList.add(new Match("peti", avatarUrl, timestamp ));
     Matches expected = new Matches();
     expected.setMatches(matchList);
     assertEquals(expected.getMatches(), matches.getMatches());
@@ -61,6 +67,10 @@ public class MatchServiceTest {
 
   @Test
   public void transformSwipingListToMatches() throws Exception {
+    String avatarUrl = "https://avatars1.githubusercontent.com/u/26329189?v=3";
+    Mockito.when(profileService.getAvatarUrlByUsername("dani")).thenReturn(avatarUrl);
+    Mockito.when(profileService.getAvatarUrlByUsername("dori")).thenReturn(avatarUrl);
+    Mockito.when(profileService.getAvatarUrlByUsername("peti")).thenReturn(avatarUrl);
     List<Swiping> swipeMatches = new ArrayList<>();
     Timestamp timestamp = new Timestamp(1498563273079l);
     swipeMatches.add(new Swiping("nori", "dani", timestamp));
@@ -71,9 +81,9 @@ public class MatchServiceTest {
     Matches matches = matchService.transformSwipingListToMatches(swipeMatches, actualUserName);
 
     List<Match> matchList = new ArrayList<>();
-    matchList.add(new Match("dani", timestamp ));
-    matchList.add(new Match("dori", timestamp ));
-    matchList.add(new Match("peti", timestamp ));
+    matchList.add(new Match("dani", avatarUrl, timestamp ));
+    matchList.add(new Match("dori", avatarUrl, timestamp ));
+    matchList.add(new Match("peti", avatarUrl, timestamp ));
     Matches expected = new Matches();
     expected.setMatches(matchList);
 
@@ -82,8 +92,13 @@ public class MatchServiceTest {
 
   @Test
   public void swipingToMatch() throws Exception {
+    String avatarUrl = "https://avatars1.githubusercontent.com/u/26329189?v=3";
+    Mockito.when(profileService.getAvatarUrlByUsername("dani")).thenReturn(avatarUrl);
+    Mockito.when(profileService.getAvatarUrlByUsername("dori")).thenReturn(avatarUrl);
+    Mockito.when(profileService.getAvatarUrlByUsername("peti")).thenReturn(avatarUrl);
     List<Swiping> swipeMatches = new ArrayList<>();
     Timestamp timestamp = new Timestamp(1498563273079l);
+
     swipeMatches.add(new Swiping("nori", "dani", timestamp));
     swipeMatches.add(new Swiping("nori", "dori", timestamp));
     swipeMatches.add(new Swiping("peti", "nori", timestamp));
@@ -92,9 +107,9 @@ public class MatchServiceTest {
     List<Match> matchList = matchService.swipingToMatch(swipeMatches, actualUserName);
 
     List<Match> expected = new ArrayList<>();
-    expected.add(new Match("dani", timestamp ));
-    expected.add(new Match("dori", timestamp ));
-    expected.add(new Match("peti", timestamp ));
+    expected.add(new Match("dani", avatarUrl, timestamp ));
+    expected.add(new Match("dori", avatarUrl, timestamp ));
+    expected.add(new Match("peti", avatarUrl, timestamp ));
 
     assertEquals(expected, matchList);
   }

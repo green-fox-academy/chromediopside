@@ -44,6 +44,11 @@ public class LoginForm {
     }
     LoginForm form = (LoginForm) o;
     return Objects.equals(username, form.username) &&
-            Objects.equals(accessToken, form.accessToken);
+        Objects.equals(accessToken, form.accessToken);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(username, accessToken);
   }
 }

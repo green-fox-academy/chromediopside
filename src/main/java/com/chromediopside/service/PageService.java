@@ -1,8 +1,10 @@
 package com.chromediopside.service;
 
+import com.chromediopside.datatransfer.ProfileResponse;
 import com.chromediopside.model.GiTinderProfile;
 import com.chromediopside.model.Page;
 import com.chromediopside.repository.ProfileRepository;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -24,7 +26,12 @@ public class PageService {
 
   public Page setPage(int givenPageNumber) {
     List<GiTinderProfile> listOfProfiles = listProfilesPerPage(givenPageNumber);
-    page.setProfiles(listOfProfiles);
+    List<ProfileResponse> profileResponses = new ArrayList<>();
+    for (GiTinderProfile giTinderProfile :
+        listOfProfiles) {
+      profileResponses.add(new ProfileResponse(giTinderProfile));
+    }
+    page.setProfiles(profileResponses);
     page.setCount(listOfProfiles.size());
     page.setAll((int) profileRepository.count());
     return page;
@@ -32,13 +39,14 @@ public class PageService {
 
   private List<GiTinderProfile> listProfilesPerPage(int givenPageNumber) {
     int offset = (givenPageNumber - 1) * PROFILES_PER_PAGE;
-    List<GiTinderProfile> listOfProfilesPerPage = profileRepository.listTensOrderByEntry(randomSortingParam(), givenPageNumber);
+    List<GiTinderProfile> listOfProfilesPerPage = profileRepository
+        .listTensOrderByEntry(randomSortingParam(), offset);
     return listOfProfilesPerPage;
   }
 
   private String randomSortingParam() {
     List<String> listOfSortingValues = Arrays
-            .asList("login", "avatar_url", "repos", "refresh_date");
+        .asList("login", "avatar_url", "repos", "refresh_date");
     Collections.shuffle(listOfSortingValues);
     return listOfSortingValues.get(0);
   }
