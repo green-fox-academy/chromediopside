@@ -28,6 +28,13 @@ public class Message {
   public Message() {
   }
 
+  public Message(String from, String to, Timestamp createdAt, String message) {
+    this.from = from;
+    this.to = to;
+    this.createdAt = createdAt;
+    this.message = message;
+  }
+
   public long getId() {
     return id;
   }
