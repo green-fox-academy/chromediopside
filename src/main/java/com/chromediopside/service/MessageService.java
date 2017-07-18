@@ -1,6 +1,7 @@
 package com.chromediopside.service;
 
 import com.chromediopside.datatransfer.MessageDTO;
+import com.chromediopside.model.GiTinderUser;
 import com.chromediopside.model.Message;
 import com.chromediopside.repository.MessageRepository;
 import java.util.ArrayList;
@@ -11,11 +12,14 @@ import org.springframework.stereotype.Service;
 @Service
 public class MessageService {
 
-  MessageRepository messageRepository;
+  private MessageRepository messageRepository;
+  private GiTinderUserService giTinderUserService;
 
   @Autowired
-  public MessageService(MessageRepository messageRepository) {
+  public MessageService(MessageRepository messageRepository,
+          GiTinderUserService giTinderUserService) {
     this.messageRepository = messageRepository;
+    this.giTinderUserService = giTinderUserService;
   }
 
   public List<Message> getConversationBetweenUsers(String user1, String user2) {
@@ -31,8 +35,11 @@ public class MessageService {
     messageRepository.delete(id);
   }
 
-  public void saveMessage(MessageDTO messageDTO) {
-    Message messageToSave = new Message(messageDTO.getFrom(), messageDTO.getTo(), messageDTO.getCreatedAt(), messageDTO.getMessage());
+  public Message postMessage(MessageDTO messageDTO, String appToken) {
+    GiTinderUser actualUser = giTinderUserService.getUserByAppToken(appToken);
+    String actualUsersName = actualUser.getUserName();
+    Message messageToSave = new Message(actualUsersName, messageDTO.getTo(), messageDTO.getMessage());
     messageRepository.save(messageToSave);
+    return messageToSave;
   }
 }
