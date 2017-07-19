@@ -1,0 +1,8 @@
+CREATE TABLE message (
+  id BIGSERIAL NOT NULL,
+  "from" VARCHAR(40) NOT NULL,
+  "to" VARCHAR(40) NOT NULL,
+  created_at TIMESTAMP NOT NULL,
+  message TEXT NOT NULL,
+  PRIMARY KEY (id)
+);
