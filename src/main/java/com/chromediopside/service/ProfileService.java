@@ -126,14 +126,17 @@ public class ProfileService {
   private boolean userHasMoreThanFiveFiles(List<Repository> repoList, CommitService commitService) throws IOException {
     int filecount = 0;
     for (Repository repo : repoList) {
-      for (RepositoryCommit commit : commitService.getCommits(repo)) {
-        List<CommitFile> filesInCommit = commitService.getCommit(repo, commit.getSha()).getFiles();
-        for (CommitFile file : filesInCommit) {
-          String fileUrl = file.getRawUrl();
-          if (isCodeFile(fileUrl)) {
-            filecount++;
-            if (filecount > 5) {
-              break;
+      if (repo.getSize() != 0) {
+        for (RepositoryCommit commit : commitService.getCommits(repo)) {
+          List<CommitFile> filesInCommit = commitService.getCommit(repo, commit.getSha())
+              .getFiles();
+          for (CommitFile file : filesInCommit) {
+            String fileUrl = file.getRawUrl();
+            if (isCodeFile(fileUrl)) {
+              filecount++;
+              if (filecount > 5) {
+                break;
+              }
             }
           }
         }
@@ -144,12 +147,15 @@ public class ProfileService {
 
   private String fiveOrLessLinks(List<Repository> repoList, CommitService commitService, List<String> fileUrls) throws IOException {
     for (Repository repo : repoList) {
-      for (RepositoryCommit commit : commitService.getCommits(repo)) {
-        List<CommitFile> filesInCommit = commitService.getCommit(repo, commit.getSha()).getFiles();
-        for (CommitFile file : filesInCommit) {
-          String fileUrl = file.getRawUrl();
-          if (isCodeFile(fileUrl)) {
-            fileUrls.add(fileUrl);
+      if (repo.getSize() != 0) {
+        for (RepositoryCommit commit : commitService.getCommits(repo)) {
+          List<CommitFile> filesInCommit = commitService.getCommit(repo, commit.getSha())
+              .getFiles();
+          for (CommitFile file : filesInCommit) {
+            String fileUrl = file.getRawUrl();
+            if (isCodeFile(fileUrl)) {
+              fileUrls.add(fileUrl);
+            }
           }
         }
       }
@@ -161,14 +167,16 @@ public class ProfileService {
     while (fileUrls.size() < 5) {
       Collections.shuffle(repoList);
       Repository repo = repoList.get(0);
-      List<RepositoryCommit> commits = commitService.getCommits(repo);
-      Collections.shuffle(commits);
-      RepositoryCommit commit = commits.get(0);
-      List<CommitFile> filesInCommit = commitService.getCommit(repo, commit.getSha()).getFiles();
-      Collections.shuffle(filesInCommit);
-      String fileUrl = filesInCommit.get(0).getRawUrl();
-      if (isCodeFile(fileUrl) && !fileUrls.contains(fileUrl)) {
-        fileUrls.add(fileUrl);
+      if (repo.getSize() != 0) {
+        List<RepositoryCommit> commits = commitService.getCommits(repo);
+        Collections.shuffle(commits);
+        RepositoryCommit commit = commits.get(0);
+        List<CommitFile> filesInCommit = commitService.getCommit(repo, commit.getSha()).getFiles();
+        Collections.shuffle(filesInCommit);
+        String fileUrl = filesInCommit.get(0).getRawUrl();
+        if (isCodeFile(fileUrl) && !fileUrls.contains(fileUrl)) {
+          fileUrls.add(fileUrl);
+        }
       }
     }
     return String.join(";", fileUrls);
