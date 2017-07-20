@@ -276,8 +276,8 @@ public class ProfileService {
     }
   }
 
-  public Page tenProfileByPage(int pageNumber) {
-    return pageService.setPage(pageNumber);
+  public Page tenProfileByPage(String currentUserName, int pageNumber) {
+    return pageService.setPage(currentUserName, pageNumber);
   }
 
   public boolean enoughProfiles(int pageNumber) {
