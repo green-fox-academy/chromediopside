@@ -19,6 +19,9 @@ public class Language {
   @Column(name = "file_extension")
   private String fileExtension;
 
+  public Language() {
+  }
+
   public Language(String languageName) {
     this.languageName = languageName;
   }
@@ -35,9 +38,6 @@ public class Language {
     }
     Language other = (Language) obj;
     return this.languageName.equals(other.languageName);
-  }
-
-  public Language() {
   }
 
   public String getLanguageName() {

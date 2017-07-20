@@ -6,9 +6,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class SwipeResponse {
 
-  String status;
-  String message;
-  Match match;
+  private String status;
+  private String message;
+  private Match match;
 
   public SwipeResponse() {
     status = "ok";

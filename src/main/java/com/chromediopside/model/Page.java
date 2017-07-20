@@ -11,13 +11,13 @@ public class Page {
   private int count;
   private int all;
 
+  public Page() {
+  }
+
   public Page(List<ProfileResponse> profiles, int count, int all) {
     this.profiles = profiles;
     this.count = count;
     this.all = all;
-  }
-
-  public Page() {
   }
 
   @Override
