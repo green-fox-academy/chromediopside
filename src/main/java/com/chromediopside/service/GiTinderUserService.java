@@ -27,8 +27,7 @@ public class GiTinderUserService {
     } while (userRepo.findByAppToken(appToken) != null);
     return appToken;
   }
-
-
+  
   public GiTinderUser getUserByAppToken(String appToken) {
     GiTinderUser giTinderUser = userRepo.findByAppToken(appToken);
     return giTinderUser;
