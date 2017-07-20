@@ -83,6 +83,11 @@ public class ProfileControllerTest {
             .andExpect(jsonPath("$").value(hasKey("login")))
             .andExpect(jsonPath("$").value(hasKey("avatar_url")))
             .andExpect(jsonPath("$").value(hasKey("repos")))
+            .andExpect(jsonPath("$.repos").value(
+                    anyOf(any(List.class), nullValue(List.class))))
+            .andExpect(jsonPath("$").value(hasKey("snippets")))
+            .andExpect(jsonPath("$.snippets").value(
+                    anyOf(any(List.class), nullValue(List.class))))
             .andExpect(jsonPath("$").value(hasKey("languages")))
             .andExpect(jsonPath("$.languages").value(
                     anyOf(any(List.class), nullValue(List.class))));
@@ -116,6 +121,11 @@ public class ProfileControllerTest {
         .andExpect(jsonPath("$").value(hasKey("login")))
         .andExpect(jsonPath("$").value(hasKey("avatar_url")))
         .andExpect(jsonPath("$").value(hasKey("repos")))
+        .andExpect(jsonPath("$.repos").value(
+            anyOf(any(List.class), nullValue(List.class))))
+        .andExpect(jsonPath("$").value(hasKey("snippets")))
+        .andExpect(jsonPath("$.snippets").value(
+            anyOf(any(List.class), nullValue(List.class))))
         .andExpect(jsonPath("$").value(hasKey("languages")))
         .andExpect(jsonPath("$.languages").value(
             anyOf(any(List.class), nullValue(List.class))));
