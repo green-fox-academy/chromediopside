@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class GiTinderUserService {
 
-  UserRepository userRepo;
+  private UserRepository userRepo;
 
   @Autowired
   public GiTinderUserService(UserRepository userRepo) {
