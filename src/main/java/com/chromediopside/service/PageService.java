@@ -24,7 +24,7 @@ public class PageService {
     this.page = page;
   }
 
-  public Page setPage(int givenPageNumber) {
+  public Page setPage(String currentUserName, int givenPageNumber) {
     List<GiTinderProfile> listOfProfiles = listProfilesPerPage(givenPageNumber);
     List<ProfileResponse> profileResponses = new ArrayList<>();
     for (GiTinderProfile giTinderProfile :
@@ -33,7 +33,7 @@ public class PageService {
     }
     page.setProfiles(profileResponses);
     page.setCount(listOfProfiles.size());
-    page.setAll(profileRepository.countNoSelf("p-czigany"));
+    page.setAll(profileRepository.countNoSelf(currentUserName));
     return page;
   }
 
