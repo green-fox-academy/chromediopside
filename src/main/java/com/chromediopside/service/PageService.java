@@ -33,14 +33,14 @@ public class PageService {
     }
     page.setProfiles(profileResponses);
     page.setCount(listOfProfiles.size());
-    page.setAll(profileRepository.countWithoutSelf());
+    page.setAll(profileRepository.countNoSelf("p-czigany"));
     return page;
   }
 
   private List<GiTinderProfile> listProfilesPerPage(int givenPageNumber) {
     int offset = (givenPageNumber - 1) * PROFILES_PER_PAGE;
     List<GiTinderProfile> listOfProfilesPerPage = profileRepository
-        .listTensOrderByEntry(randomSortingParam(), offset);
+        .listTensOrderByEntry("p-czigany", randomSortingParam(), offset);
     return listOfProfilesPerPage;
   }
 
