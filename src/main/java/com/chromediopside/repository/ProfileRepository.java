@@ -22,6 +22,12 @@ public interface ProfileRepository extends CrudRepository<GiTinderProfile, Strin
 
   @Query(value = "SELECT login, avatar_url, repos, refresh_date, random_code_links "
           + "FROM gitinder_profile "
+          + "WHERE NOT login = 'p-czigany' "
           + "ORDER BY ?1 ASC LIMIT 10 OFFSET ?2", nativeQuery = true)
   List<GiTinderProfile> listTensOrderByEntry(String sortingParam, int offset);
+
+  @Query(value = "SELECT COUNT(*) "
+      + "FROM gitinder_profile "
+      + "WHERE NOT login = 'p-czigany'", nativeQuery = true)
+  int countWithoutSelf();
 }

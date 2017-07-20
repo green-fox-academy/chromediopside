@@ -33,7 +33,7 @@ public class PageService {
     }
     page.setProfiles(profileResponses);
     page.setCount(listOfProfiles.size());
-    page.setAll((int) profileRepository.count());
+    page.setAll(profileRepository.countWithoutSelf());
     return page;
   }
 
