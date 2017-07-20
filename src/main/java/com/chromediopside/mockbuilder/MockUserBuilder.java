@@ -9,7 +9,8 @@ public class MockUserBuilder {
   private GiTinderUser giTinderUserProfile;
 
   public MockUserBuilder() {
-    giTinderUserProfile = new GiTinderUser("kondfox", "a23456789101112a", "aa345678910111aa");
+    giTinderUserProfile = new GiTinderUser("kondfox",
+            "a23456789101112a", "aa345678910111aa");
   }
 
   public MockUserBuilder setUserName(String userName) {
