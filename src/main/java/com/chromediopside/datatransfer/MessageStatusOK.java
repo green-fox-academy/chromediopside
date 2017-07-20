@@ -9,6 +9,9 @@ public class MessageStatusOK {
   private String status;
   private Message message;
 
+  public MessageStatusOK() {
+  }
+
   public MessageStatusOK(Message message) {
     status = "ok";
     this.message = message;
