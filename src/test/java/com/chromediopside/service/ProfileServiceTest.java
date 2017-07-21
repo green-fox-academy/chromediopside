@@ -57,7 +57,7 @@ public class ProfileServiceTest {
   }
 
   @Test
-  public void validAccessToken() throws Exception {
+  public void fetchWithValidAccessToken() throws Exception {
     GiTinderProfile expectedProfile = mockProfileBuilder
             .setLogin(testLogin)
             .setAvatarUrl(testAvatarUrl)
@@ -142,7 +142,7 @@ public class ProfileServiceTest {
   }
 
   @Test
-  public void noProfilesAvaialable() {
+  public void noProfilesAvailable() {
     Mockito.when(profileRepository.count()).thenReturn(0L);
 
     boolean mockEnoughProfiles = profileService.enoughProfiles(1);
@@ -150,7 +150,7 @@ public class ProfileServiceTest {
   }
 
   @Test
-  public void moreThanOneAvaialblePagesEnoughProfiles() {
+  public void moreThanOneAvailablePagesEnoughProfiles() {
     Mockito.when(profileRepository.count()).thenReturn(31L);
 
     boolean mockEnoughProfiles = profileService.enoughProfiles(4);
