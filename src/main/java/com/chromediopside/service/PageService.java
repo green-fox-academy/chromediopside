@@ -24,8 +24,8 @@ public class PageService {
     this.page = page;
   }
 
-  public Page setPage(int givenPageNumber) {
-    List<GiTinderProfile> listOfProfiles = listProfilesPerPage(givenPageNumber);
+  public Page setPage(String currentUserName, int givenPageNumber) {
+    List<GiTinderProfile> listOfProfiles = listProfilesPerPage(currentUserName, givenPageNumber);
     List<ProfileResponse> profileResponses = new ArrayList<>();
     for (GiTinderProfile giTinderProfile :
         listOfProfiles) {
@@ -33,14 +33,14 @@ public class PageService {
     }
     page.setProfiles(profileResponses);
     page.setCount(listOfProfiles.size());
-    page.setAll((int) profileRepository.count());
+    page.setAll(profileRepository.countNoSelf(currentUserName));
     return page;
   }
 
-  private List<GiTinderProfile> listProfilesPerPage(int givenPageNumber) {
+  private List<GiTinderProfile> listProfilesPerPage(String currentUserName, int givenPageNumber) {
     int offset = (givenPageNumber - 1) * PROFILES_PER_PAGE;
     List<GiTinderProfile> listOfProfilesPerPage = profileRepository
-        .listTensOrderByEntry(randomSortingParam(), offset);
+        .listTensOrderByEntry(currentUserName, randomSortingParam(), offset);
     return listOfProfilesPerPage;
   }
 

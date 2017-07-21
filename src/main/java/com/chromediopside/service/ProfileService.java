@@ -46,6 +46,9 @@ public class ProfileService {
   private LanguageRepository languageRepository;
   private LogService logService;
 
+  public ProfileService() {
+  }
+
   @Autowired
   public ProfileService(
       UserRepository userRepository,
@@ -66,7 +69,102 @@ public class ProfileService {
     this.logService = logService;
   }
 
-  public ProfileService() {
+  public GiTinderProfile fetchProfileFromGitHub(String accessToken, String username) {
+    GitHubClient gitHubClient = GitHubClientService.setUpGitHubClient(accessToken);
+    giTinderProfile.setRefreshDate(new Timestamp(System.currentTimeMillis()));
+    if (!isProfileCompositionSuccessful(gitHubClient, username, giTinderProfile)) {
+      return null;
+    }
+    return giTinderProfile;
+  }
+
+  public ProfileResponse getOtherProfile(String appToken, String username) {
+
+    GiTinderUser giTinderUser = userRepository.findByUserNameAndAppToken(username, appToken);
+    if (refreshRequired(profileRepository.findByLogin(giTinderUser.getUserName()))) {
+      giTinderProfile = fetchProfileFromGitHub(giTinderUser.getAccessToken(), username);
+      profileRepository.save(giTinderProfile);
+    }
+    giTinderProfile = profileRepository
+            .findByLogin(giTinderUser.getUserName());
+    return new ProfileResponse(giTinderProfile);
+  }
+
+  public ProfileResponse getOwnProfile(String appToken) {
+    return getOtherProfile(appToken, getUserNameByAppToken(appToken));
+  }
+
+  public String getUserNameByAppToken(String appToken) {
+    return userRepository.findByAppToken(appToken).getUserName();
+  }
+
+  public int daysPassedBetweenDates(Timestamp date1, Timestamp date2) {
+    long differenceAsLong;
+    if (date1.getTime() > date2.getTime()) {
+      differenceAsLong = date1.getTime() - date2.getTime();
+    } else {
+      differenceAsLong = date2.getTime() - date1.getTime();
+    }
+    return (int)(differenceAsLong / ONE_DAY_IN_MILLIS);
+  }
+
+  public boolean refreshRequired(GiTinderProfile profileToCheck) {
+    Timestamp currentDate = new Timestamp(System.currentTimeMillis());
+    return (daysPassedBetweenDates(profileToCheck.getRefreshDate(), currentDate) >= 1);
+  }
+
+  public void fetchAndSaveProfileOnLogin(LoginForm loginForm) {
+    if (loginForm.getUsername() == null || loginForm.getAccessToken() == null) {
+      return;
+    }
+    GiTinderProfile currentProfile = fetchProfileFromGitHub(loginForm.getAccessToken(), loginForm.getUsername());
+    if (profileRepository.existsByLogin(loginForm.getUsername()) && refreshRequired(profileRepository.findByLogin(loginForm.getUsername())) && currentProfile != null) {
+      GiTinderProfile profileToUpdate = profileRepository.findByLogin(loginForm.getUsername());
+      profileToUpdate.updateProfile(
+              currentProfile.getAvatarUrl(),
+              currentProfile.getRepos(),
+              currentProfile.getLanguagesList(),
+              currentProfile.getRandomCodeLinks());
+      profileRepository.save(profileToUpdate);
+    }
+    if (!profileRepository.existsByLogin(loginForm.getUsername()) && currentProfile != null) {
+      profileRepository.save(currentProfile);
+    }
+  }
+
+  public Page tenProfileByPage(String currentUserName, int pageNumber) {
+    return pageService.setPage(currentUserName, pageNumber);
+  }
+
+  public boolean enoughProfiles(int pageNumber) {
+    return profileRepository.count() > ((pageNumber - 1) * PageService.PROFILES_PER_PAGE);
+  }
+
+  public SwipeResponse handleSwiping(String appToken, String username, String direction) {
+    SwipeResponse swipeResponse = new SwipeResponse();
+    if (direction.equals("right")) {
+      GiTinderUser swipingUser = giTinderUserService.getUserByAppToken(appToken);
+      String swipingUsersName = swipingUser.getUserName();
+      if (!swipeRepository.existsBySwipingUsersNameAndSwipedUsersName(username, swipingUsersName)) {
+
+        Swiping swiping = new Swiping(swipingUsersName, username);
+        swipeRepository.save(swiping);
+      } else {
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        Swiping matchingSwipe = new Swiping(username, swipingUsersName, timestamp);
+        swipeRepository.save(matchingSwipe);
+        String avatarUrl = getAvatarUrlByUsername(username);
+        Match match = new Match(username, avatarUrl, timestamp);
+        swipeResponse.setMatch(match);
+      }
+    }
+    return swipeResponse;
+  }
+
+  public String getAvatarUrlByUsername(String username) {
+    GiTinderProfile profile = profileRepository.findByLogin(username);
+    String avatarUrl = profile.getAvatarUrl();
+    return avatarUrl;
   }
 
   private boolean setLoginAndAvatar(GitHubClient gitHubClient, String username,
@@ -205,109 +303,11 @@ public class ProfileService {
     return languageObjects;
   }
 
-  public GiTinderProfile fetchProfileFromGitHub(String accessToken, String username) {
-    GitHubClient gitHubClient = GitHubClientService.setUpGitHubClient(accessToken);
-    giTinderProfile.setRefreshDate(new Timestamp(System.currentTimeMillis()));
-    if (!isProfileCompositionSuccessful(gitHubClient, username, giTinderProfile)) {
-      return null;
-    }
-    return giTinderProfile;
-  }
-
   private boolean isProfileCompositionSuccessful(
           GitHubClient gitHubClient, String username, GiTinderProfile giTinderProfile) {
     boolean isLoginAndAvatarOk = setLoginAndAvatar(gitHubClient, username, giTinderProfile);
     boolean isReposAndLanguagesOk = setReposAndLanguages(gitHubClient, username, giTinderProfile);
     boolean isCodeFileUrlsOk = fetchCodeFileUrls(gitHubClient, username, giTinderProfile);
     return isLoginAndAvatarOk && isReposAndLanguagesOk && isCodeFileUrlsOk;
-  }
-
-  public ProfileResponse getOtherProfile(String appToken, String username) {
-
-    GiTinderUser giTinderUser = userRepository.findByUserNameAndAppToken(username, appToken);
-    if (refreshRequired(profileRepository.findByLogin(giTinderUser.getUserName()))) {
-      giTinderProfile = fetchProfileFromGitHub(giTinderUser.getAccessToken(), username);
-      profileRepository.save(giTinderProfile);
-    }
-    giTinderProfile = profileRepository
-            .findByLogin(giTinderUser.getUserName());
-    return new ProfileResponse(giTinderProfile);
-  }
-
-  public ProfileResponse getOwnProfile(String appToken) {
-    return getOtherProfile(appToken, getUserNameByAppToken(appToken));
-  }
-
-  public String getUserNameByAppToken(String appToken) {
-    return userRepository.findByAppToken(appToken).getUserName();
-  }
-
-  public int daysPassedBetweenDates(Timestamp date1, Timestamp date2) {
-    long differenceAsLong;
-    if (date1.getTime() > date2.getTime()) {
-      differenceAsLong = date1.getTime() - date2.getTime();
-    } else {
-      differenceAsLong = date2.getTime() - date1.getTime();
-    }
-    return (int)(differenceAsLong / ONE_DAY_IN_MILLIS);
-  }
-
-  public boolean refreshRequired(GiTinderProfile profileToCheck) {
-    Timestamp currentDate = new Timestamp(System.currentTimeMillis());
-    return (daysPassedBetweenDates(profileToCheck.getRefreshDate(), currentDate) >= 1);
-  }
-
-  public void fetchAndSaveProfileOnLogin(LoginForm loginForm) {
-    if (loginForm.getUsername() == null || loginForm.getAccessToken() == null) {
-      return;
-    }
-    GiTinderProfile currentProfile = fetchProfileFromGitHub(loginForm.getAccessToken(), loginForm.getUsername());
-    if (profileRepository.existsByLogin(loginForm.getUsername()) && refreshRequired(profileRepository.findByLogin(loginForm.getUsername())) && currentProfile != null) {
-      GiTinderProfile profileToUpdate = profileRepository.findByLogin(loginForm.getUsername());
-      profileToUpdate.updateProfile(
-          currentProfile.getAvatarUrl(),
-          currentProfile.getRepos(),
-          currentProfile.getLanguagesList(),
-          currentProfile.getRandomCodeLinks());
-      profileRepository.save(profileToUpdate);
-    }
-    if (!profileRepository.existsByLogin(loginForm.getUsername()) && currentProfile != null) {
-      profileRepository.save(currentProfile);
-    }
-  }
-
-  public Page tenProfileByPage(int pageNumber) {
-    return pageService.setPage(pageNumber);
-  }
-
-  public boolean enoughProfiles(int pageNumber) {
-    return profileRepository.count() > ((pageNumber - 1) * PageService.PROFILES_PER_PAGE);
-  }
-
-  public SwipeResponse handleSwiping(String appToken, String username, String direction) {
-    SwipeResponse swipeResponse = new SwipeResponse();
-    if (direction.equals("right")) {
-      GiTinderUser swipingUser = giTinderUserService.getUserByAppToken(appToken);
-      String swipingUsersName = swipingUser.getUserName();
-      if (!swipeRepository.existsBySwipingUsersNameAndSwipedUsersName(username, swipingUsersName)) {
-
-        Swiping swiping = new Swiping(swipingUsersName, username);
-        swipeRepository.save(swiping);
-      } else {
-        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-        Swiping matchingSwipe = new Swiping(username, swipingUsersName, timestamp);
-        swipeRepository.save(matchingSwipe);
-        String avatarUrl = getAvatarUrlByUsername(username);
-        Match match = new Match(username, avatarUrl, timestamp);
-        swipeResponse.setMatch(match);
-      }
-    }
-    return swipeResponse;
-  }
-
-  public String getAvatarUrlByUsername(String username) {
-    GiTinderProfile profile = profileRepository.findByLogin(username);
-    String avatarUrl = profile.getAvatarUrl();
-    return avatarUrl;
   }
 }

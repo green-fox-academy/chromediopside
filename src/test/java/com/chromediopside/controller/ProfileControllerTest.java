@@ -185,13 +185,13 @@ public class ProfileControllerTest {
     Mockito.when(userRepository.findByAppToken("asd"))
             .thenReturn(mockUserBuilder.build());
 
-    Mockito.when(profileRepository.listTensOrderByEntry("login", 0))
+    Mockito.when(profileRepository.listTensOrderByEntry("asd","login", 0))
             .thenReturn(testList);
-    Mockito.when(profileRepository.listTensOrderByEntry("avatar_url", 0))
+    Mockito.when(profileRepository.listTensOrderByEntry("asd","avatar_url", 0))
             .thenReturn(testList);
-    Mockito.when(profileRepository.listTensOrderByEntry("repos", 0))
+    Mockito.when(profileRepository.listTensOrderByEntry("asd", "repos", 0))
             .thenReturn(testList);
-    Mockito.when(profileRepository.listTensOrderByEntry("refresh_date", 0))
+    Mockito.when(profileRepository.listTensOrderByEntry("asd", "refresh_date", 0))
             .thenReturn(testList);
     Mockito.when(profileRepository.count()).thenReturn((long)testList.size());
 
@@ -216,13 +216,13 @@ public class ProfileControllerTest {
     Mockito.when(userRepository.findByAppToken("asd"))
             .thenReturn(mockUserBuilder.build());
 
-    Mockito.when(profileRepository.listTensOrderByEntry("login", 1))
+    Mockito.when(profileRepository.listTensOrderByEntry("asd", "login", 1))
             .thenReturn(testList);
-    Mockito.when(profileRepository.listTensOrderByEntry("avatar_url", 1))
+    Mockito.when(profileRepository.listTensOrderByEntry("asd", "avatar_url", 1))
             .thenReturn(testList);
-    Mockito.when(profileRepository.listTensOrderByEntry("repos", 1))
+    Mockito.when(profileRepository.listTensOrderByEntry("asd", "repos", 1))
             .thenReturn(testList);
-    Mockito.when(profileRepository.listTensOrderByEntry("refresh_date", 1))
+    Mockito.when(profileRepository.listTensOrderByEntry("asd", "refresh_date", 1))
             .thenReturn(testList);
     Mockito.when(profileRepository.count()).thenReturn((long)testList.size());
 
@@ -246,13 +246,13 @@ public class ProfileControllerTest {
     Mockito.when(userRepository.findByAppToken("asd"))
             .thenReturn(mockUserBuilder.build());
 
-    Mockito.when(profileRepository.listTensOrderByEntry("login", 2))
+    Mockito.when(profileRepository.listTensOrderByEntry("asd", "login", 2))
             .thenReturn(null);
-    Mockito.when(profileRepository.listTensOrderByEntry("avatar_url", 2))
+    Mockito.when(profileRepository.listTensOrderByEntry("asd", "avatar_url", 2))
             .thenReturn(null);
-    Mockito.when(profileRepository.listTensOrderByEntry("repos", 2))
+    Mockito.when(profileRepository.listTensOrderByEntry("asd", "repos", 2))
             .thenReturn(null);
-    Mockito.when(profileRepository.listTensOrderByEntry("refresh_date", 2))
+    Mockito.when(profileRepository.listTensOrderByEntry("asd", "refresh_date", 2))
             .thenReturn(null);
     Mockito.when(profileRepository.count()).thenReturn((long)testList.size());
 

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class GiTinderUserService {
 
-  UserRepository userRepo;
+  private UserRepository userRepo;
 
   @Autowired
   public GiTinderUserService(UserRepository userRepo) {
@@ -27,7 +27,6 @@ public class GiTinderUserService {
     } while (userRepo.findByAppToken(appToken) != null);
     return appToken;
   }
-
 
   public GiTinderUser getUserByAppToken(String appToken) {
     GiTinderUser giTinderUser = userRepo.findByAppToken(appToken);

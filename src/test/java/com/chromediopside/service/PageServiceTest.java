@@ -34,6 +34,6 @@ public class PageServiceTest {
     page.setProfiles(testList);
     page.setCount(1);
     page.setAll(1);
-    assertEquals(page, pageService.setPage(1));
+    assertEquals(page, pageService.setPage("notkondfox", 1));
   }
 }

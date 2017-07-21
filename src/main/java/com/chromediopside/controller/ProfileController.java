@@ -1,5 +1,6 @@
 package com.chromediopside.controller;
 
+import com.chromediopside.model.GiTinderUser;
 import com.chromediopside.repository.UserRepository;
 import com.chromediopside.service.ErrorService;
 import com.chromediopside.service.GiTinderUserService;
@@ -72,16 +73,17 @@ public class ProfileController {
     if (!userService.validAppToken(appToken)) {
       return new ResponseEntity<>(errorService.unauthorizedRequestError(), HttpStatus.UNAUTHORIZED);
     }
+    GiTinderUser currentUser = userRepository.findByAppToken(appToken);
     if (page.isPresent()) {
       if (!profileService.enoughProfiles(page.get())) {
         return new ResponseEntity<>(errorService.getNoMoreAvailableProfiles(), HttpStatus.NO_CONTENT);
       }
-      return new ResponseEntity<>(profileService.tenProfileByPage(page.get()), HttpStatus.OK) ;
+      return new ResponseEntity<>(profileService.tenProfileByPage(currentUser.getUserName(), page.get()), HttpStatus.OK) ;
     }
     if (!profileService.enoughProfiles(1)) {
       return new ResponseEntity<>(errorService.getNoMoreAvailableProfiles(), HttpStatus.NO_CONTENT);
     }
-    return new ResponseEntity<>(profileService.tenProfileByPage(1), HttpStatus.OK);
+    return new ResponseEntity<>(profileService.tenProfileByPage(currentUser.getUserName(), 1), HttpStatus.OK);
   }
 
   @CrossOrigin("*")
